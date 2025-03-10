@@ -31,9 +31,10 @@ public class PatientService {
     UtilService utilService;
     PatientMapper patientMapper;
     ModelMapper modelMapper;
+    DoctorService doctorService;
 
     public PatientCreateResponse create(PatientCreateRequest patientCreateRequest) {
-        Doctor doctor = utilService.findByDoctorId(patientCreateRequest.getDoctor_id());
+        Doctor doctor = doctorService.findById(patientCreateRequest.getDoctor_id());
         Patient patient = Patient.builder()
                 .name(patientCreateRequest.getName())
                 .surname(patientCreateRequest.getSurname())

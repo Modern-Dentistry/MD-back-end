@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.controller;
 
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
+import com.rustam.modern_dentistry.dto.request.read.AddWorkerSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.AddWorkerCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadResponse;
@@ -40,5 +41,15 @@ public class AddWorkerController {
     @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id){
         return new ResponseEntity<>(addWorkerService.delete(id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/info/{id}")
+    public ResponseEntity<AddWorkerReadResponse> info(@PathVariable UUID id){
+        return new ResponseEntity<>(addWorkerService.info(id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<List<AddWorkerReadResponse>> search(@RequestBody AddWorkerSearchRequest addWorkerSearchRequest){
+        return new ResponseEntity<>(addWorkerService.search(addWorkerSearchRequest),HttpStatus.OK);
     }
 }
