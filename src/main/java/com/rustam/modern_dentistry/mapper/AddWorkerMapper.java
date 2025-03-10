@@ -18,5 +18,4 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface AddWorkerMapper {
-    
 }
