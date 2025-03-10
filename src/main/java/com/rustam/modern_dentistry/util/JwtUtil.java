@@ -17,7 +17,6 @@ public class JwtUtil {
     @Value("${spring.application.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
-
     public String createToken(String userId) {
         return Jwts.builder()
                 .setSubject(userId)
