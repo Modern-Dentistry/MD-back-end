@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,4 +39,7 @@ public class Doctor extends BaseUser {
     String homePhone;
     String address;
     Integer experience;
+
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    Set<GeneralCalendar> generalCalendars;
 }
