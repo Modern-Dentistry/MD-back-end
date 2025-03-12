@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
@@ -31,8 +32,9 @@ public class Patient {
     GenderStatus genderStatus;
     @Column(name = "date_of_birth")
     LocalDate dateOfBirth;
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "doctor", referencedColumnName = "id")
+    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     Doctor doctor;
     @Column(name = "price_category_status")
     PriceCategoryStatus priceCategoryStatus;
