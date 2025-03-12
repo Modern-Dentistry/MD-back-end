@@ -54,35 +54,11 @@ public class GeneralCalendarService {
                 .period(newAppointmentRequest.getPeriod())
                 .build();
         generalCalendarRepository.save(generalCalendar);
-        return generalCalendarMapper.toDto(generalCalendar);
+        return generalCalendarMapper.toCreate(generalCalendar);
     }
 
     public List<PatientReadResponse> selectingDoctorViewingPatient(UUID doctorId) {
-        Doctor doctor = doctorService.findById(doctorId);
-        return doctor.getPatients().stream()
-                .map(this::convertToDto)
-                .toList();
-    }
-
-    private PatientReadResponse convertToDto(Patient patient) {
-        return PatientReadResponse.builder()
-                .id(patient.getId())
-                .name(patient.getName())
-                .surname(patient.getSurname())
-                .email(patient.getEmail())
-                .patronymic(patient.getPatronymic())
-                .phone(patient.getPhone())
-                .finCode(patient.getFinCode())
-                .genderStatus(patient.getGenderStatus())
-                .dateOfBirth(patient.getDateOfBirth())
-                .specializationStatus(patient.getSpecializationStatus())
-                .priceCategoryStatus(patient.getPriceCategoryStatus())
-                .workAddress(patient.getWorkAddress())
-                .homePhone(patient.getHomePhone())
-                .homeAddress(patient.getHomeAddress())
-                .workPhone(patient.getWorkPhone())
-                .workAddress(patient.getWorkAddress())
-                .build();
-
+        List<Patient> patients = utilService.findByDoctorIdWithPatients(doctorId);
+        return generalCalendarMapper.toDtos(patients);
     }
 }

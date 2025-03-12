@@ -1,5 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import jakarta.persistence.*;
@@ -23,6 +25,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Doctor extends BaseUser {
     @OneToMany(mappedBy = "doctor",fetch = FetchType.EAGER)
+    @JsonIgnore
     Set<Patient> patients;
     String patronymic;
     @Column(name = "fin_code")
@@ -41,5 +44,6 @@ public class Doctor extends BaseUser {
     Integer experience;
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     Set<GeneralCalendar> generalCalendars;
 }
