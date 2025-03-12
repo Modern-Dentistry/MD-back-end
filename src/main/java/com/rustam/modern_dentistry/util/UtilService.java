@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -75,5 +76,9 @@ public class UtilService {
     public BaseUser findByBaseUserId(String currentUserId) {
         return baseUserRepository.findById(UUID.fromString(currentUserId))
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
+    }
+
+    public List<Patient> findByDoctorIdWithPatients(UUID doctorId) {
+        return patientRepository.findAllByDoctor_Id(doctorId);
     }
 }
