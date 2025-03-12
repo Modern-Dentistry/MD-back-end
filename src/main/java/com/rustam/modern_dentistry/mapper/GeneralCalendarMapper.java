@@ -21,5 +21,7 @@ public interface GeneralCalendarMapper {
 
     NewAppointmentResponse toCreate(GeneralCalendar generalCalendar);
 
+    PatientReadResponse toDto(Patient patient);
+
     List<PatientReadResponse> toDtos(List<Patient> patients);
 }

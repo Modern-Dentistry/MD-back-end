@@ -1,7 +1,12 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+
+
+
+
+
+import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import jakarta.persistence.*;
@@ -12,7 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
+
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -42,6 +51,9 @@ public class Doctor extends BaseUser {
     String homePhone;
     String address;
     Integer experience;
+
+    @OneToMany(mappedBy = "doctor", cascade = ALL, fetch = LAZY)
+    List<Reservation> reservations;
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore

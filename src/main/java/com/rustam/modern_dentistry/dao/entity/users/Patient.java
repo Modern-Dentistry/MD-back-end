@@ -1,5 +1,10 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+
+
+
+
+import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
@@ -10,7 +15,11 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
+
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "patients")
@@ -54,6 +63,8 @@ public class Patient {
     LocalDate registration_date;
     String role;
 
+    @OneToMany(mappedBy = "patient", cascade = ALL, fetch = LAZY)
+    List<Reservation> reservations;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<GeneralCalendar> generalCalendars;
