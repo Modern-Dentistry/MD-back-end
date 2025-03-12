@@ -8,6 +8,7 @@ import com.rustam.modern_dentistry.dto.request.create.NewAppointmentRequest;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
 import com.rustam.modern_dentistry.dto.response.read.GeneralCalendarResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
 import com.rustam.modern_dentistry.mapper.GeneralCalendarMapper;
 import com.rustam.modern_dentistry.util.UtilService;
 import jakarta.validation.Valid;
@@ -57,8 +58,8 @@ public class GeneralCalendarService {
         return generalCalendarMapper.toCreate(generalCalendar);
     }
 
-    public List<PatientReadResponse> selectingDoctorViewingPatient(UUID doctorId) {
-        List<Patient> patients = utilService.findByDoctorIdWithPatients(doctorId);
-        return generalCalendarMapper.toDtos(patients);
+    public List<SelectingDoctorViewingPatientResponse> selectingDoctorViewingPatient(UUID doctorId) {
+        List<GeneralCalendar> allByDoctor = generalCalendarRepository.findAllByDoctor_Id(doctorId);
+        return generalCalendarMapper.toResponse(allByDoctor);
     }
 }
