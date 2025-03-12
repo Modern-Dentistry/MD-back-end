@@ -32,13 +32,14 @@ import static com.rustam.modern_dentistry.dao.entity.enums.status.ReservationSta
 @RequiredArgsConstructor
 public class ReservationService {
 
+    private final DoctorService doctorService;
     private final UtilService utilService;
     private final ReservationMapper reservationMapper;
     private final ReservationRepository reservationRepository;
 
     @Transactional
     public ReservationCreateResponse create(ReservationCreateRequest request) {
-        var doctor = utilService.findByDoctorId(request.getDoctorId());
+        var doctor = doctorService.findById(request.getDoctorId());
         var patient = utilService.findByPatientId(request.getPatientId());
         var queueReservation = reservationMapper.toEntity(request, doctor, patient);
         return reservationMapper.toCreateDto(reservationRepository.save(queueReservation));
@@ -56,7 +57,7 @@ public class ReservationService {
 
     public ReservationUpdateResponse update(Long id, ReservationUpdateRequest request) {
         var reservation = getReservationById(id);
-        var doctor = utilService.findByDoctorId(request.getDoctorId());
+        var doctor = doctorService.findById(request.getDoctorId());
         var patient = utilService.findByPatientId(request.getPatientId());
         var updateReservation = reservationMapper.updateReservation(reservation, request, doctor, patient);
         return reservationMapper.toUpdateDto(reservationRepository.save(updateReservation));
