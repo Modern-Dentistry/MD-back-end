@@ -1,6 +1,8 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+
 import com.rustam.modern_dentistry.dao.entity.Reservation;
+import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
@@ -54,6 +56,10 @@ public class Patient {
     String workAddress;
     LocalDate registration_date;
     String role;
+
     @OneToMany(mappedBy = "patient", cascade = ALL, fetch = LAZY)
     List<Reservation> reservations;
+
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    Set<GeneralCalendar> generalCalendars;
 }

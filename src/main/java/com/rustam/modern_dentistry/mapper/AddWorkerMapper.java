@@ -18,6 +18,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface AddWorkerMapper {
-
-//    List<AddWorkerReadResponse> toResponses(List<? extends BaseUser> users);
+    AddWorkerReadResponse toResponse(BaseUser baseUser);
+    List<AddWorkerReadResponse> toResponses(List<BaseUser> users);
 }

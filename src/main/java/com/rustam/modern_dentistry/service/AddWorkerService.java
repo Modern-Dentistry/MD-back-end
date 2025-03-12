@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Reception;
 import com.rustam.modern_dentistry.dao.repository.BaseUserRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
+import com.rustam.modern_dentistry.dto.request.read.AddWorkerSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.AddWorkerCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadResponse;
@@ -14,6 +15,7 @@ import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
 import com.rustam.modern_dentistry.mapper.AddWorkerMapper;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.UserRoleFactory;
+import com.rustam.modern_dentistry.util.specification.UserSpecification;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,17 +36,19 @@ public class AddWorkerService {
     UtilService utilService;
     BaseUserRepository baseUserRepository;
     DoctorService doctorService;
-    AddWorkerMapper addWorkerMapper;
     ReceptionService receptionService;
+    AdminService adminService;
+    AddWorkerMapper addWorkerMapper;
 
     @Autowired
-    public AddWorkerService(List<UserRoleFactory> factories, AddWorkerMapper addWorkerMapper, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService) {
+    public AddWorkerService(List<UserRoleFactory> factories, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService, AdminService adminService, AddWorkerMapper addWorkerMapper) {
         this.roleFactories = factories.stream().collect(Collectors.toMap(UserRoleFactory::getRole, Function.identity()));
         this.utilService = utilService;
         this.baseUserRepository = baseUserRepository;
         this.doctorService = doctorService;
-        this.addWorkerMapper = addWorkerMapper;
         this.receptionService = receptionService;
+        this.adminService = adminService;
+        this.addWorkerMapper = addWorkerMapper;
     }
 
     public AddWorkerCreateResponse create(AddWorkerCreateRequest addWorkerCreateRequest) {
@@ -87,11 +91,9 @@ public class AddWorkerService {
             users = baseUserRepository.findAll();
         } else if ("DOCTOR".equals(role)) {
             users = doctorService.readAll();
+        } else if ("RECEPTION".equals(role)) {
+            users = receptionService.findAll();
         }
-//        else {
-//            users = getUsersByRole(role);
-//        }
-
         return users.stream().map(this::convertToDto).toList();
     }
 
@@ -165,11 +167,22 @@ public class AddWorkerService {
         return "Silindi";
     }
 
+    public AddWorkerReadResponse info(UUID id) {
+        BaseUser baseUser = baseUserRepository.findById(id)
+                .orElseThrow(() -> new UserNotFountException("No such user found."));
 
-//    private List<? extends BaseUser> getUsersByRole(String role) {
-//        return switch (role) {
-//            case "DOCTOR" -> doctorService.readAll();
-//            default -> List.of();
-//        };
-//    }
+        String role = baseUser.getUserType();
+
+        return switch (role) {
+            case "ADMIN" -> convertToDto(adminService.findById(id));
+            case "DOCTOR" -> convertToDto(doctorService.findById(id));
+            case "RECEPTION" -> convertToDto(receptionService.findById(id));
+            default -> throw new RuntimeException("Unknown role: " + role);
+        };
+    }
+
+    public List<AddWorkerReadResponse> search(AddWorkerSearchRequest addWorkerSearchRequest) {
+        List<BaseUser> users = baseUserRepository.findAll(UserSpecification.filterByWorker(addWorkerSearchRequest));
+        return addWorkerMapper.toResponses(users);
+    }
 }

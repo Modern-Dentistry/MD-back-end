@@ -3,9 +3,11 @@ package com.rustam.modern_dentistry.util;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
+import com.rustam.modern_dentistry.dao.entity.users.Reception;
 import com.rustam.modern_dentistry.dao.repository.BaseUserRepository;
 import com.rustam.modern_dentistry.dao.repository.DoctorRepository;
 import com.rustam.modern_dentistry.dao.repository.PatientRepository;
+import com.rustam.modern_dentistry.dao.repository.ReceptionRepository;
 import com.rustam.modern_dentistry.dto.response.TokenPair;
 import com.rustam.modern_dentistry.exception.custom.DoctorNotFoundException;
 import com.rustam.modern_dentistry.exception.custom.InvalidUUIDFormatException;
@@ -26,23 +28,18 @@ import java.util.UUID;
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 public class UtilService {
 
-    DoctorRepository dockerRepository;
+    DoctorRepository doctorRepository;
     PatientRepository patientRepository;
     BaseUserRepository baseUserRepository;
     JwtUtil jwtUtil;
 
-    public Doctor findByDoctorId(UUID doctorId) {
-        return dockerRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorNotFoundException("There is no such doctor."));
-    }
-
     public Patient findByPatientId(Long userId){
         return patientRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFountException("No such user found."));
+                .orElseThrow(() -> new UserNotFountException("No such patient found."));
     }
 
     public boolean existsByUsernameExists(String username) {
-       return dockerRepository.existsByUsername(username);
+       return doctorRepository.existsByUsername(username);
     }
 
     public UUID convertToUUID(String id) {
