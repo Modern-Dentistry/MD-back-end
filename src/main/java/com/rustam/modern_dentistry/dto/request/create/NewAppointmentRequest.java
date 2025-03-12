@@ -24,7 +24,7 @@ public class NewAppointmentRequest {
     UUID doctorId;
     @NotNull
     Room room;
-    @NotBlank(message = "patient bos ola bilmez")
+    @NotNull(message = "patient bos ola bilmez")
     Long patientId;
 
     Appointment appointment;
