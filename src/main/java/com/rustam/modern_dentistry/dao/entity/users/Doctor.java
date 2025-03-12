@@ -7,7 +7,6 @@ package com.rustam.modern_dentistry.dao.entity.users;
 
 import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import jakarta.persistence.*;
