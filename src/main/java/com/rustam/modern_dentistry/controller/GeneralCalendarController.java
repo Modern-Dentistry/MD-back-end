@@ -36,5 +36,4 @@ public class GeneralCalendarController {
         return new ResponseEntity<>(generalCalendarService.selectingDoctorViewingPatient(doctorId),HttpStatus.OK);
     }
 
-
 }
