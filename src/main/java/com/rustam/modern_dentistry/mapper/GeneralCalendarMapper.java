@@ -1,10 +1,14 @@
 package com.rustam.modern_dentistry.mapper;
 
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
+import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
+import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.List;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -14,5 +18,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface GeneralCalendarMapper {
-    NewAppointmentResponse toDto(GeneralCalendar generalCalendar);
+
+    NewAppointmentResponse toCreate(GeneralCalendar generalCalendar);
+
+    List<PatientReadResponse> toDtos(List<Patient> patients);
 }
