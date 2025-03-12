@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
@@ -8,7 +9,10 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
+
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "patients")
@@ -50,5 +54,6 @@ public class Patient {
     String workAddress;
     LocalDate registration_date;
     String role;
-
+    @OneToMany(mappedBy = "patient", cascade = ALL, fetch = LAZY)
+    List<Reservation> reservations;
 }

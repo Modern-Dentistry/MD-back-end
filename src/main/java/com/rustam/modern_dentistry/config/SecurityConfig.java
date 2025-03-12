@@ -2,7 +2,6 @@ package com.rustam.modern_dentistry.config;
 
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.util.JwtAuthUtil;
-import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +46,7 @@ public class SecurityConfig {
 
     private String[] getPublicEndpoints() {
         return new String[]{
+                "/**",
                 "/api/v1/auth/login"
         };
     }

@@ -19,5 +19,5 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 )
 public interface AddWorkerMapper {
 
-    List<AddWorkerReadResponse> toResponses(List<? extends BaseUser> users);
+//    List<AddWorkerReadResponse> toResponses(List<? extends BaseUser> users);
 }
