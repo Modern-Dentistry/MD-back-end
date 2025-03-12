@@ -4,6 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -21,7 +22,7 @@ public interface GeneralCalendarMapper {
 
     NewAppointmentResponse toCreate(GeneralCalendar generalCalendar);
 
-    PatientReadResponse toDto(Patient patient);
+    SelectingDoctorViewingPatientResponse toDto(GeneralCalendar generalCalendar);
 
-    List<PatientReadResponse> toDtos(List<Patient> patients);
+    List<SelectingDoctorViewingPatientResponse> toResponse(List<GeneralCalendar> allByDoctor);
 }

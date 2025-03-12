@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -63,7 +64,7 @@ public class Patient {
     LocalDate registration_date;
     String role;
 
-    @OneToMany(mappedBy = "patient", cascade = ALL, fetch = LAZY)
+    @OneToMany(mappedBy = "patient", cascade = ALL, fetch = EAGER)
     List<Reservation> reservations;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

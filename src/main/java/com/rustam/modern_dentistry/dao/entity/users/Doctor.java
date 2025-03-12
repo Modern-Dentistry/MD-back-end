@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 @EqualsAndHashCode(callSuper = true)
@@ -52,7 +53,7 @@ public class Doctor extends BaseUser {
     String address;
     Integer experience;
 
-    @OneToMany(mappedBy = "doctor", cascade = ALL, fetch = LAZY)
+    @OneToMany(mappedBy = "doctor", cascade = ALL, fetch = EAGER)
     List<Reservation> reservations;
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
