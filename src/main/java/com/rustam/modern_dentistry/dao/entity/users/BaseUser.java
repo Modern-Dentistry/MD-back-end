@@ -42,7 +42,7 @@ public class BaseUser {
     @Column(name = "user_type", insertable = false, updatable = false)
     String userType;
 
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @JoinTable(name = "authorities", joinColumns = @JoinColumn(name = "base_user_id"))
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)

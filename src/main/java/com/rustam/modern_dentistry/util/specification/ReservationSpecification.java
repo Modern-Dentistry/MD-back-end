@@ -1,7 +1,9 @@
 package com.rustam.modern_dentistry.util.specification;
 
 import com.rustam.modern_dentistry.dao.entity.Reservation;
+import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;

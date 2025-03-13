@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, JpaSpecificationExecutor<Reservation> {
 
     @EntityGraph(attributePaths = {"doctor", "patient"})
     List<Reservation> findAll();
+
+    @EntityGraph(attributePaths = {"doctor", "patient"})
+    Optional<Reservation> findById(Long id);
 }

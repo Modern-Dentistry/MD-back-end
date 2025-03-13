@@ -8,7 +8,10 @@ import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatie
 import com.rustam.modern_dentistry.service.GeneralCalendarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,5 +39,4 @@ public class GeneralCalendarController {
     public ResponseEntity<List<SelectingDoctorViewingPatientResponse>> selectingDoctorViewingPatient(@PathVariable UUID doctorId){
         return new ResponseEntity<>(generalCalendarService.selectingDoctorViewingPatient(doctorId),HttpStatus.OK);
     }
-
 }

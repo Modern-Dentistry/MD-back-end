@@ -42,7 +42,6 @@ public class Reservation {
     @CollectionTable(name = "reservation_weekdays", joinColumns = @JoinColumn(name = "reservation_id"))
     Set<WeekDay> weekDays;
 
-    // TODO Bunların digər tərəfdə də relation-ın qur
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     Doctor doctor;
