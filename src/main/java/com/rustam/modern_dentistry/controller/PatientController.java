@@ -9,7 +9,10 @@ import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
 import com.rustam.modern_dentistry.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,5 +54,13 @@ public class PatientController {
     @GetMapping(path = "/search")
     public ResponseEntity<List<PatientReadResponse>> search(@RequestBody PatientSearchRequest patientSearchRequest){
         return new ResponseEntity<>(patientService.search(patientSearchRequest),HttpStatus.OK);
+    }
+
+    @GetMapping("/export/excel")
+    public ResponseEntity<InputStreamResource> exportToExcel(){
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=patients.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(patientService.exportReservationsToExcel());
     }
 }

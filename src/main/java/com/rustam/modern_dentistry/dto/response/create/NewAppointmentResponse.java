@@ -16,10 +16,10 @@ import java.time.LocalTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewAppointmentResponse {
-    Doctor doctor;
+    String doctorName;
     Room room;
 
-    Patient patient;
+    String patientName;
 
     Appointment appointment;
 

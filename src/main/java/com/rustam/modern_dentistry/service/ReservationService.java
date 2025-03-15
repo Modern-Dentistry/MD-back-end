@@ -1,7 +1,6 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.Reservation;
-import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.repository.ReservationRepository;
 import com.rustam.modern_dentistry.dto.request.create.ReservationCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
@@ -13,9 +12,7 @@ import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.ReservationMapper;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.UtilService;
-import com.rustam.modern_dentistry.util.specification.ReservationSpec;
 import com.rustam.modern_dentistry.util.specification.ReservationSpecification;
-import com.rustam.modern_dentistry.util.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -80,7 +77,7 @@ public class ReservationService {
                 () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
         );
     }
-    @Transactional
+    // @Transactional
     public List<ReservationReadResponse> search(ReservationSearchRequest request) {
         List<Reservation> reservations = reservationRepository.findAll(ReservationSpecification.filterBy(request));
         return reservations.stream().map(reservationMapper::toReadDto).toList();

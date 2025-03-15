@@ -1,7 +1,6 @@
 package com.rustam.modern_dentistry.mapper;
 
 import com.rustam.modern_dentistry.dao.entity.Reservation;
-import com.rustam.modern_dentistry.dao.entity.enums.status.ReservationStatus;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.create.ReservationCreateRequest;
@@ -54,10 +53,8 @@ public class ReservationMapper {
                 .startDate(reservation.getStartDate())
                 .endTime(reservation.getEndTime())
                 .startTime(reservation.getStartTime())
-                .patientName(reservation.getPatient().getName())
-                .patientSurname(reservation.getPatient().getSurname())
-                .doctorName(reservation.getDoctor().getName())
-                .doctorSurname(reservation.getDoctor().getSurname())
+                .doctor(reservation.getDoctor().getName() + " " + reservation.getDoctor().getSurname())
+                .patient(reservation.getPatient().getName() + " " + reservation.getPatient().getSurname())
                 .status(reservation.getStatus())
                 .build();
     }

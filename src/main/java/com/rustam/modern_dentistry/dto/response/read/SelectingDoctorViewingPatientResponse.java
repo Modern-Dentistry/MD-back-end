@@ -17,7 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SelectingDoctorViewingPatientResponse {
 
-    Patient patient;
+    String patientName;
 
     Appointment appointment;
 

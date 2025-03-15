@@ -11,20 +11,24 @@ import com.rustam.modern_dentistry.dto.response.create.PatientCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
 import com.rustam.modern_dentistry.mapper.PatientMapper;
+import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.UserSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PatientService {
 
     PatientRepository patientRepository;
@@ -57,13 +61,13 @@ public class PatientService {
                 .build();
         patientRepository.save(patient);
         PatientCreateResponse patientCreateResponse = new PatientCreateResponse();
-        modelMapper.map(patient,patientCreateResponse);
+        modelMapper.map(patient, patientCreateResponse);
         return patientCreateResponse;
     }
 
     public PatientUpdateResponse update(PatientUpdateRequest patientUpdateRequest) {
         Patient patient = utilService.findByPatientId(patientUpdateRequest.getPatientId());
-        modelMapper.map(patient,patient);
+        modelMapper.map(patient, patient);
         patientRepository.save(patient);
         return patientMapper.toUpdatePatient(patient);
     }
@@ -88,5 +92,16 @@ public class PatientService {
         List<Patient> byNameAndSurnameAndFinCodeAndGenderStatusAndPhone =
                 patientRepository.findAll(UserSpecification.filterBy(patientSearchRequest));
         return patientMapper.toDtos(byNameAndSurnameAndFinCodeAndGenderStatusAndPhone);
+    }
+
+    public InputStreamResource exportReservationsToExcel() {
+        List<Patient> patients = patientRepository.findAll();
+        List<PatientReadResponse> list = patientMapper.toDtos(patients);
+        try {
+            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PatientReadResponse.class);
+            return new InputStreamResource(excelFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Error generating Excel file", e);
+        }
     }
 }

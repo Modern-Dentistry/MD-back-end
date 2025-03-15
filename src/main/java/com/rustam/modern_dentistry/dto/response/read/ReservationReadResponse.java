@@ -24,9 +24,7 @@ public class ReservationReadResponse {
     LocalDate endDate;
     LocalTime startTime;
     LocalTime endTime;
-    String doctorName;
-    String doctorSurname;
-    String patientName;
-    String patientSurname;
+    String doctor;
+    String patient;
     ReservationStatus status;
 }
