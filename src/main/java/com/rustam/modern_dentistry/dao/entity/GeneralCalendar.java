@@ -34,6 +34,7 @@ public class GeneralCalendar {
     @JoinColumn(name = "patient_id")
     Patient patient;
 
+    @Enumerated(EnumType.STRING)
     Appointment appointment;
 
     LocalDate date;

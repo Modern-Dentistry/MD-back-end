@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
 import com.rustam.modern_dentistry.dto.response.read.GeneralCalendarResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
+import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
 import com.rustam.modern_dentistry.service.GeneralCalendarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,10 @@ public class GeneralCalendarController {
     @GetMapping(path = "/selecting-doctor-viewing-patient/{doctorId}")
     public ResponseEntity<List<SelectingDoctorViewingPatientResponse>> selectingDoctorViewingPatient(@PathVariable UUID doctorId){
         return new ResponseEntity<>(generalCalendarService.selectingDoctorViewingPatient(doctorId),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/selecting-patient-to-read/{patientId}")
+    public ResponseEntity<SelectingPatientToReadResponse> selectingPatientToRead(@PathVariable Long patientId){
+        return new ResponseEntity<>(generalCalendarService.selectingPatientToRead(patientId),HttpStatus.OK);
     }
 }
