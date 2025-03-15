@@ -9,9 +9,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class ExcelUtil {
+public class ExcelUtil1 {
     private static final int MAX_COLUMN_WIDTH = 3000; // Maksimum sütun genişliyi (px ekvivalentində)
-    private static final int COLUMN_WIDTH_PADDING = 500; // Sütun genişliyinə əlavə ediləcək piksel sayı
 
     public static <T> ByteArrayInputStream dataToExcel(List<T> dataList, Class<T> clazz) throws IOException {
         if (dataList == null || dataList.isEmpty()) {
@@ -20,13 +19,14 @@ public class ExcelUtil {
 
         try (Workbook workbook = new XSSFWorkbook();
              ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            Field[] fields = clazz.getDeclaredFields(); // Fields array-ini bir dəfə yaradırıq
-            Sheet sheet = workbook.createSheet("Sheet1"); //clazz.getSimpleName() Sheet adı entity-nin adına uyğun olsun
+            Field[] fields = dataList.get(0).getClass().getDeclaredFields();
+            Sheet sheet = workbook.createSheet(clazz.getSimpleName()); // Sheet adı entity-nin adına uyğun olsun
+
             CellStyle headerStyle = createHeaderStyle(workbook);
             CellStyle bodyStyle = createBodyStyle(workbook);
 
-            createHeaderRow(sheet, fields, headerStyle);
-            fillDataRows(sheet, dataList, fields, bodyStyle);
+            createHeaderRow(sheet, clazz, headerStyle);
+            fillDataRows(sheet, dataList, bodyStyle);
             adjustColumnWidths(sheet, fields.length);
 
             workbook.write(byteArrayOutputStream);
@@ -34,8 +34,9 @@ public class ExcelUtil {
         }
     }
 
-    private static void createHeaderRow(Sheet sheet, Field[] fields, CellStyle style) {
+    private static <T> void createHeaderRow(Sheet sheet, Class<T> clazz, CellStyle style) {
         Row headerRow = sheet.createRow(0);
+        Field[] fields = clazz.getDeclaredFields();
 
         for (int i = 0; i < fields.length; i++) {
             Cell cell = headerRow.createCell(i);
@@ -44,7 +45,9 @@ public class ExcelUtil {
         }
     }
 
-    private static <T> void fillDataRows(Sheet sheet, List<T> dataList, Field[] fields, CellStyle bodyStyle) {
+    private static <T> void fillDataRows(Sheet sheet, List<T> dataList, CellStyle bodyStyle) {
+        Field[] fields = dataList.get(0).getClass().getDeclaredFields();
+
         for (int rowIndex = 0; rowIndex < dataList.size(); rowIndex++) {
             Row row = sheet.createRow(rowIndex + 1);
             T item = dataList.get(rowIndex);
@@ -68,12 +71,11 @@ public class ExcelUtil {
         Font font = workbook.createFont();
         font.setBold(true);
         font.setFontHeightInPoints((short) 12);
-        font.setColor(IndexedColors.WHITE.getIndex()); // Ağ rəngli yazı
         style.setFont(font);
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex()); // Tünd mavi arxa plan
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//        style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+//        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return style;
     }
 
@@ -81,14 +83,6 @@ public class ExcelUtil {
         CellStyle style = workbook.createCellStyle();
         style.setAlignment(HorizontalAlignment.LEFT);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        style.setTopBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
-        style.setBottomBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
-        style.setLeftBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
-        style.setRightBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
         return style;
     }
 
@@ -96,10 +90,7 @@ public class ExcelUtil {
         for (int i = 0; i < size; i++) {
             sheet.autoSizeColumn(i); // Avtomatik ölçü alır
             int currentWidth = sheet.getColumnWidth(i); // Mövcud genişlik
-            int newWidth = currentWidth + COLUMN_WIDTH_PADDING; // Genişliyi bir neçə piksel artırırıq
-            if (newWidth < MAX_COLUMN_WIDTH) {
-                sheet.setColumnWidth(i, newWidth);
-            } else {
+            if (currentWidth < MAX_COLUMN_WIDTH) {
                 sheet.setColumnWidth(i, MAX_COLUMN_WIDTH);
             }
         }

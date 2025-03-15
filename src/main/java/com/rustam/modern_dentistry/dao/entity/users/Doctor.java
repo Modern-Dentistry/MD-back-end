@@ -34,7 +34,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Doctor extends BaseUser {
-    @OneToMany(mappedBy = "doctor",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "doctor",fetch = LAZY)
     @JsonIgnore
     Set<Patient> patients;
     String patronymic;
@@ -53,7 +53,7 @@ public class Doctor extends BaseUser {
     String address;
     Integer experience;
 
-    @OneToMany(mappedBy = "doctor", cascade = ALL, fetch = EAGER)
+    @OneToMany(mappedBy = "doctor", cascade = ALL, fetch = LAZY)
     List<Reservation> reservations;
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

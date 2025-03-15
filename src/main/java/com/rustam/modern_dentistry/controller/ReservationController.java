@@ -70,11 +70,6 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.search(request));
     }
 
-//    @GetMapping(path = "/search")
-//    public ResponseEntity<List<ReservationReadResponse>> search(@RequestBody ReservationSearchRequest request){
-//        return ResponseEntity.ok(reservationService.search(request));
-//    }
-
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel(){
         return ResponseEntity.ok()

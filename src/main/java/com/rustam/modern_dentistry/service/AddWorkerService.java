@@ -23,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -82,10 +83,12 @@ public class AddWorkerService {
                 .build();
     }
 
+    @Transactional
     public List<AddWorkerReadResponse> read() {
         String currentUserId = utilService.getCurrentUserId();
         BaseUser baseUser = utilService.findByBaseUserId(currentUserId);
         String role = baseUser.getUserType();
+
         List<? extends BaseUser> users = List.of();
         if ("ADMIN".equals(role)) {
             users = baseUserRepository.findAll();
@@ -94,6 +97,7 @@ public class AddWorkerService {
         } else if ("RECEPTION".equals(role)) {
             users = receptionService.findAll();
         }
+
         return users.stream().map(this::convertToDto).toList();
     }
 
