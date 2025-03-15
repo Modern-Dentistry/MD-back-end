@@ -32,7 +32,7 @@ public class AuthService {
         if (!passwordEncoder.matches(authRequest.getPassword(), baseUser.getPassword())) {
             throw new IncorrectPasswordException("password does not match");
         }
-        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(baseUser.getId()));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(baseUser.getId());
         TokenPair tokenPair = utilService.tokenProvider(baseUser.getId(), userDetails);
         String redisKey = "refresh_token:" + baseUser.getId();
         redisTemplate.opsForValue().set(redisKey, tokenPair.getRefreshToken(), Duration.ofDays(2)); // 2 gün müddətinə saxla
