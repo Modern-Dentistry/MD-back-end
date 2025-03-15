@@ -2,8 +2,12 @@ package com.rustam.modern_dentistry.dao.repository;
 
 
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
+import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
+import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
+import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,11 +15,23 @@ import java.util.List;
 import java.util.UUID;
 
 public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar,Long> {
-    @Query("SELECT g FROM GeneralCalendar g WHERE g.doctor.id = :doctorId")
-    List<GeneralCalendar> findAllByDoctor_Id(UUID doctorId);
+    @Query("""
+    SELECT new com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse(
+        g.patient.name, g.appointment, g.date, g.time, g.period, g.room
+    )
+    FROM GeneralCalendar g
+    JOIN g.patient p
+    WHERE g.doctor.id = :doctorId
+""")
+    List<SelectingDoctorViewingPatientResponse> findAllByDoctorId(UUID doctorId);
 
-    @Query("SELECT g from GeneralCalendar g where g.patient.id =:patientId and g.appointment ='MEETING'")
-    GeneralCalendar findByPatientId(Long patientId);
+    @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse(" +
+            "d.name, p.name, g.time, g.room, g.appointment) " +
+            "FROM GeneralCalendar g " +
+            "JOIN g.doctor d " +
+            "JOIN g.patient p " +
+            "WHERE g.patient.id = :patientId AND g.appointment = 'MEETING'")
+    SelectingPatientToReadResponse findByPatientId(Long patientId);
 
     @Query("""
     SELECT CASE 
@@ -24,8 +40,17 @@ public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar
         ELSE TRUE
     END 
     FROM GeneralCalendar g 
-    WHERE g.id = :id
+    WHERE g.patient.id = :id
 """)
     boolean existsActivePatientById(Long id);
 
+    @Query("""
+    SELECT new com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse(
+        g.patient.name, g.appointment, g.date, g.time, g.period, g.room
+    )
+    FROM GeneralCalendar g
+    JOIN g.patient p
+    WHERE g.room = :room
+""")
+    List<SelectingDoctorViewingPatientResponse> findAllRoom(Room room);
 }
