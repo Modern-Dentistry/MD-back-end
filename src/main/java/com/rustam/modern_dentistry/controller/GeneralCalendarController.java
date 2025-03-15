@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.controller;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dto.request.create.NewAppointmentRequest;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
 import com.rustam.modern_dentistry.dto.response.read.GeneralCalendarResponse;
@@ -39,6 +40,11 @@ public class GeneralCalendarController {
     @GetMapping(path = "/selecting-doctor-viewing-patient/{doctorId}")
     public ResponseEntity<List<SelectingDoctorViewingPatientResponse>> selectingDoctorViewingPatient(@PathVariable UUID doctorId){
         return new ResponseEntity<>(generalCalendarService.selectingDoctorViewingPatient(doctorId),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/selecting-room-viewing-patient/{room}")
+    public ResponseEntity<List<SelectingDoctorViewingPatientResponse>> selectingRoomViewingPatient(@PathVariable Room room){
+        return new ResponseEntity<>(generalCalendarService.selectingRoomViewingPatient(room),HttpStatus.OK);
     }
 
     @GetMapping(path = "/selecting-patient-to-read/{patientId}")
