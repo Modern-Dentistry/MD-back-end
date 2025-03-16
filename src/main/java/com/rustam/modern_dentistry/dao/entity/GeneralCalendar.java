@@ -28,6 +28,7 @@ public class GeneralCalendar {
     @JoinColumn(name = "doctor_id")
     Doctor doctor;
 
+    @Enumerated(EnumType.STRING)
     Room room;
 
     @ManyToOne(fetch = FetchType.LAZY)
