@@ -64,7 +64,7 @@ public class Patient {
     LocalDate registration_date;
     String role;
 
-    @OneToMany(mappedBy = "patient", cascade = ALL, fetch = EAGER)
+    @OneToMany(mappedBy = "patient", cascade = ALL, fetch = LAZY)
     List<Reservation> reservations;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
