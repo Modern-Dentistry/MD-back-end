@@ -30,6 +30,22 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(DoctorIsPatientsWereNotFound.class)
+    public ResponseEntity<ExceptionResponseMessages> doctorIsPatientsWereNotFound(DoctorIsPatientsWereNotFound ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.NOT_FOUND) ,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(NoSuchPatientWasFound.class)
+    public ResponseEntity<ExceptionResponseMessages> noSuchPatientWasFound(NoSuchPatientWasFound ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.NOT_FOUND) ,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(DoctorNotFoundException.class)
     public ResponseEntity<ExceptionResponseMessages> doctorNotFoundException(DoctorNotFoundException ex) {
         return new ResponseEntity<>(

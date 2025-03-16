@@ -3,15 +3,16 @@ package com.rustam.modern_dentistry.dao.repository;
 
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
-import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
 import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
-import org.springframework.data.jpa.repository.EntityGraph;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar,Long> {
@@ -31,7 +32,7 @@ public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar
             "JOIN g.doctor d " +
             "JOIN g.patient p " +
             "WHERE g.patient.id = :patientId AND g.appointment = 'MEETING'")
-    SelectingPatientToReadResponse findByPatientId(Long patientId);
+    Optional<SelectingPatientToReadResponse> findByPatientId(Long patientId);
 
     @Query("""
     SELECT CASE 
@@ -53,4 +54,9 @@ public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar
     WHERE g.room = :room
 """)
     List<SelectingDoctorViewingPatientResponse> findAllRoom(Room room);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM GeneralCalendar g WHERE g.patient.id = :patientId AND g.time = :time")
+    GeneralCalendar deleteByPatientIdAndTime(Long patientId,LocalTime time);
 }

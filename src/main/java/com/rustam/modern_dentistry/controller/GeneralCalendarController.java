@@ -2,6 +2,8 @@ package com.rustam.modern_dentistry.controller;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dto.request.create.NewAppointmentRequest;
+import com.rustam.modern_dentistry.dto.request.delete.DeleteAppointmentRequest;
+import com.rustam.modern_dentistry.dto.request.update.UpdateAppointmentRequest;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
 import com.rustam.modern_dentistry.dto.response.read.GeneralCalendarResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
@@ -50,5 +52,15 @@ public class GeneralCalendarController {
     @GetMapping(path = "/selecting-patient-to-read/{patientId}")
     public ResponseEntity<SelectingPatientToReadResponse> selectingPatientToRead(@PathVariable Long patientId){
         return new ResponseEntity<>(generalCalendarService.selectingPatientToRead(patientId),HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/delete-appointment/{id}")
+    public ResponseEntity<String> deleteAppointment(@PathVariable Long id){
+        return new ResponseEntity<>(generalCalendarService.delete(id),HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/update-appointment")
+    public ResponseEntity<NewAppointmentResponse> updateAppointment(@Valid @RequestBody UpdateAppointmentRequest updateAppointmentRequest){
+        return new ResponseEntity<>(generalCalendarService.update(updateAppointmentRequest),HttpStatus.OK);
     }
 }
