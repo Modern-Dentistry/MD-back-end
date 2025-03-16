@@ -34,7 +34,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Doctor extends BaseUser {
-    @OneToMany(mappedBy = "doctor",fetch = LAZY)
+    @OneToMany(mappedBy = "doctor", fetch = LAZY)
     @JsonIgnore
     Set<Patient> patients;
     String patronymic;

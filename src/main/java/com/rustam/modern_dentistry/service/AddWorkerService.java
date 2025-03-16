@@ -88,7 +88,6 @@ public class AddWorkerService {
         String currentUserId = utilService.getCurrentUserId();
         BaseUser baseUser = utilService.findByBaseUserId(currentUserId);
         String role = baseUser.getUserType();
-
         List<? extends BaseUser> users = List.of();
         if ("ADMIN".equals(role)) {
             users = baseUserRepository.findAll();
@@ -130,10 +129,10 @@ public class AddWorkerService {
     public AddWorkerUpdateResponse update(AddWorkerUpdateRequest addWorkerUpdateRequest) {
         BaseUser baseUser = baseUserRepository.findById(addWorkerUpdateRequest.getId())
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
-        baseUser.getAuthorities().stream()
-                .map(roleFactories::get)
-                .filter(Objects::nonNull)
-                .forEach(factory -> factory.updateUser(addWorkerUpdateRequest));
+//        baseUser.getAuthorities().stream()
+//                .map(roleFactories::get)
+//                .filter(Objects::nonNull)
+//                .forEach(factory -> factory.updateUser(addWorkerUpdateRequest));
         return addWorkerUpdateResponse(addWorkerUpdateRequest);
     }
 
