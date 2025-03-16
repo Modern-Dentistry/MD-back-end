@@ -6,13 +6,18 @@ import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.repository.GeneralCalendarRepository;
 import com.rustam.modern_dentistry.dto.request.create.NewAppointmentRequest;
+import com.rustam.modern_dentistry.dto.request.delete.DeleteAppointmentRequest;
+import com.rustam.modern_dentistry.dto.request.update.UpdateAppointmentRequest;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
 import com.rustam.modern_dentistry.dto.response.read.GeneralCalendarResponse;
 import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
 import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
+import com.rustam.modern_dentistry.exception.custom.DoctorIsPatientsWereNotFound;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
+import com.rustam.modern_dentistry.exception.custom.NoSuchPatientWasFound;
 import com.rustam.modern_dentistry.util.UtilService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -72,14 +77,75 @@ public class GeneralCalendarService {
     }
 
     public List<SelectingDoctorViewingPatientResponse> selectingDoctorViewingPatient(UUID doctorId) {
-        return generalCalendarRepository.findAllByDoctorId(doctorId);
+        List<SelectingDoctorViewingPatientResponse> allByDoctorId = generalCalendarRepository.findAllByDoctorId(doctorId);
+        if (allByDoctorId.isEmpty()){
+            throw new DoctorIsPatientsWereNotFound("pasientler tapilmadi");
+        }
+        return allByDoctorId;
     }
 
     public SelectingPatientToReadResponse selectingPatientToRead(Long patientId) {
-        return generalCalendarRepository.findByPatientId(patientId);
+        return generalCalendarRepository.findByPatientId(patientId)
+                .orElseThrow(() -> new NoSuchPatientWasFound("bele bir pasient tapilmadi"));
     }
 
     public List<SelectingDoctorViewingPatientResponse> selectingRoomViewingPatient(Room room) {
-        return generalCalendarRepository.findAllRoom(room);
+        List<SelectingDoctorViewingPatientResponse> allRoom = generalCalendarRepository.findAllRoom(room);
+        if (allRoom.isEmpty()){
+            throw new DoctorIsPatientsWereNotFound("pasientler tapilmadi");
+        }
+        return allRoom;
+    }
+
+
+    public String delete(Long id) {
+        GeneralCalendar generalCalendar = findById(id);
+        String name = generalCalendar.getPatient().getName();
+        generalCalendarRepository.delete(generalCalendar);
+        return "Bu :"+ name +"pasient silindi";
+    }
+
+    @Transactional
+    public NewAppointmentResponse update(UpdateAppointmentRequest updateAppointmentRequest) {
+        GeneralCalendar generalCalendar = findById(updateAppointmentRequest.getId());
+        if (updateAppointmentRequest.getDoctorId() != null) {
+            Doctor doctor = doctorService.findById(updateAppointmentRequest.getDoctorId());
+            generalCalendar.setDoctor(doctor);
+        }
+        if (updateAppointmentRequest.getPatientId() != null) {
+            Patient patient = utilService.findByPatientId(updateAppointmentRequest.getPatientId());
+            generalCalendar.setPatient(patient);
+        }
+        if (updateAppointmentRequest.getRoom() != null) {
+            generalCalendar.setRoom(updateAppointmentRequest.getRoom());
+        }
+        if (updateAppointmentRequest.getAppointment() != null) {
+            generalCalendar.setAppointment(updateAppointmentRequest.getAppointment());
+        }
+        if (updateAppointmentRequest.getDate() != null) {
+            generalCalendar.setDate(updateAppointmentRequest.getDate());
+        }
+        if (updateAppointmentRequest.getTime() != null) {
+            generalCalendar.setTime(updateAppointmentRequest.getTime());
+        }
+        if (updateAppointmentRequest.getPeriod() != null) {
+            generalCalendar.setPeriod(updateAppointmentRequest.getPeriod());
+        }
+        generalCalendarRepository.save(generalCalendar);
+
+        return NewAppointmentResponse.builder()
+                .doctorName(generalCalendar.getDoctor().getName())
+                .patientName(generalCalendar.getPatient().getName())
+                .room(generalCalendar.getRoom())
+                .appointment(generalCalendar.getAppointment())
+                .date(generalCalendar.getDate())
+                .time(generalCalendar.getTime())
+                .period(generalCalendar.getPeriod())
+                .build();
+    }
+
+    public GeneralCalendar findById(Long id) {
+        return generalCalendarRepository.findById(id)
+                .orElseThrow(() -> new NoSuchPatientWasFound("bele bir pasient tapilmadi"));
     }
 }
