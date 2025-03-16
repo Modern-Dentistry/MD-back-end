@@ -15,6 +15,7 @@ import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -77,7 +79,6 @@ public class UtilService {
         return baseUserRepository.findById(UUID.fromString(currentUserId))
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
     }
-
     public List<Patient> findByDoctorIdWithPatients(UUID doctorId) {
         return patientRepository.findAllByDoctor_Id(doctorId);
     }
