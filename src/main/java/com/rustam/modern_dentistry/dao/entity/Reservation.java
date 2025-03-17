@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.dao.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ReservationStatus;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
@@ -11,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Objects;
 import java.util.Set;
 
 import static jakarta.persistence.EnumType.STRING;
