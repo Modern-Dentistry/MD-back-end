@@ -18,7 +18,7 @@ public class Examination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String TypeName;
+    String typeName;
 
     @Enumerated(EnumType.STRING)
     Status status;
