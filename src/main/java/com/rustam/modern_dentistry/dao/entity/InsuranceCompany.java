@@ -12,8 +12,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
 @Entity
-@Setter
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,4 +26,36 @@ public class InsuranceCompany {
 
     @Enumerated(STRING)
     Status status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public BigDecimal getDeductibleAmount() {
+        return deductibleAmount;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public void setDeductibleAmount(BigDecimal deductibleAmount) {
+        this.deductibleAmount = deductibleAmount;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }
