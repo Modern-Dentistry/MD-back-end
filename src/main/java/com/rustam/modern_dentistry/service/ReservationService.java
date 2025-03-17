@@ -72,12 +72,6 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    private Reservation getReservationById(Long id) {
-        return reservationRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
-        );
-    }
-    // @Transactional
     public List<ReservationReadResponse> search(ReservationSearchRequest request) {
         List<Reservation> reservations = reservationRepository.findAll(ReservationSpecification.filterBy(request));
         return reservations.stream().map(reservationMapper::toReadDto).toList();
@@ -92,5 +86,11 @@ public class ReservationService {
         } catch (IOException e) {
             throw new RuntimeException("Error generating Excel file", e);
         }
+    }
+
+    private Reservation getReservationById(Long id) {
+        return reservationRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
+        );
     }
 }
