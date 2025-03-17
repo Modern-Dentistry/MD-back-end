@@ -25,5 +25,4 @@ public class Teeth {
 
     ToothLocation toothLocation;
 
-    Examination examination;
 }
