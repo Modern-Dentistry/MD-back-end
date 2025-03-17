@@ -32,7 +32,7 @@ public class ExaminationService {
             throw new ExistsException("There is such an examination.");
         }
         Examination examination = Examination.builder()
-                .TypeName(createExaminationRequest.getExaminationTypeName())
+                .typeName(createExaminationRequest.getExaminationTypeName())
                 .status(Status.ACTIVE)
                 .build();
         examinationRepository.save(examination);
