@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.controller;
 
 import com.rustam.modern_dentistry.dto.request.create.CreateExaminationRequest;
+import com.rustam.modern_dentistry.dto.request.create.ExaminationUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.read.ExaminationRequest;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import com.rustam.modern_dentistry.service.ExaminationService;
@@ -35,9 +36,14 @@ public class ExaminationController {
         return new ResponseEntity<>(examinationService.search(examinationRequest),HttpStatus.OK);
     }
 
+    @PutMapping(path = "/update-status")
+    public ResponseEntity<ExaminationResponse> updateStatus(@RequestBody ExaminationRequest examinationRequest){
+        return new ResponseEntity<>(examinationService.updateStatus(examinationRequest),HttpStatus.OK);
+    }
+
     @PutMapping(path = "/update")
-    public ResponseEntity<ExaminationResponse> update(@RequestBody ExaminationRequest examinationRequest){
-        return new ResponseEntity<>(examinationService.update(examinationRequest),HttpStatus.OK);
+    public ResponseEntity<ExaminationResponse> update(@RequestBody ExaminationUpdateRequest examinationUpdateRequest){
+        return new ResponseEntity<>(examinationService.update(examinationUpdateRequest),HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/delete/{id}")

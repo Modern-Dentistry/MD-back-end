@@ -46,6 +46,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(NoTeethFoundException.class)
+    public ResponseEntity<ExceptionResponseMessages> noTeethFoundException(NoTeethFoundException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.NOT_FOUND) ,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(ExaminationNotFoundException.class)
     public ResponseEntity<ExceptionResponseMessages> examinationNotFoundException(ExaminationNotFoundException ex) {
         return new ResponseEntity<>(

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "examinations")
 @Data
@@ -22,4 +24,8 @@ public class Examination {
 
     @Enumerated(EnumType.STRING)
     Status status;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "tooth_id", nullable = false)
+    Teeth tooth;
 }
