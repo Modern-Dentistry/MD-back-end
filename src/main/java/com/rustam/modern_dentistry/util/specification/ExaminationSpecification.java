@@ -18,7 +18,7 @@ public class ExaminationSpecification {
 
             // TypeName üzrə filter
             if (typeName != null && !typeName.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.get("TypeName")), "%" + typeName.toLowerCase() + "%"));
+                predicates.add(cb.like(cb.lower(root.get("typeName")), "%" + typeName.toLowerCase() + "%"));
             }
 
             // Status üzrə filter
