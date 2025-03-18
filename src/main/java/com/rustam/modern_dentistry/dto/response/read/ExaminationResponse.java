@@ -13,7 +13,7 @@ public class ExaminationResponse {
 
     Long id;
 
-    String examinationTypeName;
+    String typeName;
 
     Status status;
 }
