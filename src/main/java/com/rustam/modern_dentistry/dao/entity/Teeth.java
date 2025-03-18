@@ -26,8 +26,10 @@ public class Teeth {
 
     Long toothNo;
 
+    @Enumerated(EnumType.STRING)
     ToothType toothType;
 
+    @Enumerated(EnumType.STRING)
     ToothLocation toothLocation;
 
     @OneToMany(mappedBy = "teeth", cascade = CascadeType.ALL, orphanRemoval = true,fetch = LAZY)
