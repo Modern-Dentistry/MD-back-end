@@ -12,6 +12,7 @@ import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.mapper.ExaminationMapper;
 import com.rustam.modern_dentistry.util.specification.ExaminationSpecification;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +29,7 @@ public class ExaminationService {
     ExaminationMapper examinationMapper;
 
     public void createExamination(CreateExaminationRequest createExaminationRequest) {
-        boolean existsExaminationByTypeName = examinationRepository.existsExaminationByTypeName(createExaminationRequest.getExaminationTypeName());
+        boolean existsExaminationByTypeName = existsExaminationByTypeName(createExaminationRequest.getExaminationTypeName());
         if (existsExaminationByTypeName){
             throw new ExistsException("There is such an examination.");
         }
@@ -37,6 +38,10 @@ public class ExaminationService {
                 .status(Status.ACTIVE)
                 .build();
         examinationRepository.save(examination);
+    }
+
+    public boolean existsExaminationByTypeName(String examinationTypeName) {
+        return examinationRepository.existsExaminationByTypeName(examinationTypeName);
     }
 
 
@@ -75,6 +80,10 @@ public class ExaminationService {
 
     public ExaminationResponse update(ExaminationUpdateRequest examinationUpdateRequest) {
         Examination examination = findById(examinationUpdateRequest.getId());
+        boolean existsExaminationByTypeName = existsExaminationByTypeName(examinationUpdateRequest.getTypeName());
+        if (existsExaminationByTypeName){
+            throw new ExistsException("There is such an examination.");
+        }
         if (examinationUpdateRequest.getTypeName() != null){
             examination.setTypeName(examinationUpdateRequest.getTypeName());
         }
