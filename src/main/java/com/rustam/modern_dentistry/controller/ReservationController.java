@@ -1,30 +1,25 @@
 package com.rustam.modern_dentistry.controller;
 
+import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dto.request.create.ReservationCreateRequest;
-import com.rustam.modern_dentistry.dto.request.read.PatientSearchRequest;
+import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.ReservationUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.ReservationCreateResponse;
-import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
-import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
 import com.rustam.modern_dentistry.dto.response.update.ReservationUpdateResponse;
 import com.rustam.modern_dentistry.service.ReservationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.List;
-
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping(path = "/api/v1/reservations")
@@ -38,8 +33,8 @@ public class ReservationController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<List<ReservationReadResponse>> read() {
-        return ResponseEntity.ok(reservationService.read());
+    public ResponseEntity<PageResponse<Reservation>> read(PageCriteria pageCriteria) {
+        return ResponseEntity.ok(reservationService.read(pageCriteria));
     }
 
     @GetMapping("/read-by-id/{id}")
@@ -65,13 +60,13 @@ public class ReservationController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
-    @GetMapping( "/search")
-    public ResponseEntity<List<ReservationReadResponse>> search(ReservationSearchRequest request){
-        return ResponseEntity.ok(reservationService.search(request));
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<Reservation>> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
+        return ResponseEntity.ok(reservationService.search(request, pageCriteria));
     }
 
     @GetMapping("/export/excel")
-    public ResponseEntity<InputStreamResource> exportToExcel(){
+    public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reservations.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

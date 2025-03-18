@@ -3,19 +3,27 @@ package com.rustam.modern_dentistry.service;
 import com.rustam.modern_dentistry.dao.entity.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.repository.InsuranceCompanyRepository;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;
-import com.rustam.modern_dentistry.dto.request.update.ReservationUpdateRequest;
+import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
+import com.rustam.modern_dentistry.dto.request.read.ICSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateICRequest;
 import com.rustam.modern_dentistry.dto.response.read.InsuranceReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.util.ExcelUtil;
+import com.rustam.modern_dentistry.util.specification.ICSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.PASSIVE;
 import static com.rustam.modern_dentistry.mapper.InsuranceCompanyMapper.INSURANCE_COMPANY_MAPPER;
-
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +35,10 @@ public class InsuranceCompanyService {
         repository.save(insurance);
     }
 
-    public List<InsuranceReadResponse> read() {
-        var insurances = repository.findAll();
-        return insurances.stream().map(INSURANCE_COMPANY_MAPPER::toReadDto).toList();
+    public PageResponse<InsuranceCompany> read(PageCriteria pageCriteria) {
+        var insurances = repository.findAll(
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        return new PageResponse<>(insurances.getTotalPages(), insurances.getTotalElements(), insurances.getContent());
     }
 
     public InsuranceReadResponse readById(Long id) {
@@ -53,6 +62,24 @@ public class InsuranceCompanyService {
     public void delete(Long id) {
         var insurance = getInsuranceById(id);
         repository.delete(insurance);
+    }
+
+    public PageResponse<InsuranceCompany> search(ICSearchRequest request, PageCriteria pageCriteria) {
+        Page<InsuranceCompany> response = repository.findAll(
+                ICSpecification.filterBy(request),
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
+    }
+
+    public InputStreamResource exportReservationsToExcel() {
+        List<InsuranceCompany> reservations = repository.findAll();
+        var list = reservations.stream().map(INSURANCE_COMPANY_MAPPER::toReadDto).toList();
+        try {
+            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, InsuranceReadResponse.class);
+            return new InputStreamResource(excelFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Error generating Excel file", e);
+        }
     }
 
     private InsuranceCompany getInsuranceById(Long id) {
