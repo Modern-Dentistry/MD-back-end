@@ -1,15 +1,20 @@
 package com.rustam.modern_dentistry.controller;
 
+import com.rustam.modern_dentistry.dao.entity.InsuranceCompany;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;
+import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
+import com.rustam.modern_dentistry.dto.request.read.ICSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateICRequest;
 import com.rustam.modern_dentistry.dto.response.read.InsuranceReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.service.InsuranceCompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
@@ -26,8 +31,8 @@ public class InsuranceCompanyController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<List<InsuranceReadResponse>> read() {
-        return ResponseEntity.ok(insuranceCompanyService.read());
+    public ResponseEntity<PageResponse<InsuranceCompany>> read(PageCriteria pageCriteria) {
+        return ResponseEntity.ok(insuranceCompanyService.read(pageCriteria));
     }
 
     @GetMapping("/read-by-id/{id}")
@@ -51,5 +56,18 @@ public class InsuranceCompanyController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         insuranceCompanyService.delete(id);
         return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<InsuranceCompany>> search(ICSearchRequest request, PageCriteria pageCriteria) {
+        return ResponseEntity.ok(insuranceCompanyService.search(request, pageCriteria));
+    }
+
+    @GetMapping("/export/excel")
+    public ResponseEntity<InputStreamResource> exportToExcel() {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Insurance_Companies.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(insuranceCompanyService.exportReservationsToExcel());
     }
 }
