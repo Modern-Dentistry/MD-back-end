@@ -16,12 +16,9 @@ public class UpdateTeethRequest {
     @NotNull
     Long id;
 
-    @NotNull
     Long toothNo;
 
-    @NotNull
     ToothType toothType;
 
-    @NotNull
     ToothLocation toothLocation;
 }

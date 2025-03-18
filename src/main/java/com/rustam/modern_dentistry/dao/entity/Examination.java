@@ -27,5 +27,5 @@ public class Examination {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "tooth_id", nullable = false)
-    Teeth tooth;
+    Teeth teeth;
 }
