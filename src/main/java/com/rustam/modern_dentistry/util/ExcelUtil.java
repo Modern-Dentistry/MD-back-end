@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.util;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -10,18 +11,19 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class ExcelUtil {
-    private static final int MAX_COLUMN_WIDTH = 3000; // Maksimum sütun genişliyi (px ekvivalentində)
+    private static final int MAX_COLUMN_WIDTH = 3500; // Maksimum sütun genişliyi (px ekvivalentində)
     private static final int COLUMN_WIDTH_PADDING = 500; // Sütun genişliyinə əlavə ediləcək piksel sayı
 
     public static <T> ByteArrayInputStream dataToExcel(List<T> dataList, Class<T> clazz) throws IOException {
-        if (dataList == null || dataList.isEmpty()) {
-            throw new IllegalArgumentException("Data list cannot be null or empty");
-        }
+//        if (dataList == null || dataList.isEmpty()) {
+//            throw new IllegalArgumentException("Data list cannot be null or empty");
+//        }
 
         try (Workbook workbook = new XSSFWorkbook();
              ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             Field[] fields = clazz.getDeclaredFields(); // Fields array-ini bir dəfə yaradırıq
             Sheet sheet = workbook.createSheet("Sheet1"); //clazz.getSimpleName() Sheet adı entity-nin adına uyğun olsun
+
             CellStyle headerStyle = createHeaderStyle(workbook);
             CellStyle bodyStyle = createBodyStyle(workbook);
 
@@ -39,7 +41,7 @@ public class ExcelUtil {
 
         for (int i = 0; i < fields.length; i++) {
             Cell cell = headerRow.createCell(i);
-            cell.setCellValue(formatHeader(fields[i].getName())); // Field adını başlıq kimi yaz
+            cell.setCellValue(getHeaderName(fields[i])); // Field adını başlıq kimi yaz
             cell.setCellStyle(style);
         }
     }
@@ -97,16 +99,18 @@ public class ExcelUtil {
             sheet.autoSizeColumn(i); // Avtomatik ölçü alır
             int currentWidth = sheet.getColumnWidth(i); // Mövcud genişlik
             int newWidth = currentWidth + COLUMN_WIDTH_PADDING; // Genişliyi bir neçə piksel artırırıq
-            if (newWidth < MAX_COLUMN_WIDTH) {
-                sheet.setColumnWidth(i, newWidth);
-            } else {
-                sheet.setColumnWidth(i, MAX_COLUMN_WIDTH);
-            }
+            sheet.setColumnWidth(i, Math.min(newWidth, MAX_COLUMN_WIDTH));
         }
+    }
+
+    private static String getHeaderName(Field field) {
+        JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
+        return (jsonProperty != null) ? jsonProperty.value() : formatHeader(field.getName());
     }
 
     private static String formatHeader(String header) {
         return header.replaceAll("([A-Z])", " $1").trim().replaceFirst(".",
                 Character.toUpperCase(header.charAt(0)) + "");
     }
+
 }

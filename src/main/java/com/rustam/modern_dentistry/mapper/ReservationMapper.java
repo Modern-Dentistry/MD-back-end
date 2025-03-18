@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.create.ReservationCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.ReservationUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.ReservationCreateResponse;
+import com.rustam.modern_dentistry.dto.response.excel.ReservationExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.ReservationUpdateResponse;
 import org.springframework.stereotype.Component;
@@ -68,6 +69,20 @@ public class ReservationMapper {
                 .startTime(reservation.getStartTime())
                 .patientId(reservation.getPatient().getId())
                 .doctorId(reservation.getDoctor().getId())
+                .build();
+    }
+
+    public ReservationExcelResponse toExcelDto(Reservation reservation) {
+
+        return ReservationExcelResponse.builder()
+                .mobilePhone(reservation.getPatient().getPhone())
+                .endDate(reservation.getEndDate())
+                .startDate(reservation.getStartDate())
+                .endTime(reservation.getEndTime())
+                .startTime(reservation.getStartTime())
+                .doctor(reservation.getDoctor().getName() + " " + reservation.getDoctor().getSurname())
+                .patient(reservation.getPatient().getName() + " " + reservation.getPatient().getSurname())
+                .status(reservation.getStatus())
                 .build();
     }
 

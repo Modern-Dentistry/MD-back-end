@@ -3,9 +3,12 @@ package com.rustam.modern_dentistry.service;
 import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.repository.ReservationRepository;
 import com.rustam.modern_dentistry.dto.request.create.ReservationCreateRequest;
+import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.ReservationUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.ReservationCreateResponse;
+import com.rustam.modern_dentistry.dto.response.excel.ReservationExcelResponse;
+import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.ReservationUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
@@ -15,6 +18,8 @@ import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.ReservationSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +47,10 @@ public class ReservationService {
         return reservationMapper.toCreateDto(reservationRepository.save(queueReservation));
     }
 
-    public List<ReservationReadResponse> read() {
-        var reservations = reservationRepository.findAll();
-        return reservations.stream().map(reservationMapper::toReadDto).toList();
+    public PageResponse<Reservation> read(PageCriteria pageCriteria) {
+        var reservations = reservationRepository.findAll(
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        return new PageResponse<>(reservations.getTotalPages(), reservations.getTotalElements(), reservations.getContent());
     }
 
     public ReservationReadResponse readById(Long id) {
@@ -72,16 +78,18 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    public List<ReservationReadResponse> search(ReservationSearchRequest request) {
-        List<Reservation> reservations = reservationRepository.findAll(ReservationSpecification.filterBy(request));
-        return reservations.stream().map(reservationMapper::toReadDto).toList();
+    public PageResponse<Reservation> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
+        Page<Reservation> response = reservationRepository.findAll(
+                ReservationSpecification.filterBy(request),
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
     }
 
     public InputStreamResource exportReservationsToExcel() {
         List<Reservation> reservations = reservationRepository.findAll();
-        var list = reservations.stream().map(reservationMapper::toReadDto).toList();
+        var list = reservations.stream().map(reservationMapper::toExcelDto).toList();
         try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, ReservationReadResponse.class);
+            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, ReservationExcelResponse.class);
             return new InputStreamResource(excelFile);
         } catch (IOException e) {
             throw new RuntimeException("Error generating Excel file", e);
