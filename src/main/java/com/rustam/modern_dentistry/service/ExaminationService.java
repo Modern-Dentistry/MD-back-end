@@ -4,6 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.Examination;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dao.repository.ExaminationRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateExaminationRequest;
+import com.rustam.modern_dentistry.dto.request.create.ExaminationUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.read.ExaminationRequest;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import com.rustam.modern_dentistry.exception.custom.ExaminationNotFoundException;
@@ -45,14 +46,15 @@ public class ExaminationService {
     }
 
     public List<ExaminationResponse> search(ExaminationRequest examinationRequest) {
-        List<Examination> examinations = examinationRepository.findAll(ExaminationSpecification.filterBy(examinationRequest.getExaminationTypeName(), examinationRequest.getStatus()));
+        List<Examination> examinations = examinationRepository.findAll(ExaminationSpecification.filterBy(examinationRequest.getTypeName(), examinationRequest.getStatus()));
         return examinationMapper.toDtos(examinations);
     }
 
-    public ExaminationResponse update(ExaminationRequest examinationRequest) {
-        Examination examination = findByTypeName(examinationRequest.getExaminationTypeName());
-        if (examinationRequest.getExaminationTypeName() != null){
-            examination.setTypeName(examinationRequest.getExaminationTypeName());
+    public ExaminationResponse updateStatus(ExaminationRequest examinationRequest) {
+        Examination examination = examinationRepository.findByTypeName(examinationRequest.getTypeName())
+                .orElseThrow(() -> new ExaminationNotFoundException("examination not found"));
+        if (examinationRequest.getTypeName() != null){
+            examination.setTypeName(examinationRequest.getTypeName());
         }
         if (examinationRequest.getStatus() != null){
             examination.setStatus(examinationRequest.getStatus());
@@ -61,14 +63,22 @@ public class ExaminationService {
         return examinationMapper.toDto(examination);
     }
 
-    public Examination findByTypeName(String examinationTypeName) {
-        return examinationRepository.findByTypeName(examinationTypeName)
+    public Examination findById(Long id) {
+        return examinationRepository.findById(id)
                 .orElseThrow(() -> new ExaminationNotFoundException("examination not found"));
     }
 
     public void delete(Long id) {
-        Examination examination = examinationRepository.findById(id)
-                .orElseThrow(() -> new ExaminationNotFoundException("examination not found"));
+        Examination examination = findById(id);
         examinationRepository.delete(examination);
+    }
+
+    public ExaminationResponse update(ExaminationUpdateRequest examinationUpdateRequest) {
+        Examination examination = findById(examinationUpdateRequest.getId());
+        if (examinationUpdateRequest.getTypeName() != null){
+            examination.setTypeName(examinationUpdateRequest.getTypeName());
+        }
+        examinationRepository.save(examination);
+        return examinationMapper.toDto(examination);
     }
 }
