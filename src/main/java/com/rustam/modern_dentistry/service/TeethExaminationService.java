@@ -6,14 +6,19 @@ import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
 import com.rustam.modern_dentistry.dao.repository.TeethExaminationRepository;
 import com.rustam.modern_dentistry.dto.request.create.TeethExaminationRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethExaminationSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.TeethExaminationUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.TeethExaminationResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
+import com.rustam.modern_dentistry.exception.custom.TeethExaminationNotFoundException;
 import com.rustam.modern_dentistry.mapper.TeethExaminationMapper;
 import com.rustam.modern_dentistry.util.specification.TeethExaminationSpecification;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,5 +60,38 @@ public class TeethExaminationService {
     public List<TeethExaminationResponse> search(TeethExaminationSearchRequest teethExaminationSearchRequest) {
         List<TeethExamination> teethExaminations = teethExaminationRepository.findAll(TeethExaminationSpecification.filterBy(teethExaminationSearchRequest));
         return teethExaminationMapper.toTeethExaminationResponses(teethExaminations);
+    }
+
+    @Transactional
+    public TeethExaminationResponse update(TeethExaminationUpdateRequest teethExaminationUpdateRequest) {
+        TeethExamination teethExamination = findById(teethExaminationUpdateRequest.getId());
+        if (teethExaminationUpdateRequest.getTeethId() != null){
+            Teeth teeth = teethService.findById(teethExaminationUpdateRequest.getId());
+            teethExamination.setTeeth(teeth);
+        }
+        if (teethExaminationUpdateRequest.getExaminationIds() != null){
+            Long examinationId = teethExaminationUpdateRequest.getExaminationIds().stream()
+                    .findFirst()
+                    .orElse(null);
+            boolean existsTeethExaminationByExaminationId = teethExaminationRepository.existsTeethExaminationByExamination_Id(examinationId);
+            if (existsTeethExaminationByExaminationId){
+                throw new ExistsException("This examination for this tooth is now available.");
+            }
+            Examination examination = examinationService.findById(examinationId);
+            teethExamination.setExamination(examination);
+        }
+        teethExaminationRepository.save(teethExamination);
+        return teethExaminationMapper.toTeethExaminationResponse(teethExamination);
+    }
+
+    private TeethExamination findById(Long id) {
+        return teethExaminationRepository.findById(id)
+                .orElseThrow(() -> new TeethExaminationNotFoundException("No such dental examination was found."));
+    }
+
+
+    public void delete(Long id) {
+        TeethExamination teethExamination = findById(id);
+        teethExaminationRepository.delete(teethExamination);
     }
 }
