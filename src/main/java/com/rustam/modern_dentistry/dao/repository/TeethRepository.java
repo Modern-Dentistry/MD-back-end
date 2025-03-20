@@ -1,8 +1,6 @@
 package com.rustam.modern_dentistry.dao.repository;
 
-import com.rustam.modern_dentistry.dao.entity.Teeth;
-import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
-import jakarta.validation.constraints.NotNull;
+import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -19,6 +17,6 @@ public interface TeethRepository extends JpaRepository<Teeth,Long>, JpaSpecifica
     @EntityGraph(attributePaths = "examinations")
     List<Teeth> findAll();
 
-    @Query("SELECT t FROM Teeth t LEFT JOIN FETCH t.examinations")
+    @Query("SELECT t FROM Teeth t LEFT JOIN FETCH t.toothExaminations")
     List<Teeth> findAllWithExaminations();
 }
