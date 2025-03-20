@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.controller.teeth;
 
 import com.rustam.modern_dentistry.dto.request.create.TeethExaminationRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethExaminationSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.TeethExaminationUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.TeethExaminationResponse;
 import com.rustam.modern_dentistry.service.TeethExaminationService;
 import jakarta.validation.Valid;
@@ -32,5 +33,16 @@ public class TeethExaminationController {
     @GetMapping(path = "/search")
     public ResponseEntity<List<TeethExaminationResponse>> search(@RequestBody TeethExaminationSearchRequest teethExaminationSearchRequest){
         return new ResponseEntity<>(teethExaminationService.search(teethExaminationSearchRequest),HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<TeethExaminationResponse> update(@Valid @RequestBody TeethExaminationUpdateRequest teethExaminationUpdateRequest){
+        return new ResponseEntity<>(teethExaminationService.update(teethExaminationUpdateRequest),HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        teethExaminationService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }
