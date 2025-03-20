@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dto.request.create;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,7 +12,8 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TeethExaminationRequest {
-
+    @NotNull
     Long teethId;
+    @NotNull
     List<Long> examinationIds;
 }
