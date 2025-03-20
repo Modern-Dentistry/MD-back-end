@@ -56,8 +56,7 @@ public class ExaminationService {
     }
 
     public ExaminationResponse updateStatus(ExaminationRequest examinationRequest) {
-        Examination examination = examinationRepository.findByTypeName(examinationRequest.getTypeName())
-                .orElseThrow(() -> new ExaminationNotFoundException("examination not found"));
+        Examination examination = findByTypeName(examinationRequest.getTypeName());
         if (examinationRequest.getTypeName() != null){
             examination.setTypeName(examinationRequest.getTypeName());
         }
@@ -66,6 +65,11 @@ public class ExaminationService {
         }
         examinationRepository.save(examination);
         return examinationMapper.toDto(examination);
+    }
+
+    public Examination findByTypeName(String typeName) {
+        return examinationRepository.findByTypeName(typeName)
+                .orElseThrow(() -> new ExaminationNotFoundException("examination not found"));
     }
 
     public Examination findById(Long id) {
