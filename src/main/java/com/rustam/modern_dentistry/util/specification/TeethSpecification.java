@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.util.specification;
 
-import com.rustam.modern_dentistry.dao.entity.Teeth;
+import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothLocation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothType;
 import jakarta.persistence.criteria.JoinType;
@@ -15,7 +15,7 @@ public class TeethSpecification {
     public static Specification<Teeth> filterBy(Long toothNo, ToothType toothType, ToothLocation toothLocation) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            root.fetch("examinations", JoinType.LEFT);
+            //root.fetch("examinations", JoinType.LEFT);
 
             // Diş nömrəsi (toothNo) üzrə filter
             if (toothNo != null) {
