@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.util.specification;
 
 import com.rustam.modern_dentistry.dao.entity.Examination;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -13,7 +14,6 @@ public class ExaminationSpecification {
     public static Specification<Examination> filterBy(String typeName, Status status) {
 
         return (root, query, cb) -> {
-
             List<Predicate> predicates = new ArrayList<>();
 
             // TypeName üzrə filter
