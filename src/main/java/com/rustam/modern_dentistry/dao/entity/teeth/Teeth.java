@@ -1,5 +1,7 @@
-package com.rustam.modern_dentistry.dao.entity;
+package com.rustam.modern_dentistry.dao.entity.teeth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rustam.modern_dentistry.dao.entity.Examination;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothLocation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothType;
 import jakarta.persistence.*;
@@ -32,7 +34,7 @@ public class Teeth {
     @Enumerated(EnumType.STRING)
     ToothLocation toothLocation;
 
-    @OneToMany(mappedBy = "teeth", cascade = CascadeType.ALL, orphanRemoval = true,fetch = LAZY)
-    List<Examination> examinations = new ArrayList<>();
-
+    @OneToMany(mappedBy = "teeth", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<TeethExamination> toothExaminations = new ArrayList<>();
 }

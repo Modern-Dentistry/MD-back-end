@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.controller;
+package com.rustam.modern_dentistry.controller.teeth;
 
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethRequest;

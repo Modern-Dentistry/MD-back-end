@@ -1,6 +1,8 @@
 package com.rustam.modern_dentistry.dao.entity;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,8 +26,4 @@ public class Examination {
 
     @Enumerated(EnumType.STRING)
     Status status;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "tooth_id", nullable = false)
-    Teeth teeth;
 }
