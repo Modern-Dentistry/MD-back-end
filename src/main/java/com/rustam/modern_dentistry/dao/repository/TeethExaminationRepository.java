@@ -9,9 +9,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeethExaminationRepository extends JpaRepository<TeethExamination,Long> , JpaSpecificationExecutor<TeethExamination> {
     boolean existsTeethExaminationByExamination_Id(Long examinationId);
+
+    @EntityGraph(attributePaths = {"teeth", "examination"}) // Lazy olmadan yükləyir
+    Optional<TeethExamination> findById(Long id);
+
     @EntityGraph(attributePaths = {"teeth", "examination"}) // Əlaqəli obyektləri əvvəlcədən yüklə
     List<TeethExamination> findAll();
 
