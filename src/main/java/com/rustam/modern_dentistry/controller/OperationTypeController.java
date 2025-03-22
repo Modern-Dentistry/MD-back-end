@@ -64,11 +64,6 @@ public class OperationTypeController {
         return ResponseEntity.ok(operationTypeService.search(request, criteria));
     }
 
-    @GetMapping("/insurance-deductible/{id}")
-    public ResponseEntity<List<InsDeducReadResponse>> getInsuranceDeductibles(@PathVariable  Long id) {
-        return ResponseEntity.ok(operationTypeService.getInsuranceDeductibles(id));
-    }
-
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()

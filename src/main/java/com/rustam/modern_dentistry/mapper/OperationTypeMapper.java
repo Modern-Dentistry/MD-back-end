@@ -30,9 +30,9 @@ public interface OperationTypeMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "opType", ignore = true) // OpType sonra əlavə olunacaq
     @Mapping(source = "insuranceCompanyId", target = "insuranceCompany.id")
-        // InsuranceCompany-ni ID ilə map edirik
     OpTypeInsurance toInsuranceEntity(OpTypeInsuranceRequest request);
 
+    @Mapping(target = "insurances", ignore = true) // OpType sonra əlavə olunacaq
     @Mapping(target = "opTypeItemCount", expression = "java(countInsurances(entity))")
     OperationTypeReadResponse toReadDto(OpType entity);
 

@@ -26,7 +26,7 @@ public class OpTypeItemInsurance {
     Long id;
 
     String name;
-    BigDecimal price;
+    BigDecimal amount;
 
     @ManyToOne
     @JoinColumn(name = "op_type_item_id", nullable = false)

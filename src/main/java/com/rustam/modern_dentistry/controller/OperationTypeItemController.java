@@ -1,7 +1,10 @@
 package com.rustam.modern_dentistry.controller;
 
+import com.rustam.modern_dentistry.dto.request.create.OpTypeItemCreateRequest;
 import com.rustam.modern_dentistry.service.OperationTypeItemService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class OperationTypeItemController {
     private final OperationTypeItemService operationTypeItemService;
 
-//    @PostMapping("/create")
-//    public ResponseEntity<Void> create(@Valid @RequestBody OperationTypeItemCreateRequest request) {
-//        operationTypeItemService.create(request);
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<Void> create(@Valid @RequestBody OpTypeItemCreateRequest request) {
+        operationTypeItemService.create(request);
+        return ResponseEntity.ok().build();
+    }
 //
 //    @GetMapping("/read")
 //    public ResponseEntity<PageResponse<OperationTypeItem>> read(PageCriteria pageCriteria) {

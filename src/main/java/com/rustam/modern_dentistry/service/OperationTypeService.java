@@ -67,7 +67,10 @@ public class OperationTypeService {
 
     public OperationTypeReadResponse readById(Long id) {
         var operationType = getOperationTypeById(id);
-        return OP_TYPE_MAPPER.toReadDto(operationType);
+        var byOpTypeId = repository.findByOpTypeId(id);
+        var readDto = OP_TYPE_MAPPER.toReadDto(operationType);
+        readDto.setInsurances(byOpTypeId);
+        return readDto;
     }
 
     @Transactional
@@ -93,10 +96,6 @@ public class OperationTypeService {
     public void delete(Long id) {
         var operationType = getOperationTypeById(id);
         repository.delete(operationType);
-    }
-
-    public List<InsDeducReadResponse> getInsuranceDeductibles(Long id) {
-        return repository.findByOpTypeId(id);
     }
 
     public InputStreamResource exportReservationsToExcel() {
