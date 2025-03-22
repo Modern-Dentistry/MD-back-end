@@ -20,4 +20,5 @@ public class OperationTypeReadResponse {
     boolean colorSelection;
     boolean implantSelection;
     Status status;
+    Long opTypeItemCount;
 }

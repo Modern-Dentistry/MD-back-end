@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
@@ -12,11 +14,12 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class OperationTypeCreateRequest {
+public class OpTypeCreateRequest {
     @NotBlank(message = "Əməliyyat kateqoriyasının adını daxil edin.")
     String categoryName;
 
     Status status;
     boolean colorSelection;
     boolean implantSelection;
+    List<OpTypeInsuranceRequest> insurances;
 }

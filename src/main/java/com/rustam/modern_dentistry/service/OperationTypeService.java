@@ -1,64 +1,86 @@
 package com.rustam.modern_dentistry.service;
 
-import com.rustam.modern_dentistry.dao.entity.OperationType;
-import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dao.repository.OperationTypeRepository;
-import com.rustam.modern_dentistry.dto.request.create.OperationTypeCreateRequest;
+import com.rustam.modern_dentistry.dto.request.create.OpTypeCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
-import com.rustam.modern_dentistry.dto.request.update.OperationTypeUpdateRequest;
+import com.rustam.modern_dentistry.dto.request.update.OpTypeUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.excel.OperationTypeExcelResponse;
+import com.rustam.modern_dentistry.dto.response.read.InsDeducReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.OperationTypeReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
-import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.specification.OperationTypeSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static com.rustam.modern_dentistry.mapper.OperationTypeMapper.OPERATION_TYPE_MAPPER;
+import static com.rustam.modern_dentistry.mapper.OperationTypeMapper.OP_TYPE_MAPPER;
 
 @Service
 @RequiredArgsConstructor
 public class OperationTypeService {
     private final OperationTypeRepository repository;
+    private final InsuranceCompanyService insuranceCompanyService;
 
-    public void create(OperationTypeCreateRequest request) {
-        var operationType = OPERATION_TYPE_MAPPER.toEntity(request);
-        repository.save(operationType);
+    @Transactional
+    public void create(OpTypeCreateRequest request) {
+        var opType = OP_TYPE_MAPPER.toEntity(request);
+
+        if (request.getInsurances() != null) {
+            var insurances = request.getInsurances().stream()
+                    .map(insuranceRequest -> {
+                        var insuranceCompany = insuranceCompanyService.getInsuranceById(insuranceRequest.getInsuranceCompanyId());
+                        var insurance = OP_TYPE_MAPPER.toInsuranceEntity(insuranceRequest);
+                        insurance.setOpType(opType);
+                        insurance.setInsuranceCompany(insuranceCompany);
+                        return insurance;
+                    }).toList();
+            opType.setInsurances(insurances);
+        }
+
+        repository.save(opType);
     }
 
-    public PageResponse<OperationType> read(PageCriteria pageCriteria) {
-        Page<OperationType> response = repository.findAll(
-                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
+    public PageResponse<OperationTypeReadResponse> read(PageCriteria pageCriteria) {
+        var response = repository.findAll(PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        var content = getContent(response.getContent());
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), content);
     }
 
-    public PageResponse<OperationType> search(OperationTypeSearchRequest request, PageCriteria pageCriteria) {
-        Page<OperationType> response = repository.findAll(
+    public PageResponse<OperationTypeReadResponse> search(OperationTypeSearchRequest request, PageCriteria pageCriteria) {
+        var response = repository.findAll(
                 OperationTypeSpecification.filterBy(request),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
+        var content = getContent(response.getContent());
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), content);
     }
 
     public OperationTypeReadResponse readById(Long id) {
         var operationType = getOperationTypeById(id);
-        return OPERATION_TYPE_MAPPER.toReadDto(operationType);
+        return OP_TYPE_MAPPER.toReadDto(operationType);
     }
 
-    public void update(Long id, OperationTypeUpdateRequest request) {
-        var operationType = getOperationTypeById(id);
-        OPERATION_TYPE_MAPPER.updateOperationType(operationType, request);
-        repository.save(operationType);
+    @Transactional
+    public void update(Long id, OpTypeUpdateRequest request) {
+        var opType = getOperationTypeById(id);
+        OP_TYPE_MAPPER.updateOpType(opType, request);
+
+        if (request.getInsurances() != null) {
+            var updatedInsurances = OP_TYPE_MAPPER.updateOpTypeInsurance(request.getInsurances(), opType);
+            opType.setInsurances(updatedInsurances);
+        }
+
+        repository.save(opType);
     }
 
     public void updateStatus(Long id) {
@@ -73,9 +95,13 @@ public class OperationTypeService {
         repository.delete(operationType);
     }
 
+    public List<InsDeducReadResponse> getInsuranceDeductibles(Long id) {
+        return repository.findByOpTypeId(id);
+    }
+
     public InputStreamResource exportReservationsToExcel() {
-        List<OperationType> reservations = repository.findAll();
-        var list = reservations.stream().map(OPERATION_TYPE_MAPPER::toExcelDto).toList();
+        List<OpType> reservations = repository.findAll();
+        var list = reservations.stream().map(OP_TYPE_MAPPER::toExcelDto).toList();
         try {
             ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, OperationTypeExcelResponse.class);
             return new InputStreamResource(excelFile);
@@ -84,9 +110,16 @@ public class OperationTypeService {
         }
     }
 
-    private OperationType getOperationTypeById(Long id) {
+    protected OpType getOperationTypeById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("OperationType not found with ID: " + id)
         );
+    }
+
+    private List<OperationTypeReadResponse> getContent(List<OpType> operationTypes) {
+        return operationTypes
+                .stream()
+                .map(OP_TYPE_MAPPER::toReadDto)
+                .toList();
     }
 }

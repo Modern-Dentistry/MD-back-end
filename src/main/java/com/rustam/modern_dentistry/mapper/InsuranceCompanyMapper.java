@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.mapper;
 
-import com.rustam.modern_dentistry.dao.entity.InsuranceCompany;
+import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateICRequest;
 import com.rustam.modern_dentistry.dto.response.read.InsuranceReadResponse;

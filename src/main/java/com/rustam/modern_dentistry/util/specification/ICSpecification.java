@@ -1,9 +1,7 @@
 package com.rustam.modern_dentistry.util.specification;
 
-import com.rustam.modern_dentistry.dao.entity.InsuranceCompany;
-import com.rustam.modern_dentistry.dao.entity.OperationType;
+import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dto.request.read.ICSearchRequest;
-import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
