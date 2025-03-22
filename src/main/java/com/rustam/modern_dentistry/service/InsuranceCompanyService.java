@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.service;
 
-import com.rustam.modern_dentistry.dao.entity.InsuranceCompany;
+import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.repository.InsuranceCompanyRepository;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
@@ -82,7 +82,7 @@ public class InsuranceCompanyService {
         }
     }
 
-    private InsuranceCompany getInsuranceById(Long id) {
+    protected InsuranceCompany getInsuranceById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
         );
