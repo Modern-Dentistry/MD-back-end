@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dto.request.read.AddWorkerSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.AddWorkerCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadStatusResponse;
 import com.rustam.modern_dentistry.dto.response.update.AddWorkerUpdateResponse;
 import com.rustam.modern_dentistry.service.AddWorkerService;
 import jakarta.validation.Valid;
@@ -51,5 +52,10 @@ public class AddWorkerController {
     @GetMapping(path = "/search")
     public ResponseEntity<List<AddWorkerReadResponse>> search(@RequestBody AddWorkerSearchRequest addWorkerSearchRequest){
         return new ResponseEntity<>(addWorkerService.search(addWorkerSearchRequest),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/read-status")
+    public ResponseEntity<List<AddWorkerReadStatusResponse>> readStatus(){
+        return new ResponseEntity<>(addWorkerService.readStatus(),HttpStatus.OK);
     }
 }
