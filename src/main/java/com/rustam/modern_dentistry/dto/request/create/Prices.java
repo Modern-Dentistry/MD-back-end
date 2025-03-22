@@ -1,10 +1,12 @@
-package com.rustam.modern_dentistry.dto.request.update;
+package com.rustam.modern_dentistry.dto.request.create;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import java.math.BigDecimal;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -13,9 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class OperationTypeUpdateRequest {
-    Long id;
-    String categoryName;
-    boolean colorSelection;
-    boolean implantSelection;
+public class Prices {
+    BigDecimal price;
+    Long priceTypeId;
 }

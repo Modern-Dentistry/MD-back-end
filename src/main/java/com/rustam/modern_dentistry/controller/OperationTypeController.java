@@ -1,10 +1,10 @@
 package com.rustam.modern_dentistry.controller;
 
-import com.rustam.modern_dentistry.dao.entity.OperationType;
-import com.rustam.modern_dentistry.dto.request.create.OperationTypeCreateRequest;
+import com.rustam.modern_dentistry.dto.request.create.OpTypeCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
-import com.rustam.modern_dentistry.dto.request.update.OperationTypeUpdateRequest;
+import com.rustam.modern_dentistry.dto.request.update.OpTypeUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.read.InsDeducReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.OperationTypeReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.service.OperationTypeService;
@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/api/v1/operation-types")
 @RequiredArgsConstructor
@@ -24,13 +26,13 @@ public class OperationTypeController {
     private final OperationTypeService operationTypeService;
 
     @PostMapping("/create")
-    public ResponseEntity<Void> create(@Valid @RequestBody OperationTypeCreateRequest request) {
+    public ResponseEntity<Void> create(@Valid @RequestBody OpTypeCreateRequest request) {
         operationTypeService.create(request);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/read")
-    public ResponseEntity<PageResponse<OperationType>> read(PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<OperationTypeReadResponse>> read(PageCriteria pageCriteria) {
         return ResponseEntity.ok(operationTypeService.read(pageCriteria));
     }
 
@@ -40,7 +42,7 @@ public class OperationTypeController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody OperationTypeUpdateRequest request) {
+    public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody OpTypeUpdateRequest request) {
         operationTypeService.update(id, request);
         return ResponseEntity.ok().build();
     }
@@ -58,7 +60,7 @@ public class OperationTypeController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<OperationType>> search(OperationTypeSearchRequest request, PageCriteria criteria) {
+    public ResponseEntity<PageResponse<OperationTypeReadResponse>> search(OperationTypeSearchRequest request, PageCriteria criteria) {
         return ResponseEntity.ok(operationTypeService.search(request, criteria));
     }
 

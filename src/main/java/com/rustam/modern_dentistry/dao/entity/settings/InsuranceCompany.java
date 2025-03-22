@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.dao.entity;
+package com.rustam.modern_dentistry.dao.entity.settings;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
@@ -21,6 +21,8 @@ public class InsuranceCompany {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     Long id;
+
+    @Column(nullable = false)
     String companyName;
     BigDecimal deductibleAmount;
 

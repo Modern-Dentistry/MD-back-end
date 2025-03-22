@@ -1,7 +1,5 @@
-package com.rustam.modern_dentistry.dto.response.read;
+package com.rustam.modern_dentistry.dto.request.update;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeInsuranceRequest;
 import lombok.AllArgsConstructor;
@@ -19,13 +17,9 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class OperationTypeReadResponse {
-    Long id;
+public class OpTypeUpdateRequest {
     String categoryName;
     boolean colorSelection;
     boolean implantSelection;
-    Status status;
-    Long opTypeItemCount;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    List<InsDeducReadResponse> insurances;
+    List<OpTypeInsuranceRequest> insurances;
 }
