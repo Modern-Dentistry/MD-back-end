@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.dao.repository;
 
 import com.rustam.modern_dentistry.dto.response.read.InsDeducReadResponse;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
+import com.rustam.modern_dentistry.dto.response.read.OperationTypeReadResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,5 +37,4 @@ public interface OperationTypeRepository extends JpaRepository<OpType, Long>, Jp
             left join OpTypeInsurance i ON i.insuranceCompany.id = d.id AND (i.opType.id = :opTypeId OR i.opType.id IS NULL)
             """)
     List<InsDeducReadResponse> findByOpTypeId(@Param("opTypeId") Long opTypeId);
-
 }

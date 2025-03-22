@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.settings.operations;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +23,7 @@ public class OpTypeItem {
     Long id;
     String operationName;
     String operationCode;
+    Status status;
     boolean showTechnic;
 
     @OneToMany(mappedBy = "opTypeItem", cascade = CascadeType.ALL, orphanRemoval = true)
