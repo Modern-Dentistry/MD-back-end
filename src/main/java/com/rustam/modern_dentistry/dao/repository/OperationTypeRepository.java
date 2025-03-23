@@ -37,4 +37,6 @@ public interface OperationTypeRepository extends JpaRepository<OpType, Long>, Jp
             left join OpTypeInsurance i ON i.insuranceCompany.id = d.id AND (i.opType.id = :opTypeId OR i.opType.id IS NULL)
             """)
     List<InsDeducReadResponse> findByOpTypeId(@Param("opTypeId") Long opTypeId);
+
+    Optional<OpType> findByCategoryName(String operationCategoryName);
 }
