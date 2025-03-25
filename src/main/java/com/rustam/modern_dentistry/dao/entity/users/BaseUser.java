@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+import com.rustam.modern_dentistry.dao.entity.WorkersWorkSchedule;
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Set;
 import java.util.UUID;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "base_users")
@@ -47,6 +50,9 @@ public class BaseUser {
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     Set<Role> authorities;
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = LAZY)
+    Set<WorkersWorkSchedule> workSchedules;
 
     public String getId() {
         if (id != null) {
