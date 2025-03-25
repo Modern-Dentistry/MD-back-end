@@ -30,6 +30,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(WorkersWorkScheduleNotFoundException.class)
+    public ResponseEntity<ExceptionResponseMessages> workersWorkScheduleNotFoundException(WorkersWorkScheduleNotFoundException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.NOT_FOUND) ,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(TeethExaminationNotFoundException.class)
     public ResponseEntity<ExceptionResponseMessages> teethExaminationNotFoundException(TeethExaminationNotFoundException ex) {
         return new ResponseEntity<>(
