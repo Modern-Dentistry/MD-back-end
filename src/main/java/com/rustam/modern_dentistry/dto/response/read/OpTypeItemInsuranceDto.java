@@ -9,10 +9,13 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class OpTypeItemPricesReadResponse {
-    Long id;
-    BigDecimal price;
+public class OpTypeItemInsuranceDto {
+    Long insuranceCompanyId;
+    String companyName;
+    String name;
+    BigDecimal deductibleAmount;
 }

@@ -31,8 +31,8 @@ public class OperationTypeItemController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    @GetMapping("/read")
-    public ResponseEntity<PageResponse<OpTypeItemReadResponse>> read(@RequestParam Long id,
+    @GetMapping("/read/{id}")
+    public ResponseEntity<PageResponse<OpTypeItemReadResponse>> read(@PathVariable Long id,
                                                                      PageCriteria pageCriteria) {
         return ResponseEntity.ok(operationTypeItemService.read(id, pageCriteria));
     }

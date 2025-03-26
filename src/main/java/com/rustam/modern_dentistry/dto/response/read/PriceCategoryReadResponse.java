@@ -12,6 +12,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
 public class PriceCategoryReadResponse {
+    Long id;
     String name;
     Status status;
 }

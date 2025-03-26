@@ -16,19 +16,19 @@ import java.util.Optional;
 
 public interface OperationTypeRepository extends JpaRepository<OpType, Long>, JpaSpecificationExecutor<OpType> {
 
-    @EntityGraph(attributePaths = {"insurances"})
+    @EntityGraph(attributePaths = {"insurances", "opTypeItems"})
     Optional<OpType> findById(Long id);
 
-    @EntityGraph(attributePaths = {"insurances"})
+    @EntityGraph(attributePaths = {"opTypeItems"})
     Page<OpType> findAll(Pageable pageable);
 
-    @EntityGraph(attributePaths = {"insurances"})
+    @EntityGraph(attributePaths = {"opTypeItems"})
     Page<OpType> findAll(Specification<OpType> spec, Pageable pageable);
 
 
     @Query("""
             select new com.rustam.modern_dentistry.dto.response.read.OpInsuranceReadResponse(
-                d.id as insuranceId,
+                d.id as insuranceCompanyId,
                 d.companyName, 
                 i.deductiblePercentage
             ) 

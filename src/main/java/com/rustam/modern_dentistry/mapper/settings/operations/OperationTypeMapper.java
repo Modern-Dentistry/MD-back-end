@@ -39,8 +39,11 @@ public interface OperationTypeMapper {
     OpTypeInsurance toInsuranceEntity(OpTypeInsuranceRequest request);
 
     @Mapping(target = "insurances", ignore = true)
-    @Mapping(target = "opTypeItemCount", expression = "java(countInsurances(entity))")
+    @Mapping(target = "opTypeItemCount", expression = "java(countOpTypeItems(entity))")
     OpTypeReadResponse toReadDto(OpType entity);
+
+    @Mapping(target = "insurances", ignore = true)
+    OpTypeReadResponse toReadByIdDto(OpType entity);
 
     OperationTypeExcelResponse toExcelDto(OpType entity);
 
@@ -50,8 +53,8 @@ public interface OperationTypeMapper {
     void updateOpType(@MappingTarget OpType entity, OpTypeUpdateRequest request);
 
 
-    default long countInsurances(OpType entity) {
-        return entity.getInsurances().size();
+    default long countOpTypeItems(OpType entity) {
+        return entity.getOpTypeItems().size();
     }
 
     default List<OpTypeInsurance> updateOpTypeInsurance(List<OpTypeInsuranceRequest> request, OpType opType) {

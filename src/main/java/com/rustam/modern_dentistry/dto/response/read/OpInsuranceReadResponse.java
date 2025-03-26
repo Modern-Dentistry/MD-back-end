@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
 public class OpInsuranceReadResponse {
-    Long insuranceId;
+    Long insuranceCompanyId;
     String companyName;
     BigDecimal deductibleAmount;
 }
