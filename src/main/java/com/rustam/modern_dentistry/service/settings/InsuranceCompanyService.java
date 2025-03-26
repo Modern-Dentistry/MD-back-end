@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.service;
+package com.rustam.modern_dentistry.service.settings;
 
 import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.repository.InsuranceCompanyRepository;
@@ -23,7 +23,7 @@ import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.PASSIVE;
-import static com.rustam.modern_dentistry.mapper.InsuranceCompanyMapper.INSURANCE_COMPANY_MAPPER;
+import static com.rustam.modern_dentistry.mapper.settings.InsuranceCompanyMapper.INSURANCE_COMPANY_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -82,7 +82,7 @@ public class InsuranceCompanyService {
         }
     }
 
-    protected InsuranceCompany getInsuranceById(Long id) {
+    public InsuranceCompany getInsuranceById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
         );

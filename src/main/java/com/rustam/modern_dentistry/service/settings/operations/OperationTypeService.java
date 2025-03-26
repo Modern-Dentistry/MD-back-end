@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.service;
+package com.rustam.modern_dentistry.service.settings.operations;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
@@ -8,12 +8,12 @@ import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.OpTypeUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.excel.OperationTypeExcelResponse;
-import com.rustam.modern_dentistry.dto.response.read.InsDeducReadResponse;
-import com.rustam.modern_dentistry.dto.response.read.OperationTypeReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.OpTypeReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.service.settings.InsuranceCompanyService;
 import com.rustam.modern_dentistry.util.ExcelUtil;
-import com.rustam.modern_dentistry.util.specification.OperationTypeSpecification;
+import com.rustam.modern_dentistry.util.specification.settings.OpTypeSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static com.rustam.modern_dentistry.mapper.OperationTypeMapper.OP_TYPE_MAPPER;
+import static com.rustam.modern_dentistry.mapper.settings.operations.OperationTypeMapper.OP_TYPE_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -51,29 +51,28 @@ public class OperationTypeService {
         repository.save(opType);
     }
 
-    public PageResponse<OperationTypeReadResponse> read(PageCriteria pageCriteria) {
+    public PageResponse<OpTypeReadResponse> read(PageCriteria pageCriteria) {
         var response = repository.findAll(PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
         var content = getContent(response.getContent());
         return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), content);
     }
 
-    public PageResponse<OperationTypeReadResponse> search(OperationTypeSearchRequest request, PageCriteria pageCriteria) {
+    public PageResponse<OpTypeReadResponse> search(OperationTypeSearchRequest request, PageCriteria pageCriteria) {
         var response = repository.findAll(
-                OperationTypeSpecification.filterBy(request),
+                OpTypeSpecification.filterBy(request),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
         var content = getContent(response.getContent());
         return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), content);
     }
 
-    public OperationTypeReadResponse readById(Long id) {
+    public OpTypeReadResponse readById(Long id) {
         var operationType = getOperationTypeById(id);
-        var byOpTypeId = repository.findByOpTypeId(id);
+        var opInsurances = repository.findByOpTypeId(id);
         var readDto = OP_TYPE_MAPPER.toReadDto(operationType);
-        readDto.setInsurances(byOpTypeId);
+        readDto.setInsurances(opInsurances);
         return readDto;
     }
 
-    @Transactional
     public void update(Long id, OpTypeUpdateRequest request) {
         var opType = getOperationTypeById(id);
         OP_TYPE_MAPPER.updateOpType(opType, request);
@@ -115,7 +114,7 @@ public class OperationTypeService {
         );
     }
 
-    private List<OperationTypeReadResponse> getContent(List<OpType> operationTypes) {
+    private List<OpTypeReadResponse> getContent(List<OpType> operationTypes) {
         return operationTypes
                 .stream()
                 .map(OP_TYPE_MAPPER::toReadDto)
