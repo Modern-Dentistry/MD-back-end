@@ -9,12 +9,12 @@ import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemPric
 import com.rustam.modern_dentistry.dao.repository.InsuranceCompanyRepository;
 import com.rustam.modern_dentistry.dao.repository.OperationTypeItemRepository;
 import com.rustam.modern_dentistry.dao.repository.PriceCategoryRepository;
-import com.rustam.modern_dentistry.dto.request.update.OpTypeItemUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeItemCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeItemInsurances;
 import com.rustam.modern_dentistry.dto.request.create.Prices;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.OpTypeItemSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.OpTypeItemUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.excel.OpTypeItemExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadByIdResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadResponse;
@@ -167,7 +167,11 @@ public class OperationTypeItemService {
     private List<OpTypeItemReadResponse> getContent(List<OpTypeItem> operationTypes) {
         return operationTypes
                 .stream()
-                .map(OP_TYPE_ITEM_MAPPER::toReadDto)
+                .map(opTypeItem -> {
+                    var readDto = OP_TYPE_ITEM_MAPPER.toReadDto(opTypeItem);
+                    readDto.setPrices(repository.findPricesByOpTypeItemId(opTypeItem.getId()));
+                    return readDto;
+                })
                 .toList();
     }
 }

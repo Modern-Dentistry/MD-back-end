@@ -22,7 +22,7 @@ public interface OperationTypeItemRepository extends JpaRepository<OpTypeItem, L
     Optional<OpTypeItem> findById(Long id);
 
     @Query("""
-        select new com.rustam.modern_dentistry.dto.response.read.InsItemDeducReadResponse(
+        select new com.rustam.modern_dentistry.dto.response.read.OpTypeItemInsuranceDto(
             d.id as insuranceId,
             d.companyName, 
             i.name, 
@@ -33,7 +33,7 @@ public interface OperationTypeItemRepository extends JpaRepository<OpTypeItem, L
         ON i.insuranceCompany.id = d.id 
         AND (i.opTypeItem.id = :opTypeItemId OR i.opTypeItem IS NULL)
         """)
-    List<InsItemDeducReadResponse> findInsurancesByOpTypeItemId(@Param("opTypeItemId") Long opTypeItemId);
+    List<OpTypeItemInsuranceDto> findInsurancesByOpTypeItemId(@Param("opTypeItemId") Long opTypeItemId);
 
     @Query("""
         select new com.rustam.modern_dentistry.dto.response.read.OpTypeItemPricesDto(

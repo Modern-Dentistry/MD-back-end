@@ -68,7 +68,7 @@ public class OperationTypeService {
     public OpTypeReadResponse readById(Long id) {
         var operationType = getOperationTypeById(id);
         var opInsurances = repository.findByOpTypeId(id);
-        var readDto = OP_TYPE_MAPPER.toReadDto(operationType);
+        var readDto = OP_TYPE_MAPPER.toReadByIdDto(operationType);
         readDto.setInsurances(opInsurances);
         return readDto;
     }
