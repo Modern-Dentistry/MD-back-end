@@ -9,9 +9,10 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class InsDeducReadResponse {
+public class OpInsuranceReadResponse {
     Long insuranceId;
     String companyName;
     BigDecimal deductibleAmount;

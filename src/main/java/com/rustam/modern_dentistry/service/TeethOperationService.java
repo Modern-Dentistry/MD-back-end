@@ -12,6 +12,7 @@ import com.rustam.modern_dentistry.dto.request.update.UpdateTeethOperationReques
 import com.rustam.modern_dentistry.dto.response.read.TeethOperationResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.exception.custom.TeethOperationNotFoundException;
+import com.rustam.modern_dentistry.service.settings.operations.OperationTypeService;
 import com.rustam.modern_dentistry.util.specification.TeethOperationSpecification;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

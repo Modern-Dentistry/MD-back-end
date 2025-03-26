@@ -29,7 +29,7 @@ public class OpTypeItemPrice {
 
     @ManyToOne
     @JoinColumn(name = "price_type_id", nullable = false)
-    private PriceCategory priceType;
+    private PriceCategory priceCategory;
 
     @ManyToOne
     @JoinColumn(name = "op_type_item_id", nullable = false)
