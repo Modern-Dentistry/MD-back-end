@@ -10,6 +10,7 @@ import com.rustam.modern_dentistry.dto.request.read.AddWorkerSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.AddWorkerCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadStatusResponse;
 import com.rustam.modern_dentistry.dto.response.update.AddWorkerUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
 import com.rustam.modern_dentistry.mapper.AddWorkerMapper;
@@ -187,5 +188,11 @@ public class AddWorkerService {
     public List<AddWorkerReadResponse> search(AddWorkerSearchRequest addWorkerSearchRequest) {
         List<BaseUser> users = baseUserRepository.findAll(UserSpecification.filterByWorker(addWorkerSearchRequest));
         return addWorkerMapper.toResponses(users);
+    }
+
+    public List<AddWorkerReadStatusResponse> readStatus() {
+        return Arrays.stream(Role.values())
+                .map(role -> new AddWorkerReadStatusResponse(role.getAuthority())) 
+                .collect(Collectors.toList());
     }
 }

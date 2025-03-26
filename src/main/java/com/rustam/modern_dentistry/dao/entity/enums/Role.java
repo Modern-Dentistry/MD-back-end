@@ -13,7 +13,8 @@ public enum Role implements GrantedAuthority {
     //PATIENT("PATIENT"),
     WAREHOUSE_MAN("WAREHOUSE_MAN"),
     USER("USER"),
-    PATIENT("PATIENT");
+    PATIENT("PATIENT"),
+    ACCOUNTANT("ACCOUNTANT");
 
     private final String value;
 

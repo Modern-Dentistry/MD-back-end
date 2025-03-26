@@ -120,4 +120,9 @@ public class OperationTypeService {
                 .map(OP_TYPE_MAPPER::toReadDto)
                 .toList();
     }
+
+    public OpType findByCategoryName(String operationCategoryName) {
+        return repository.findByCategoryName(operationCategoryName)
+                .orElseThrow(() -> new NotFoundException("OperationType not found with name: " + operationCategoryName));
+    }
 }
