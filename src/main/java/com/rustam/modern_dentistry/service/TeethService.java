@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dao.repository.TeethRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateTeethRequest;
+import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.dto.response.update.TeethUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
@@ -44,7 +45,21 @@ public class TeethService {
     public List<TeethResponse> read() {
         List<Teeth> teeth = teethRepository.findAllWithExaminations();
         return teeth.stream()
-                .map(teethMapper::toTeethResponse)
+                .map(teethEntity -> TeethResponse.builder()
+                        .id(teethEntity.getId())
+                        .toothNo(teethEntity.getToothNo())
+                        .toothType(teethEntity.getToothType())
+                        .toothLocation(teethEntity.getToothLocation())
+                        .examinations(
+                                teethEntity.getToothExaminations().stream()
+                                        .map(te -> ExaminationResponse.builder()
+                                                .id(te.getExamination().getId())
+                                                .typeName(te.getExamination().getTypeName())
+                                                .status(te.getExamination().getStatus())
+                                                .build())
+                                        .collect(Collectors.toList())
+                        )
+                        .build())
                 .collect(Collectors.toList());
     }
 
@@ -86,5 +101,9 @@ public class TeethService {
     public void delete(Long id) {
         Teeth teeth = findById(id);
         teethRepository.delete(teeth);
+    }
+
+    public List<ExaminationResponse> readAllByToothNo(Long toothNo) {
+        return teethRepository.findExaminationsByToothNo(toothNo);
     }
 }
