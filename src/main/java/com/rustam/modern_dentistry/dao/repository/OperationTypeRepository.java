@@ -1,8 +1,7 @@
 package com.rustam.modern_dentistry.dao.repository;
 
-import com.rustam.modern_dentistry.dto.response.read.InsDeducReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.OpInsuranceReadResponse;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
-import com.rustam.modern_dentistry.dto.response.read.OperationTypeReadResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,26 +16,26 @@ import java.util.Optional;
 
 public interface OperationTypeRepository extends JpaRepository<OpType, Long>, JpaSpecificationExecutor<OpType> {
 
-    @EntityGraph(attributePaths = {"insurances"})
+    @EntityGraph(attributePaths = {"insurances", "opTypeItems"})
     Optional<OpType> findById(Long id);
 
-    @EntityGraph(attributePaths = {"insurances"})
+    @EntityGraph(attributePaths = {"opTypeItems"})
     Page<OpType> findAll(Pageable pageable);
 
-    @EntityGraph(attributePaths = {"insurances"})
+    @EntityGraph(attributePaths = {"opTypeItems"})
     Page<OpType> findAll(Specification<OpType> spec, Pageable pageable);
 
 
     @Query("""
-            select new com.rustam.modern_dentistry.dto.response.read.InsDeducReadResponse(
-                d.id as insuranceId,
+            select new com.rustam.modern_dentistry.dto.response.read.OpInsuranceReadResponse(
+                d.id as insuranceCompanyId,
                 d.companyName, 
                 i.deductiblePercentage
             ) 
             from InsuranceCompany d 
             left join OpTypeInsurance i ON i.insuranceCompany.id = d.id AND (i.opType.id = :opTypeId OR i.opType.id IS NULL)
             """)
-    List<InsDeducReadResponse> findByOpTypeId(@Param("opTypeId") Long opTypeId);
+    List<OpInsuranceReadResponse> findByOpTypeId(@Param("opTypeId") Long opTypeId);
 
     Optional<OpType> findByCategoryName(String operationCategoryName);
 }

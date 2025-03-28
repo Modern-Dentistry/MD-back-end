@@ -34,7 +34,7 @@ public class OpType {
     @Enumerated(STRING)
     Status status;
 
-    @OneToMany(mappedBy = "opType", cascade = ALL, fetch = LAZY)
+    @OneToMany(mappedBy = "opType", cascade = ALL, fetch = LAZY, orphanRemoval = true)
     List<OpTypeInsurance> insurances;
 
     @OneToMany(mappedBy = "opType", cascade = ALL)

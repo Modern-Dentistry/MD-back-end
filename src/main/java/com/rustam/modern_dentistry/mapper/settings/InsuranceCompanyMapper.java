@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.mapper;
+package com.rustam.modern_dentistry.mapper.settings;
 
 import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;

@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.util.specification;
+package com.rustam.modern_dentistry.util.specification.settings;
 
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OperationTypeSpecification {
+public class OpTypeSpecification {
 
     public static Specification<OpType> filterBy(OperationTypeSearchRequest request) {
 

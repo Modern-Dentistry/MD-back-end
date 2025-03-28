@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.controller;
+package com.rustam.modern_dentistry.controller.settings;
 
 import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;
@@ -7,7 +7,7 @@ import com.rustam.modern_dentistry.dto.request.read.ICSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateICRequest;
 import com.rustam.modern_dentistry.dto.response.read.InsuranceReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
-import com.rustam.modern_dentistry.service.InsuranceCompanyService;
+import com.rustam.modern_dentistry.service.settings.InsuranceCompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
@@ -27,7 +28,7 @@ public class InsuranceCompanyController {
     @PostMapping("/create")
     public ResponseEntity<Void> create(@Valid @RequestBody InsuranceCreateRequest request) {
         insuranceCompanyService.create(request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(CREATED).build();
     }
 
     @GetMapping("/read")
