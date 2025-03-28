@@ -3,6 +3,7 @@ package com.rustam.modern_dentistry.controller.teeth;
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateTeethRequest;
+import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.dto.response.update.TeethUpdateResponse;
 import com.rustam.modern_dentistry.service.TeethService;
@@ -30,6 +31,11 @@ public class TeethController {
     @GetMapping(path = "/read")
     public ResponseEntity<List<TeethResponse>> read(){
         return new ResponseEntity<>(teethService.read(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/read-all-by-tooth-no/{toothNo}")
+    public ResponseEntity<List<ExaminationResponse>> readAllByToothNo(@PathVariable Long toothNo){
+        return new ResponseEntity<>(teethService.readAllByToothNo(toothNo),HttpStatus.OK);
     }
 
     @GetMapping(path = "/search")
