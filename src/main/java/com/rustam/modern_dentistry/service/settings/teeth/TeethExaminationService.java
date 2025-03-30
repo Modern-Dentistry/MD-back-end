@@ -1,27 +1,24 @@
-package com.rustam.modern_dentistry.service;
+package com.rustam.modern_dentistry.service.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.Examination;
 import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
 import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
-import com.rustam.modern_dentistry.dao.repository.TeethExaminationRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.teeth.TeethExaminationRepository;
 import com.rustam.modern_dentistry.dto.request.create.TeethExaminationRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethExaminationSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.TeethExaminationUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.TeethExaminationResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.TeethExaminationNotFoundException;
-import com.rustam.modern_dentistry.mapper.TeethExaminationMapper;
+import com.rustam.modern_dentistry.mapper.settings.teeth.TeethExaminationMapper;
+import com.rustam.modern_dentistry.service.ExaminationService;
 import com.rustam.modern_dentistry.util.specification.TeethExaminationSpecification;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
