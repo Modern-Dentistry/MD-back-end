@@ -9,6 +9,7 @@ import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
+import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -59,4 +60,7 @@ public class Doctor extends BaseUser {
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     Set<GeneralCalendar> generalCalendars;
+
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<PatientExaminations> patientExaminations;
 }
