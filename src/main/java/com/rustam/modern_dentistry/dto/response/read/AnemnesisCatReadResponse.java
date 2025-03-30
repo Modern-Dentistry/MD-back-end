@@ -4,20 +4,15 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class OpTypeItemReadResponse {
+public class AnemnesisCatReadResponse {
     Long id;
-    String operationName;
-    String operationCode;
+    String name;
     Status status;
-    List<OpTypeItemPricesDto> prices;
 }

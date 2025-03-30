@@ -45,6 +45,7 @@ public interface OperationTypeMapper {
     @Mapping(target = "insurances", ignore = true)
     OpTypeReadResponse toReadByIdDto(OpType entity);
 
+    @Mapping(target = "opTypeItemCount", expression = "java(countOpTypeItems(entity))")
     OperationTypeExcelResponse toExcelDto(OpType entity);
 
     @Mapping(target = "id", ignore = true)

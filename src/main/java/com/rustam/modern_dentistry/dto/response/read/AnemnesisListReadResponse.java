@@ -1,23 +1,21 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class OpTypeItemReadResponse {
+public class AnemnesisListReadResponse {
     Long id;
-    String operationName;
-    String operationCode;
+    String name;
     Status status;
-    List<OpTypeItemPricesDto> prices;
 }

@@ -1,13 +1,10 @@
 package com.rustam.modern_dentistry.service.settings;
 
-import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.entity.settings.PriceCategory;
-import com.rustam.modern_dentistry.dao.repository.PriceCategoryRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.PriceCategoryRepository;
 import com.rustam.modern_dentistry.dto.request.create.PriceCategoryCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.PriceCategorySearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.PriceCategoryUpdateRequest;
-import com.rustam.modern_dentistry.dto.response.read.InsuranceReadResponse;
-import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.PriceCategoryReadResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.ExcelUtil;

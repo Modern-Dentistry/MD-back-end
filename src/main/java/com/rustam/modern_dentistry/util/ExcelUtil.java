@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class ExcelUtil {
-    private static final int MAX_COLUMN_WIDTH = 3500; // Maksimum sütun genişliyi (px ekvivalentində)
+    private static final int MAX_COLUMN_WIDTH = 4500; // Maksimum sütun genişliyi (px ekvivalentində)
     private static final int COLUMN_WIDTH_PADDING = 500; // Sütun genişliyinə əlavə ediləcək piksel sayı
 
     public static <T> ByteArrayInputStream dataToExcel(List<T> dataList, Class<T> clazz) throws IOException {
