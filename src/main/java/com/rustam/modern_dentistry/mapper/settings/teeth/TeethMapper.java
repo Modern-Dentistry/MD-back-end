@@ -1,13 +1,11 @@
-package com.rustam.modern_dentistry.mapper;
+package com.rustam.modern_dentistry.mapper.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.dto.response.update.TeethUpdateResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -17,7 +15,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface TeethMapper {
-    TeethMapper INSTANCE = Mappers.getMapper(TeethMapper.class);
     TeethResponse toTeethResponse(Teeth teeth);
 
     TeethUpdateResponse toUpdateResponse(Teeth teeth);

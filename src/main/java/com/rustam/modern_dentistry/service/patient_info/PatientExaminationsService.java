@@ -11,12 +11,9 @@ import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
-import com.rustam.modern_dentistry.exception.custom.TeethExaminationNotFoundException;
 import com.rustam.modern_dentistry.service.ExaminationService;
-import com.rustam.modern_dentistry.service.PatientService;
-import com.rustam.modern_dentistry.service.TeethService;
+import com.rustam.modern_dentistry.service.settings.teeth.TeethService;
 import com.rustam.modern_dentistry.util.UtilService;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,7 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PatientExaminationsService {
 
     PatientExaminationsRepository patientExaminationsRepository;
@@ -47,7 +44,7 @@ public class PatientExaminationsService {
         Patient patient = utilService.findByPatientId(patientExaminationsCreateRequest.getPatientId());
         Examination examination = examinationService.findById(patientExaminationsCreateRequest.getExaminationId());
         boolean existsPatientExaminationsByPatientAndToothNumber = patientExaminationsRepository.existsPatientExaminationsByPatientAndToothNumber(patientExaminationsCreateRequest.getPatientId(), patientExaminationsCreateRequest.getToothNumber());
-        if (existsPatientExaminationsByPatientAndToothNumber){
+        if (existsPatientExaminationsByPatientAndToothNumber) {
             throw new ExistsException("These examinations are available for this patient.");
         }
         List<Long> teethNo = new ArrayList<>();
@@ -67,7 +64,7 @@ public class PatientExaminationsService {
                 .build();
     }
 
-    public PatientExaminations findById(Long id){
+    public PatientExaminations findById(Long id) {
         return patientExaminationsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("This patient does not have these tests."));
     }
@@ -77,7 +74,7 @@ public class PatientExaminationsService {
         Patient patient = utilService.findByPatientId(patientExaminationsUpdateRequest.getPatientId());
         Examination examination = examinationService.findById(patientExaminationsUpdateRequest.getExaminationId());
         boolean existsPatientExaminationsByPatientAndToothNumber = patientExaminationsRepository.existsPatientExaminationsByPatientAndToothNumber(patientExaminationsUpdateRequest.getPatientId(), patientExaminationsUpdateRequest.getToothNumber());
-        if (existsPatientExaminationsByPatientAndToothNumber){
+        if (existsPatientExaminationsByPatientAndToothNumber) {
             throw new ExistsException("These examinations are available for this patient.");
         }
         List<Long> teethNo = new ArrayList<>();

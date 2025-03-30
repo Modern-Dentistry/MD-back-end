@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.dao.repository;
+package com.rustam.modern_dentistry.dao.repository.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;

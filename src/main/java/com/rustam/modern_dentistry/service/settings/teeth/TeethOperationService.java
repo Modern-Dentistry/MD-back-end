@@ -1,10 +1,10 @@
-package com.rustam.modern_dentistry.service;
+package com.rustam.modern_dentistry.service.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
 import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
 import com.rustam.modern_dentistry.dao.entity.teeth.TeethOperation;
-import com.rustam.modern_dentistry.dao.repository.TeethOperationRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.teeth.TeethOperationRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethOperationRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeAndItemRequest;
 import com.rustam.modern_dentistry.dto.request.read.SearchTeethOperationRequest;
@@ -15,7 +15,6 @@ import com.rustam.modern_dentistry.exception.custom.TeethOperationNotFoundExcept
 import com.rustam.modern_dentistry.service.settings.operations.OperationTypeService;
 import com.rustam.modern_dentistry.util.specification.TeethOperationSpecification;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
