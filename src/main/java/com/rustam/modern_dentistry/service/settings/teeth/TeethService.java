@@ -1,7 +1,7 @@
-package com.rustam.modern_dentistry.service;
+package com.rustam.modern_dentistry.service.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
-import com.rustam.modern_dentistry.dao.repository.TeethRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.teeth.TeethRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateTeethRequest;
@@ -10,9 +10,8 @@ import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.dto.response.update.TeethUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NoTeethFoundException;
-import com.rustam.modern_dentistry.mapper.TeethMapper;
+import com.rustam.modern_dentistry.mapper.settings.teeth.TeethMapper;
 import com.rustam.modern_dentistry.util.specification.TeethSpecification;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

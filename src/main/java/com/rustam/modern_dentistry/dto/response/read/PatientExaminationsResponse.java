@@ -1,6 +1,5 @@
-package com.rustam.modern_dentistry.dto.response.create;
+package com.rustam.modern_dentistry.dto.response.read;
 
-import com.rustam.modern_dentistry.dao.entity.Examination;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,10 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PatientExaminationsCreateResponse {
-
-    Long patientId;
-    List<Long> toothNo;
+public class PatientExaminationsResponse {
+    Long id;
+    Long toothNo;
     String diagnosis;
     String doctorName;
 }
