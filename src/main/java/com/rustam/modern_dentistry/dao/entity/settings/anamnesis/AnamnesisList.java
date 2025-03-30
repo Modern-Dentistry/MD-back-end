@@ -1,9 +1,8 @@
 package com.rustam.modern_dentistry.dao.entity.settings.anamnesis;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -11,6 +10,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 
 @Entity
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +24,7 @@ public class AnamnesisList {
 
     @Column(nullable = false, unique = true)
     String name;
+    Status status;
 
     @ManyToOne(
             fetch = LAZY

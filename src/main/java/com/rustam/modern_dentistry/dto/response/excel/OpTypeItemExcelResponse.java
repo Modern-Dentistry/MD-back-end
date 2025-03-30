@@ -20,6 +20,4 @@ public class OpTypeItemExcelResponse {
     String operationCode;
     @JsonProperty("Status")
     Status status;
-    @JsonProperty("Status")
-    Status status;
 }
