@@ -66,7 +66,7 @@ public class OperationTypeController {
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=operation_type.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Emeliyyat_novleri.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(operationTypeService.exportReservationsToExcel());
     }

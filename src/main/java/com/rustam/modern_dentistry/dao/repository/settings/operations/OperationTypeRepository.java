@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.dao.repository;
+package com.rustam.modern_dentistry.dao.repository.settings.operations;
 
 import com.rustam.modern_dentistry.dto.response.read.OpInsuranceReadResponse;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
@@ -18,6 +18,9 @@ public interface OperationTypeRepository extends JpaRepository<OpType, Long>, Jp
 
     @EntityGraph(attributePaths = {"insurances", "opTypeItems"})
     Optional<OpType> findById(Long id);
+
+    @EntityGraph(attributePaths = {"opTypeItems"})
+    List<OpType> findAll();
 
     @EntityGraph(attributePaths = {"opTypeItems"})
     Page<OpType> findAll(Pageable pageable);

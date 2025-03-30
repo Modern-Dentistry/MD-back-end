@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.service.settings;
 
 import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
-import com.rustam.modern_dentistry.dao.repository.InsuranceCompanyRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.InsuranceCompanyRepository;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.ICSearchRequest;
