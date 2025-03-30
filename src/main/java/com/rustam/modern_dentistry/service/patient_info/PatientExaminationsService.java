@@ -2,12 +2,15 @@ package com.rustam.modern_dentistry.service.patient_info;
 
 import com.rustam.modern_dentistry.dao.entity.Examination;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
+import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
+import com.rustam.modern_dentistry.service.DoctorService;
 import com.rustam.modern_dentistry.dao.repository.PatientExaminationsRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.PatientExaminationsCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
+import com.rustam.modern_dentistry.dto.response.read.PatientExaminationsResponse;
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class PatientExaminationsService {
     PatientExaminationsRepository patientExaminationsRepository;
     ExaminationService examinationService;
     TeethService teethService;
+    DoctorService doctorService;
     UtilService utilService;
 
     public List<ExaminationResponse> readExaminations() {
@@ -43,6 +48,8 @@ public class PatientExaminationsService {
     public PatientExaminationsCreateResponse create(PatientExaminationsCreateRequest patientExaminationsCreateRequest) {
         Patient patient = utilService.findByPatientId(patientExaminationsCreateRequest.getPatientId());
         Examination examination = examinationService.findById(patientExaminationsCreateRequest.getExaminationId());
+        String currentUserId = utilService.getCurrentUserId();
+        Doctor doctor = doctorService.findById(UUID.fromString(currentUserId));
         boolean existsPatientExaminationsByPatientAndToothNumber = patientExaminationsRepository.existsPatientExaminationsByPatientAndToothNumber(patientExaminationsCreateRequest.getPatientId(), patientExaminationsCreateRequest.getToothNumber());
         if (existsPatientExaminationsByPatientAndToothNumber) {
             throw new ExistsException("These examinations are available for this patient.");
@@ -53,6 +60,7 @@ public class PatientExaminationsService {
                     .patient(patient)
                     .toothNumber(toothNumber)
                     .diagnosis(examination.getTypeName())
+                    .doctor(doctor)
                     .build();
             patientExaminationsRepository.save(patientExaminations);
             teethNo.add(toothNumber);
@@ -61,6 +69,7 @@ public class PatientExaminationsService {
                 .patientId(patientExaminationsCreateRequest.getPatientId())
                 .toothNo(teethNo)
                 .diagnosis(examination.getTypeName())
+                .doctorName(doctor.getName())
                 .build();
     }
 
@@ -90,5 +99,14 @@ public class PatientExaminationsService {
                 .toothNo(teethNo)
                 .diagnosis(examination.getTypeName())
                 .build();
+    }
+
+    public List<PatientExaminationsResponse> read() {
+        return patientExaminationsRepository.findAllPatientExaminations();
+    }
+
+    public void delete(Long id) {
+        PatientExaminations patientExaminations = findById(id);
+        patientExaminationsRepository.delete(patientExaminations);
     }
 }
