@@ -9,14 +9,17 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
 public class OpTypeItemExcelResponse {
     @JsonProperty("Əməliyyatın adı")
     String operationName;
-    @JsonProperty("Əməliyyatın adı")
+    @JsonProperty("Əməliyyatın kodu")
     String operationCode;
+    @JsonProperty("Status")
+    Status status;
     @JsonProperty("Status")
     Status status;
 }

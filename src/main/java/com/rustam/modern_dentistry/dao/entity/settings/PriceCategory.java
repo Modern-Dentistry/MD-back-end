@@ -1,9 +1,12 @@
 package com.rustam.modern_dentistry.dao.entity.settings;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemPrice;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
+
+import java.util.List;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -27,4 +30,7 @@ public class PriceCategory {
 
     @Enumerated(STRING)
     Status status;
+
+    @OneToMany(mappedBy = "priceCategory")
+    private List<OpTypeItemPrice> opTypeItemPrices;
 }

@@ -67,7 +67,7 @@ public class InsuranceCompanyController {
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Insurance_Companies.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Sigorta_sirketleri.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(insuranceCompanyService.exportReservationsToExcel());
     }

@@ -65,7 +65,7 @@ public class PriceCategoryController {
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=price_category.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=qiymet_kateqoriyalari.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(priceCategoryService.exportReservationsToExcel());
     }

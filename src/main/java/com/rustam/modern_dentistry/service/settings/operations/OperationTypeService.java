@@ -2,7 +2,7 @@ package com.rustam.modern_dentistry.service.settings.operations;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
-import com.rustam.modern_dentistry.dao.repository.OperationTypeRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.operations.OperationTypeRepository;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;

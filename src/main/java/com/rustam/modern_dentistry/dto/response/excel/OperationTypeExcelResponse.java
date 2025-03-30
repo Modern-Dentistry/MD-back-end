@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.dto.response.excel;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import lombok.AllArgsConstructor;
@@ -19,6 +18,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class OperationTypeExcelResponse {
     @JsonProperty("Əməliyyat kateqoriyasının adı")
     String categoryName;
+    @JsonProperty("Əməliyyat siyahısı sayı")
+    Long opTypeItemCount;
     @JsonProperty("Status")
     Status status;
 }

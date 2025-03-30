@@ -6,9 +6,9 @@ import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemInsurance;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemPrice;
-import com.rustam.modern_dentistry.dao.repository.InsuranceCompanyRepository;
-import com.rustam.modern_dentistry.dao.repository.OperationTypeItemRepository;
-import com.rustam.modern_dentistry.dao.repository.PriceCategoryRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.InsuranceCompanyRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.operations.OperationTypeItemRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.PriceCategoryRepository;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeItemCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeItemInsurances;
 import com.rustam.modern_dentistry.dto.request.create.Prices;
@@ -20,14 +20,11 @@ import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadByIdResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
-import com.rustam.modern_dentistry.service.settings.InsuranceCompanyService;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.specification.settings.OpTypeItemSearchSpec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -39,14 +36,12 @@ import java.util.stream.Collectors;
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.PASSIVE;
 import static com.rustam.modern_dentistry.mapper.settings.operations.OperationTypeItemMapper.OP_TYPE_ITEM_MAPPER;
-import static com.rustam.modern_dentistry.util.specification.settings.OpTypeItemReadSpec.hasId;
 import static org.springframework.data.domain.PageRequest.of;
 
 @Service
 @RequiredArgsConstructor
 public class OperationTypeItemService {
     private final OperationTypeItemRepository repository;
-    private final InsuranceCompanyService insuranceCompanyService;
     private final InsuranceCompanyRepository insuranceCompanyRepository;
     private final PriceCategoryRepository priceCategoryRepository;
 
@@ -61,8 +56,7 @@ public class OperationTypeItemService {
     }
 
     public PageResponse<OpTypeItemReadResponse> read(Long id, PageCriteria pageCriteria) {
-        Specification<OpTypeItem> spec = Specification.where(hasId(id));
-        Page<OpTypeItem> response = repository.findAll(spec, of(pageCriteria.getPage(), pageCriteria.getCount()));
+        var response = repository.findByOpTypeId(id, of(pageCriteria.getPage(), pageCriteria.getCount()));
         var list = getContent(response.getContent());
         return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), list);
     }
@@ -120,13 +114,14 @@ public class OperationTypeItemService {
         }
     }
 
+    // Helper methods
     private OpTypeItem getOperationTypeItemById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("OperationType not found with ID: " + id)
         );
     }
 
-    public List<OpTypeItemInsurance> getOpTypeItemInsurances(List<OpTypeItemInsurances> request, OpTypeItem opTypeItem) {
+    private List<OpTypeItemInsurance> getOpTypeItemInsurances(List<OpTypeItemInsurances> request, OpTypeItem opTypeItem) {
         if (request != null) {
             List<Long> insuranceCompanyIds = request.stream().map(OpTypeItemInsurances::getInsuranceCompanyId).collect(Collectors.toList());
             Map<Long, InsuranceCompany> insuranceCompaniesMap = insuranceCompanyRepository.findByIdIn(insuranceCompanyIds)
@@ -165,13 +160,13 @@ public class OperationTypeItemService {
     }
 
     private List<OpTypeItemReadResponse> getContent(List<OpTypeItem> operationTypes) {
-        return operationTypes
-                .stream()
+        List<PriceCategory> allCategories = priceCategoryRepository.findAll();
+        return operationTypes.stream()
                 .map(opTypeItem -> {
                     var readDto = OP_TYPE_ITEM_MAPPER.toReadDto(opTypeItem);
-                    readDto.setPrices(repository.findPricesByOpTypeItemId(opTypeItem.getId()));
+                    readDto.setPrices(OP_TYPE_ITEM_MAPPER.mapPrices(opTypeItem.getPrices(), allCategories));
                     return readDto;
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 }

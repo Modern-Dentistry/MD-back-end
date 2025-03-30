@@ -12,6 +12,7 @@ import com.rustam.modern_dentistry.dto.request.create.OpTypeItemCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeItemInsurances;
 import com.rustam.modern_dentistry.dto.request.create.Prices;
 import com.rustam.modern_dentistry.dto.response.excel.OpTypeItemExcelResponse;
+import com.rustam.modern_dentistry.dto.response.read.OpTypeItemPricesDto;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadByIdResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadResponse;
 import org.mapstruct.*;
@@ -20,6 +21,7 @@ import org.mapstruct.factory.Mappers;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
@@ -58,6 +60,16 @@ public interface OperationTypeItemMapper {
     OpTypeItemReadByIdResponse toReadByIdDto(OpTypeItem entity);
 
     OpTypeItemExcelResponse toExcelDto(OpTypeItem entity);
+
+    default List<OpTypeItemPricesDto> mapPrices(List<OpTypeItemPrice> prices, List<PriceCategory> allCategories) {
+        return allCategories.stream()
+                .map(category -> prices.stream()
+                        .filter(price -> price.getPriceCategory().getId().equals(category.getId()))
+                        .findFirst()
+                        .map(price -> new OpTypeItemPricesDto(category.getName(), category.getId(), price.getPrice()))
+                        .orElse(new OpTypeItemPricesDto(category.getName(), category.getId(), null)))
+                .collect(Collectors.toList());
+    }
 
     default List<OpTypeItemPrice> updateOpTypePrices(List<OpTypeItemPricesUpdateRequest> request, OpTypeItem opTypeItem) {
         Map<Long, OpTypeItemPrice> currentPrices = opTypeItem.getPrices().stream()
