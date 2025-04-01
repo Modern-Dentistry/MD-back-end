@@ -6,21 +6,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public record CustomUserDetails(BaseUser baseUser) implements UserDetails {
+public record CustomUserDetails(String id,String password, Collection<? extends GrantedAuthority> authorities) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return baseUser.getAuthorities();
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return baseUser.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return baseUser.getId();
+        return id;
     }
 
     @Override
