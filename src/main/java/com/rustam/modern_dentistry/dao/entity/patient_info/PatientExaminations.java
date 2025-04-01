@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "patient_examinations")
@@ -30,7 +31,7 @@ public class PatientExaminations {
     Long patientId;
 
     @Column(name = "doctor_id")
-    String doctorId;
+    UUID doctorId;
 
     @Column(name = "patient_appointment_date")
     LocalDate patientAppointmentDate;
