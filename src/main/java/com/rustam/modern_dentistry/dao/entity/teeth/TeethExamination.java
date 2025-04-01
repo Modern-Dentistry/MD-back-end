@@ -23,6 +23,8 @@ public class TeethExamination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    Long toothNo;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "tooth_id", nullable = false)
     Teeth teeth;

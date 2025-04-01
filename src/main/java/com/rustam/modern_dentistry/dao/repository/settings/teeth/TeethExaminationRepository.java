@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TeethExaminationRepository extends JpaRepository<TeethExamination,Long> , JpaSpecificationExecutor<TeethExamination> {
-    boolean existsTeethExaminationByExamination_Id(Long examinationId);
+    boolean existsTeethExaminationByExamination_IdAndToothNo(Long examinationId,Long toothNo);
 
     @EntityGraph(attributePaths = {"teeth", "examination"}) // Lazy olmadan yükləyir
     Optional<TeethExamination> findById(Long id);

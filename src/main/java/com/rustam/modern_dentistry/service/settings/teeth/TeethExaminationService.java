@@ -33,17 +33,15 @@ public class TeethExaminationService {
 
     public TeethExaminationResponse create(TeethExaminationRequest teethExaminationRequest) {
         Teeth teeth = teethService.findById(teethExaminationRequest.getTeethId());
-        Long examinationId = teethExaminationRequest.getExaminationIds().stream()
-                .findFirst()
-                .orElse(null);
-        boolean existsTeethExaminationByExaminationId = teethExaminationRepository.existsTeethExaminationByExamination_Id(examinationId);
+        boolean existsTeethExaminationByExaminationId = teethExaminationRepository.existsTeethExaminationByExamination_IdAndToothNo(teethExaminationRequest.getExaminationId(),teeth.getToothNo());
         if (existsTeethExaminationByExaminationId){
             throw new ExistsException("This examination for this tooth is now available.");
         }
-        Examination examination = examinationService.findById(examinationId);
+        Examination examination = examinationService.findById(teethExaminationRequest.getExaminationId());
         TeethExamination teethExamination = TeethExamination.builder()
                 .teeth(teeth)
                 .examination(examination)
+                .toothNo(teeth.getToothNo())
                 .build();
         teethExaminationRepository.save(teethExamination);
         return teethExaminationMapper.toTeethExaminationResponse(teethExamination);
@@ -62,15 +60,15 @@ public class TeethExaminationService {
     @Transactional
     public TeethExaminationResponse update(TeethExaminationUpdateRequest teethExaminationUpdateRequest) {
         TeethExamination teethExamination = findById(teethExaminationUpdateRequest.getId());
+        Teeth teeth = teethService.findById(teethExaminationUpdateRequest.getId());
         if (teethExaminationUpdateRequest.getTeethId() != null){
-            Teeth teeth = teethService.findById(teethExaminationUpdateRequest.getId());
             teethExamination.setTeeth(teeth);
         }
         if (teethExaminationUpdateRequest.getExaminationIds() != null){
             Long examinationId = teethExaminationUpdateRequest.getExaminationIds().stream()
                     .findFirst()
                     .orElse(null);
-            boolean existsTeethExaminationByExaminationId = teethExaminationRepository.existsTeethExaminationByExamination_Id(examinationId);
+            boolean existsTeethExaminationByExaminationId = teethExaminationRepository.existsTeethExaminationByExamination_IdAndToothNo(examinationId,teeth.getToothNo());
             if (existsTeethExaminationByExaminationId){
                 throw new ExistsException("This examination for this tooth is now available.");
             }

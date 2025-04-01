@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
 import com.rustam.modern_dentistry.dao.repository.settings.teeth.TeethRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethRequest;
@@ -10,6 +11,7 @@ import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.dto.response.update.TeethUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NoTeethFoundException;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.teeth.TeethMapper;
 import com.rustam.modern_dentistry.util.specification.TeethSpecification;
 import lombok.AccessLevel;
@@ -18,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,4 +108,21 @@ public class TeethService {
     public List<ExaminationResponse> readAllByToothNo(Long toothNo) {
         return teethRepository.findExaminationsByToothNo(toothNo);
     }
+
+    public List<TeethExamination> dentalExaminationForTeethOrThrow(List<Long> toothNos) {
+        List<TeethExamination> examinations = teethRepository.dentalExaminationForTeeth(toothNos);
+        Set<Long> foundToothNos = examinations.stream()
+                .map(te -> te.getTeeth().getToothNo())
+                .collect(Collectors.toSet());
+
+        toothNos.stream()
+                .filter(toothNo -> !foundToothNos.contains(toothNo))
+                .findAny()
+                .ifPresent(missing -> {
+                    throw new NotFoundException("Tooth " + missing + " does not exist in the database!");
+                });
+
+        return examinations;
+    }
+
 }

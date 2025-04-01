@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
@@ -16,6 +17,7 @@ public class SelectingPatientToReadResponse {
     String doctorName;
     String patientName;
     LocalTime time;
+    LocalDate date;
     Room room;
     Appointment appointment;
 }

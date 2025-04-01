@@ -70,7 +70,4 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<GeneralCalendar> generalCalendars;
-
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<PatientExaminations> examinations;
 }

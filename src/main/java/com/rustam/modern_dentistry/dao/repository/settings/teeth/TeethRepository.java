@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dao.repository.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,10 @@ public interface TeethRepository extends JpaRepository<Teeth,Long>, JpaSpecifica
     @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.ExaminationResponse(te.examination.id, te.examination.typeName, te.examination.status) " +
             "FROM Teeth t JOIN t.toothExaminations te WHERE t.toothNo = :toothNo")
     List<ExaminationResponse> findExaminationsByToothNo(Long toothNo);
+
+    @Query("SELECT te FROM TeethExamination te " +
+            "JOIN FETCH te.teeth t " +
+            "JOIN FETCH te.examination e " +
+            "WHERE t.toothNo IN :toothNos")
+    List<TeethExamination> dentalExaminationForTeeth(List<Long> toothNos);
 }

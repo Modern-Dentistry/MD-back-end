@@ -14,6 +14,7 @@ import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadRespo
 import com.rustam.modern_dentistry.exception.custom.DoctorIsPatientsWereNotFound;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NoSuchPatientWasFound;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.UtilService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -145,5 +146,10 @@ public class GeneralCalendarService {
     public GeneralCalendar findById(Long id) {
         return generalCalendarRepository.findById(id)
                 .orElseThrow(() -> new NoSuchPatientWasFound("bele bir pasient tapilmadi"));
+    }
+
+    public SelectingPatientToReadResponse findByPatientId(Long patientId) {
+        return generalCalendarRepository.findByPatientId(patientId)
+                .orElseThrow(() -> new NoSuchPatientWasFound("bele bir patient tapilmadi"));
     }
 }

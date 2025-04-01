@@ -15,5 +15,5 @@ public class TeethExaminationRequest {
     @NotNull
     Long teethId;
     @NotNull
-    List<Long> examinationIds;
+    Long examinationId;
 }

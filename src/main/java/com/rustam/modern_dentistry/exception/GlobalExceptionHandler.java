@@ -102,6 +102,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ExistsException.class)
+    public ResponseEntity<ExceptionResponseMessages> existsException(ExistsException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.CONFLICT) ,
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<ExceptionResponseMessages> incorrectPasswordException(IncorrectPasswordException ex) {
         return new ResponseEntity<>(

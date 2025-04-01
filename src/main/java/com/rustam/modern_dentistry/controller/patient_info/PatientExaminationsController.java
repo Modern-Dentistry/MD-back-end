@@ -3,6 +3,7 @@ package com.rustam.modern_dentistry.controller.patient_info;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsUpdateRequest;
+import com.rustam.modern_dentistry.dto.request.read.RequestToSeeTheExaminations;
 import com.rustam.modern_dentistry.dto.response.create.PatientExaminationsCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientExaminationsResponse;
@@ -26,6 +27,11 @@ public class PatientExaminationsController {
     @PostMapping(path = "/create")
     public ResponseEntity<PatientExaminationsCreateResponse> create(@Valid @RequestBody PatientExaminationsCreateRequest patientExaminationsCreateRequest){
         return new ResponseEntity<>(patientExaminationsService.create(patientExaminationsCreateRequest),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/see-historical-election-dental-examinations")
+    public ResponseEntity<List<PatientExaminationsResponse>> seeHistoricalElectionDentalExaminations(@RequestBody RequestToSeeTheExaminations requestToSeeTheExaminations){
+        return new ResponseEntity<>(patientExaminationsService.seeHistoricalElectionDentalExaminations(requestToSeeTheExaminations),HttpStatus.OK);
     }
 
     @GetMapping(path = "/read-examinations")
