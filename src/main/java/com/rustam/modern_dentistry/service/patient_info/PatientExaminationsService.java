@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
+import com.rustam.modern_dentistry.dto.request.read.RequestToSeeTheExaminations;
 import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
 import com.rustam.modern_dentistry.service.DoctorService;
 import com.rustam.modern_dentistry.dao.repository.PatientExaminationsRepository;
@@ -88,7 +89,7 @@ public class PatientExaminationsService {
                         .patientId(request.getPatientId())
                         .toothNumber(toothNumber)
                         .diagnosis(examination.getTypeName())
-                        .doctorId(currentUserId)
+                        .doctorId(UUID.fromString(currentUserId))
                         .patientAppointmentDate(patientData.getDate())
                         .build())
                 .collect(Collectors.toList());
@@ -141,4 +142,9 @@ public class PatientExaminationsService {
         PatientExaminations patientExaminations = findById(id);
         patientExaminationsRepository.delete(patientExaminations);
     }
+
+    public List<PatientExaminationsResponse> seeHistoricalElectionDentalExaminations(RequestToSeeTheExaminations requestToSeeTheExaminations) {
+        return patientExaminationsRepository.findByAppointmentDate(requestToSeeTheExaminations.getDate());
+    }
+
 }
