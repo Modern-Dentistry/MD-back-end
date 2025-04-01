@@ -16,5 +16,5 @@ public class PatientExaminationsCreateResponse {
     Long patientId;
     List<Long> toothNo;
     String diagnosis;
-    String doctorName;
+    String doctorId;
 }
