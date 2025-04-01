@@ -27,11 +27,11 @@ public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar
     List<SelectingDoctorViewingPatientResponse> findAllByDoctorId(UUID doctorId);
 
     @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse(" +
-            "d.name, p.name, g.time, g.room, g.appointment) " +
+            "d.name, p.name, g.time, g.date ,g.room, g.appointment) " +
             "FROM GeneralCalendar g " +
             "JOIN g.doctor d " +
             "JOIN g.patient p " +
-            "WHERE g.patient.id = :patientId AND g.appointment = 'MEETING'")
+            "WHERE g.patient.id = :patientId AND g.appointment IN ('MEETING', 'CAME')")
     Optional<SelectingPatientToReadResponse> findByPatientId(Long patientId);
 
     @Query("""
