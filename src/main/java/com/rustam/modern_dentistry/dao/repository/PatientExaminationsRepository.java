@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dto.response.read.TeethOperationResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PatientExaminationsRepository extends JpaRepository<PatientExaminations, Long> {
@@ -16,4 +17,14 @@ public interface PatientExaminationsRepository extends JpaRepository<PatientExam
     @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.PatientExaminationsResponse(p.id, p.toothNumber,p.diagnosis,d.name) " +
             "FROM PatientExaminations p JOIN Doctor d")
     List<PatientExaminationsResponse> findAllPatientExaminations();
+
+    @Query("""
+    SELECT new com.rustam.modern_dentistry.dto.response.read.PatientExaminationsResponse(
+        pe.id, pe.toothNumber, pe.diagnosis, d.name
+    )
+    FROM PatientExaminations pe
+    JOIN Doctor d ON pe.doctorId = d.id
+    WHERE pe.patientAppointmentDate = :date
+""")
+    List<PatientExaminationsResponse> findByAppointmentDate(LocalDate date);
 }
