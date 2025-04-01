@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "patient_examinations")
 @Data
@@ -21,13 +23,15 @@ public class PatientExaminations {
 
     String diagnosis;
 
+    @Column(name = "tooth_number")
     Long toothNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id")
-    Patient patient;
+    @Column(name = "patient_id")
+    Long patientId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
-    Doctor doctor;
+    @Column(name = "doctor_id")
+    String doctorId;
+
+    @Column(name = "patient_appointment_date")
+    LocalDate patientAppointmentDate;
 }
