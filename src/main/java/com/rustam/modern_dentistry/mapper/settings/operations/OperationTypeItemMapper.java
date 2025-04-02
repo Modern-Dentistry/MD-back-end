@@ -70,60 +70,60 @@ public interface OperationTypeItemMapper {
                         .orElse(new OpTypeItemPricesDto(category.getName(), category.getId(), null)))
                 .collect(Collectors.toList());
     }
-
-    default List<OpTypeItemPrice> updateOpTypePrices(List<OpTypeItemPricesUpdateRequest> request, OpTypeItem opTypeItem) {
-        Map<Long, OpTypeItemPrice> currentPrices = opTypeItem.getPrices().stream()
-                .collect(Collectors.toMap(p -> p.getPriceCategory().getId(), p -> p));
-
-        return request.stream()
-                .filter(p -> p.getPrice() != null) // Null olmayanları götür
-                .map(priceDto ->
-                        currentPrices.containsKey(priceDto.getPriceCategoryId())
-                                ? updateExistingPrice(currentPrices.get(priceDto.getPriceCategoryId()), priceDto.getPrice(), opTypeItem)
-                                : createNewPrice(opTypeItem, priceDto.getPriceCategoryId(), priceDto.getPrice())
-                )
-                .collect(Collectors.toList());
-
-    }
-
-    default List<OpTypeItemInsurance> updateOpTypeInsurance(List<OpTypeItemInsuranceUpdateRequest> request, OpTypeItem opTypeItem) {
-        Map<Long, OpTypeItemInsurance> currentInsurances = opTypeItem.getInsurances().stream()
-                .collect(Collectors.toMap(p -> p.getInsuranceCompany().getId(), p -> p));
-
-        return request.stream()
-                .filter(p -> p.getAmount() != null) // Null olmayanları götür
-                .map(insuranceDto ->
-                        currentInsurances.containsKey(insuranceDto.getInsuranceCompanyId())
-                                ? updateExistingInsurance(currentInsurances.get(insuranceDto.getInsuranceCompanyId()), insuranceDto.getAmount(), opTypeItem)
-                                : createNewInsurance(opTypeItem, insuranceDto)
-                )
-                .collect(Collectors.toList());
-    }
-
-    private OpTypeItemPrice updateExistingPrice(OpTypeItemPrice existingPrice,
-                                                BigDecimal newPrice,
-                                                OpTypeItem opTypeItem) {
-        existingPrice.setPrice(newPrice);
-        existingPrice.setOpTypeItem(opTypeItem);
-        return existingPrice;
-    }
-
-    private OpTypeItemPrice createNewPrice(OpTypeItem opTypeItem, Long categoryId, BigDecimal price) {
-        PriceCategory category = PriceCategory.builder().id(categoryId).build();
-        return new OpTypeItemPrice(null, price, category, opTypeItem);
-    }
-
-    private OpTypeItemInsurance updateExistingInsurance(OpTypeItemInsurance existingInsurance,
-                                                        BigDecimal newAmount,
-                                                        OpTypeItem opTypeItem) {
-        existingInsurance.setAmount(newAmount);
-        existingInsurance.setOpTypeItem(opTypeItem);
-        return existingInsurance;
-    }
-
-    private OpTypeItemInsurance createNewInsurance(OpTypeItem opTypeItem,
-                                                   OpTypeItemInsuranceUpdateRequest request) {
-        InsuranceCompany company = InsuranceCompany.builder().id(request.getInsuranceCompanyId()).build();
-        return new OpTypeItemInsurance(null, request.getName(), request.getAmount(), opTypeItem, company);
-    }
+//
+//    default List<OpTypeItemPrice> updateOpTypePrices(List<OpTypeItemPricesUpdateRequest> request, OpTypeItem opTypeItem) {
+//        Map<Long, OpTypeItemPrice> currentPrices = opTypeItem.getPrices().stream()
+//                .collect(Collectors.toMap(p -> p.getPriceCategory().getId(), p -> p));
+//
+//        return request.stream()
+//                .filter(p -> p.getPrice() != null) // Null olmayanları götür
+//                .map(priceDto ->
+//                        currentPrices.containsKey(priceDto.getPriceCategoryId())
+//                                ? updateExistingPrice(currentPrices.get(priceDto.getPriceCategoryId()), priceDto.getPrice(), opTypeItem)
+//                                : createNewPrice(opTypeItem, priceDto.getPriceCategoryId(), priceDto.getPrice())
+//                )
+//                .collect(Collectors.toList());
+//
+//    }
+//
+//    default List<OpTypeItemInsurance> updateOpTypeInsurance(List<OpTypeItemInsuranceUpdateRequest> request, OpTypeItem opTypeItem) {
+//        Map<Long, OpTypeItemInsurance> currentInsurances = opTypeItem.getInsurances().stream()
+//                .collect(Collectors.toMap(p -> p.getInsuranceCompany().getId(), p -> p));
+//
+//        return request.stream()
+//                .filter(p -> p.getAmount() != null) // Null olmayanları götür
+//                .map(insuranceDto ->
+//                        currentInsurances.containsKey(insuranceDto.getInsuranceCompanyId())
+//                                ? updateExistingInsurance(currentInsurances.get(insuranceDto.getInsuranceCompanyId()), insuranceDto.getAmount(), opTypeItem)
+//                                : createNewInsurance(opTypeItem, insuranceDto)
+//                )
+//                .collect(Collectors.toList());
+//    }
+//
+//    private OpTypeItemPrice updateExistingPrice(OpTypeItemPrice existingPrice,
+//                                                BigDecimal newPrice,
+//                                                OpTypeItem opTypeItem) {
+//        existingPrice.setPrice(newPrice);
+//        existingPrice.setOpTypeItem(opTypeItem);
+//        return existingPrice;
+//    }
+//
+//    private OpTypeItemPrice createNewPrice(OpTypeItem opTypeItem, Long categoryId, BigDecimal price) {
+//        PriceCategory category = PriceCategory.builder().id(categoryId).build();
+//        return new OpTypeItemPrice(null, price, category, opTypeItem);
+//    }
+//
+//    private OpTypeItemInsurance updateExistingInsurance(OpTypeItemInsurance existingInsurance,
+//                                                        BigDecimal newAmount,
+//                                                        OpTypeItem opTypeItem) {
+//        existingInsurance.setAmount(newAmount);
+//        existingInsurance.setOpTypeItem(opTypeItem);
+//        return existingInsurance;
+//    }
+//
+//    private OpTypeItemInsurance createNewInsurance(OpTypeItem opTypeItem,
+//                                                   OpTypeItemInsuranceUpdateRequest request) {
+//        InsuranceCompany company = InsuranceCompany.builder().id(request.getInsuranceCompanyId()).build();
+//        return new OpTypeItemInsurance(null, request.getName(), request.getAmount(), opTypeItem, company);
+//    }
 }

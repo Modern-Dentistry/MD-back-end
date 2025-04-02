@@ -35,10 +35,15 @@ public class InsuranceCompanyService {
         repository.save(insurance);
     }
 
-    public PageResponse<InsuranceCompany> read(PageCriteria pageCriteria) {
+    public PageResponse<InsuranceReadResponse> read(PageCriteria pageCriteria) {
         var insurances = repository.findAll(
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(insurances.getTotalPages(), insurances.getTotalElements(), insurances.getContent());
+        return new PageResponse<>(insurances.getTotalPages(), insurances.getTotalElements(), getContent(insurances.getContent()));
+    }
+
+
+    public List<InsuranceReadResponse> readList() {
+        return getContent(repository.findAll());
     }
 
     public InsuranceReadResponse readById(Long id) {
@@ -64,11 +69,11 @@ public class InsuranceCompanyService {
         repository.delete(insurance);
     }
 
-    public PageResponse<InsuranceCompany> search(ICSearchRequest request, PageCriteria pageCriteria) {
+    public PageResponse<InsuranceReadResponse> search(ICSearchRequest request, PageCriteria pageCriteria) {
         Page<InsuranceCompany> response = repository.findAll(
                 ICSpecification.filterBy(request),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), getContent(response.getContent()));
     }
 
     public InputStreamResource exportReservationsToExcel() {
@@ -86,5 +91,9 @@ public class InsuranceCompanyService {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
         );
+    }
+
+    public List<InsuranceReadResponse> getContent(List<InsuranceCompany> insurances) {
+        return insurances.stream().map(INSURANCE_COMPANY_MAPPER::toReadDto).toList();
     }
 }

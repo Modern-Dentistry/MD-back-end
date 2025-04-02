@@ -17,7 +17,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface InsuranceCompanyMapper {
     InsuranceCompanyMapper INSURANCE_COMPANY_MAPPER = Mappers.getMapper(InsuranceCompanyMapper.class);
 
-    @Mapping(target = "status", expression = "java(com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE)")
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     InsuranceCompany toEntity(InsuranceCreateRequest request);
 
     InsuranceReadResponse toReadDto(InsuranceCompany entity);

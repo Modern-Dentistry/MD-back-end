@@ -1,18 +1,16 @@
-package com.rustam.modern_dentistry.service;
+package com.rustam.modern_dentistry.service.settings;
 
 import com.rustam.modern_dentistry.dao.entity.Examination;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
-import com.rustam.modern_dentistry.dao.repository.ExaminationRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.ExaminationRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateExaminationRequest;
 import com.rustam.modern_dentistry.dto.request.create.ExaminationUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.read.ExaminationRequest;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
 import com.rustam.modern_dentistry.exception.custom.ExaminationNotFoundException;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
-import com.rustam.modern_dentistry.mapper.ExaminationMapper;
+import com.rustam.modern_dentistry.mapper.settings.ExaminationMapper;
 import com.rustam.modern_dentistry.util.specification.ExaminationSpecification;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

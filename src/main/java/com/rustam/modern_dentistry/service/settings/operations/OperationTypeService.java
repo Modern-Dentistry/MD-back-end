@@ -1,9 +1,12 @@
 package com.rustam.modern_dentistry.service.settings.operations;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
+import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeInsurance;
 import com.rustam.modern_dentistry.dao.repository.settings.operations.OperationTypeRepository;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeCreateRequest;
+import com.rustam.modern_dentistry.dto.request.create.OpTypeInsuranceRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.OpTypeUpdateRequest;
@@ -23,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.rustam.modern_dentistry.mapper.settings.operations.OperationTypeMapper.OP_TYPE_MAPPER;
 
@@ -35,19 +40,10 @@ public class OperationTypeService {
     @Transactional
     public void create(OpTypeCreateRequest request) {
         var opType = OP_TYPE_MAPPER.toEntity(request);
-
         if (request.getInsurances() != null) {
-            var insurances = request.getInsurances().stream()
-                    .map(insuranceRequest -> {
-                        var insuranceCompany = insuranceCompanyService.getInsuranceById(insuranceRequest.getInsuranceCompanyId());
-                        var insurance = OP_TYPE_MAPPER.toInsuranceEntity(insuranceRequest);
-                        insurance.setOpType(opType);
-                        insurance.setInsuranceCompany(insuranceCompany);
-                        return insurance;
-                    }).toList();
+            var insurances = getInsurances(request.getInsurances(),  opType);
             opType.setInsurances(insurances);
         }
-
         repository.save(opType);
     }
 
@@ -76,12 +72,10 @@ public class OperationTypeService {
     public void update(Long id, OpTypeUpdateRequest request) {
         var opType = getOperationTypeById(id);
         OP_TYPE_MAPPER.updateOpType(opType, request);
-
         if (request.getInsurances() != null) {
-            var updatedInsurances = OP_TYPE_MAPPER.updateOpTypeInsurance(request.getInsurances(), opType);
+            var updatedInsurances = updateOpTypeInsurance(request.getInsurances(), opType);
             opType.setInsurances(updatedInsurances);
         }
-
         repository.save(opType);
     }
 
@@ -108,6 +102,17 @@ public class OperationTypeService {
         }
     }
 
+    // Helper methods
+    private List<OpTypeInsurance> getInsurances(List<OpTypeInsuranceRequest> insurances, OpType opType) {
+        return insurances.stream()
+                .map(insuranceRequest -> {
+                    var insurance = OP_TYPE_MAPPER.toInsuranceEntity(insuranceRequest);
+                    insurance.setOpType(opType);
+                    insurance.setInsuranceCompany(insuranceCompanyService.getInsuranceById(insuranceRequest.getInsuranceCompanyId()));
+                    return insurance;
+                }).toList();
+    }
+
     protected OpType getOperationTypeById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("OperationType not found with ID: " + id)
@@ -124,5 +129,33 @@ public class OperationTypeService {
     public OpType findByCategoryName(String operationCategoryName) {
         return repository.findByCategoryName(operationCategoryName)
                 .orElseThrow(() -> new NotFoundException("OperationType not found with name: " + operationCategoryName));
+    }
+
+    private List<OpTypeInsurance> updateOpTypeInsurance(List<OpTypeInsuranceRequest> request, OpType opType) {
+        Map<Long, OpTypeInsurance> currentInsurances = opType.getInsurances().stream()
+                .collect(Collectors.toMap(p -> p.getInsuranceCompany().getId(), p -> p));
+
+        return request.stream()
+                .filter(p -> p.getDeductiblePercentage() != null) // Null olmayanları götür
+                .map(insuranceDto ->
+                        currentInsurances.containsKey(insuranceDto.getInsuranceCompanyId())
+                                ? updateExistingInsurance(currentInsurances.get(insuranceDto.getInsuranceCompanyId()), insuranceDto, opType)
+                                : createNewInsurance(opType, insuranceDto)
+                )
+                .collect(Collectors.toList());
+    }
+
+    private OpTypeInsurance updateExistingInsurance(OpTypeInsurance existingInsurance,
+                                                    OpTypeInsuranceRequest request,
+                                                    OpType opType) {
+        existingInsurance.setDeductiblePercentage(request.getDeductiblePercentage());
+        existingInsurance.setOpType(opType);
+        return existingInsurance;
+    }
+
+    private OpTypeInsurance createNewInsurance(OpType opType,
+                                               OpTypeInsuranceRequest request) {
+        InsuranceCompany company = InsuranceCompany.builder().id(request.getInsuranceCompanyId()).build();
+        return new OpTypeInsurance(null, request.getDeductiblePercentage(), opType, company);
     }
 }
