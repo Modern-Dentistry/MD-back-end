@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.controller.settings;
 
-import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dto.request.create.InsuranceCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.ICSearchRequest;
@@ -15,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -32,8 +33,13 @@ public class InsuranceCompanyController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<PageResponse<InsuranceCompany>> read(PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<InsuranceReadResponse>> read(PageCriteria pageCriteria) {
         return ResponseEntity.ok(insuranceCompanyService.read(pageCriteria));
+    }
+
+    @GetMapping("/read-list")
+    public ResponseEntity<List<InsuranceReadResponse>> readList() {
+        return ResponseEntity.ok(insuranceCompanyService.readList());
     }
 
     @GetMapping("/read-by-id/{id}")
@@ -60,7 +66,7 @@ public class InsuranceCompanyController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<InsuranceCompany>> search(ICSearchRequest request, PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<InsuranceReadResponse>> search(ICSearchRequest request, PageCriteria pageCriteria) {
         return ResponseEntity.ok(insuranceCompanyService.search(request, pageCriteria));
     }
 

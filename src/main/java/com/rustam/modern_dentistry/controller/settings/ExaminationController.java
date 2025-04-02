@@ -1,10 +1,10 @@
-package com.rustam.modern_dentistry.controller;
+package com.rustam.modern_dentistry.controller.settings;
 
 import com.rustam.modern_dentistry.dto.request.create.CreateExaminationRequest;
 import com.rustam.modern_dentistry.dto.request.create.ExaminationUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.read.ExaminationRequest;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
-import com.rustam.modern_dentistry.service.ExaminationService;
+import com.rustam.modern_dentistry.service.settings.ExaminationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

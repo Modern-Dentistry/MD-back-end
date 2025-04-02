@@ -11,7 +11,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class AnemnesisCatReadResponse {
+public class AnamnesisCatReadResponse {
     Long id;
     String name;
     Status status;

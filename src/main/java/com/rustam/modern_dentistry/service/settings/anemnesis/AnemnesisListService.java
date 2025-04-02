@@ -29,17 +29,30 @@ import static com.rustam.modern_dentistry.mapper.settings.anemnesis.AnemnesisLis
 @RequiredArgsConstructor
 public class AnemnesisListService {
     private final AnemnesisListRepository repository;
+    private final AnemnesisCategoryService anemnesisCategoryService;
 
     public void create(AnemnesisListCreateReq request) {
         var entity = ANAMNESIS_LIST_MAPPER.toEntity(request);
+        var anamnesisCategory = anemnesisCategoryService.getAnemnesisCatById(request.getAnamnesisCategoryId());
+        entity.setAnamnesisCategory(anamnesisCategory);
         repository.save(entity);
     }
 
-    public PageResponse<AnamnesisList> read(PageCriteria pageCriteria) {
+    public PageResponse<AnemnesisListReadResponse> read(PageCriteria pageCriteria) {
         var anemnesis = repository.findAll(
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(anemnesis.getTotalPages(), anemnesis.getTotalElements(), anemnesis.getContent());
+        var content = getContent(anemnesis.getContent());
+        return new PageResponse<>(anemnesis.getTotalPages(), anemnesis.getTotalElements(), content);
     }
+
+    public List<AnemnesisListReadResponse> readList() {
+        return getContent(repository.findAll());
+    }
+
+    private List<AnemnesisListReadResponse> getContent(List<AnamnesisList> anamnesisLists) {
+        return anamnesisLists.stream().map(ANAMNESIS_LIST_MAPPER::toReadDto).toList();
+    }
+
 
     public AnemnesisListReadResponse readById(Long id) {
         var entity = getAnemnesisListById(id);

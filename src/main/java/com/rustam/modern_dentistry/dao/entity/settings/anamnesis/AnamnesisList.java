@@ -26,9 +26,7 @@ public class AnamnesisList {
     String name;
     Status status;
 
-    @ManyToOne(
-            fetch = LAZY
-    )
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(referencedColumnName = "id", name = "category_id")
     AnamnesisCategory anamnesisCategory;
 }

@@ -30,7 +30,8 @@ public class AnamnesisCategory {
 
     @OneToMany(
             cascade = ALL,
-            mappedBy = "anamnesisCategory"
+            mappedBy = "anamnesisCategory",
+            orphanRemoval = true
     )
     List<AnamnesisList> anamnesisList;
 }

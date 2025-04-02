@@ -11,7 +11,7 @@ import com.rustam.modern_dentistry.dto.response.create.TeethExaminationResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.TeethExaminationNotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.teeth.TeethExaminationMapper;
-import com.rustam.modern_dentistry.service.ExaminationService;
+import com.rustam.modern_dentistry.service.settings.ExaminationService;
 import com.rustam.modern_dentistry.util.specification.TeethExaminationSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
