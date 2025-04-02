@@ -3,7 +3,7 @@ package com.rustam.modern_dentistry.mapper.settings.anemnesis;
 import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisCategory;
 import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisCatReq;
-import com.rustam.modern_dentistry.dto.response.read.AnemnesisCatReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.AnamnesisCatReadResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -21,7 +21,7 @@ public interface AnemnesisCategoryMapper {
 
     AnamnesisCategory toEntity(AnemnesisCatCreateReq request);
 
-    AnemnesisCatReadResponse toReadDto(AnamnesisCategory entity);
+    AnamnesisCatReadResponse toReadDto(AnamnesisCategory entity);
 
     void updateAnemnesisCategory(@MappingTarget AnamnesisCategory entity, UpdateAnemnesisCatReq request);
 }

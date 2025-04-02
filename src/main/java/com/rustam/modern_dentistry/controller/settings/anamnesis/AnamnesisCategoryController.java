@@ -5,7 +5,7 @@ import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.AnemnesisCatSearchReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisCatReq;
-import com.rustam.modern_dentistry.dto.response.read.AnemnesisCatReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.AnamnesisCatReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.service.settings.anemnesis.AnemnesisCategoryService;
 import jakarta.validation.Valid;
@@ -15,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -32,12 +34,17 @@ public class AnamnesisCategoryController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<PageResponse<AnamnesisCategory>> read(PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<AnamnesisCatReadResponse>> read(PageCriteria pageCriteria) {
         return ResponseEntity.ok(anemnesisCategoryService.read(pageCriteria));
     }
 
+    @GetMapping("/read-list")
+    public ResponseEntity<List<AnamnesisCatReadResponse>> readList() {
+        return ResponseEntity.ok(anemnesisCategoryService.readList());
+    }
+
     @GetMapping("/read-by-id/{id}")
-    public ResponseEntity<AnemnesisCatReadResponse> read(@PathVariable Long id) {
+    public ResponseEntity<AnamnesisCatReadResponse> readById(@PathVariable Long id) {
         return ResponseEntity.ok(anemnesisCategoryService.readById(id));
     }
 

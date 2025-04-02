@@ -4,10 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisList;
 import com.rustam.modern_dentistry.dto.request.create.AnemnesisListCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisListReq;
 import com.rustam.modern_dentistry.dto.response.read.AnemnesisListReadResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;

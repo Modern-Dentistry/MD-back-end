@@ -18,8 +18,8 @@ import com.rustam.modern_dentistry.dto.response.read.PatientExaminationsResponse
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
-import com.rustam.modern_dentistry.service.ExaminationService;
 import com.rustam.modern_dentistry.service.GeneralCalendarService;
+import com.rustam.modern_dentistry.service.settings.ExaminationService;
 import com.rustam.modern_dentistry.service.settings.teeth.TeethService;
 import com.rustam.modern_dentistry.util.UtilService;
 import lombok.AccessLevel;
@@ -103,7 +103,6 @@ public class PatientExaminationsService {
                 .doctorId(currentUserId)
                 .build();
     }
-
 
 
     public PatientExaminations findById(Long id) {

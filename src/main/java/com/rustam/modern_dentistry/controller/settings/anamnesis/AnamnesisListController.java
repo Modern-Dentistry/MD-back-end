@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.controller.settings.anamnesis;
 
-import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisCategory;
 import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisList;
 import com.rustam.modern_dentistry.dto.request.create.AnemnesisListCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
@@ -16,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -33,12 +34,17 @@ public class AnamnesisListController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<PageResponse<AnamnesisList>> read(PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<AnemnesisListReadResponse>> read(PageCriteria pageCriteria) {
         return ResponseEntity.ok(anemnesisListService.read(pageCriteria));
     }
 
+    @GetMapping("/read-list")
+    public ResponseEntity<List<AnemnesisListReadResponse>> readList() {
+        return ResponseEntity.ok(anemnesisListService.readList());
+    }
+
     @GetMapping("/read-by-id/{id}")
-    public ResponseEntity<AnemnesisListReadResponse> read(@PathVariable Long id) {
+    public ResponseEntity<AnemnesisListReadResponse> readById(@PathVariable Long id) {
         return ResponseEntity.ok(anemnesisListService.readById(id));
     }
 
@@ -62,7 +68,7 @@ public class AnamnesisListController {
 
     @GetMapping("/search")
     public ResponseEntity<PageResponse<AnamnesisList>> search(AnemnesisListSearchReq request,
-                                                                  PageCriteria pageCriteria) {
+                                                              PageCriteria pageCriteria) {
         return ResponseEntity.ok(anemnesisListService.search(request, pageCriteria));
     }
 

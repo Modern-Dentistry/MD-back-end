@@ -13,4 +13,5 @@ public class AnemnesisListCreateReq {
     @NotBlank(message = "Anamnezin adını daxil edin.")
     String name;
     Status status;
+    Long anamnesisCategoryId;
 }

@@ -6,7 +6,8 @@ import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.AnemnesisCatSearchReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisCatReq;
-import com.rustam.modern_dentistry.dto.response.read.AnemnesisCatReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.AnamnesisCatReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.AnemnesisListReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.ExcelUtil;
@@ -35,13 +36,17 @@ public class AnemnesisCategoryService {
         repository.save(entity);
     }
 
-    public PageResponse<AnamnesisCategory> read(PageCriteria pageCriteria) {
+    public PageResponse<AnamnesisCatReadResponse> read(PageCriteria pageCriteria) {
         var anemnesis = repository.findAll(
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(anemnesis.getTotalPages(), anemnesis.getTotalElements(), anemnesis.getContent());
+        return new PageResponse<>(anemnesis.getTotalPages(), anemnesis.getTotalElements(), getContent(anemnesis.getContent()));
     }
 
-    public AnemnesisCatReadResponse readById(Long id) {
+    public List<AnamnesisCatReadResponse> readList() {
+        return getContent(repository.findAll());
+    }
+
+    public AnamnesisCatReadResponse readById(Long id) {
         var entity = getAnemnesisCatById(id);
         return ANAMNESIS_CAT_MAPPER.toReadDto(entity);
     }
@@ -75,16 +80,20 @@ public class AnemnesisCategoryService {
         List<AnamnesisCategory> reservations = repository.findAll();
         var list = reservations.stream().map(ANAMNESIS_CAT_MAPPER::toReadDto).toList();
         try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnemnesisCatReadResponse.class);
+            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnamnesisCatReadResponse.class);
             return new InputStreamResource(excelFile);
         } catch (IOException e) {
             throw new RuntimeException("Error generating Excel file", e);
         }
     }
 
-    public AnamnesisCategory getAnemnesisCatById(Long id) {
+    protected AnamnesisCategory getAnemnesisCatById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də anemnez tapımadı: " + id)
         );
+    }
+
+    private List<AnamnesisCatReadResponse> getContent(List<AnamnesisCategory> anamnesisCategories) {
+        return anamnesisCategories.stream().map(ANAMNESIS_CAT_MAPPER::toReadDto).toList();
     }
 }
