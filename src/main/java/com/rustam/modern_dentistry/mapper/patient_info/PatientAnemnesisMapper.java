@@ -19,7 +19,7 @@ public interface PatientAnemnesisMapper {
     PatientAnamnesis toEntity(PatAnamnesisCreateReq request);
 
     @Mapping(target = "patientId", source = "patient.id")
-    PatAnamnesisReadRes toReadDto(PatientAnamnesis request);
+    PatAnamnesisReadRes toReadDto(PatientAnamnesis patient);
 
     void updatePatAnemnesis(@MappingTarget PatientAnamnesis entity, PatAnamnesisUpdateReq request);
 }

@@ -28,7 +28,6 @@ public class PatientAnamnesisService {
         var doctor = doctorService.findById(UUID.fromString(currentUserId));
         var patient = utilService.findByPatientId(req.getPatientId());
         entity.setAddedByName(doctor.getName());
-//        entity.setAddedByName("doctor.getName()");
         entity.setPatient(patient);
         patientAnamnesisRepository.save(entity);
     }
@@ -37,8 +36,8 @@ public class PatientAnamnesisService {
         return getContent(patientAnamnesisRepository.findAll());
     }
 
-    public List<PatAnamnesisReadRes> readById(Long patientId) {
-        var patientAnamnesisList = patientAnamnesisRepository.findByPatientId(patientId);
+    public List<PatAnamnesisReadRes> readAllById(Long patientId) {
+        var patientAnamnesisList = patientAnamnesisRepository.findByPatient_Id(patientId);
         return getContent(patientAnamnesisList);
     }
 

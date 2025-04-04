@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PatientAnamnesisRepository extends JpaRepository<PatientAnamnesis, Long> {
 
-    List<PatientAnamnesis> findByPatientId(long id);
+    List<PatientAnamnesis> findByPatient_Id(Long patientId);
 }

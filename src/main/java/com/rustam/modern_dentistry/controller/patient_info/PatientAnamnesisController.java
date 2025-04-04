@@ -34,8 +34,8 @@ public class PatientAnamnesisController {
     }
 
     @GetMapping("/read/{patientId}")
-    public ResponseEntity<List<PatAnamnesisReadRes>> readById(@PathVariable Long patientId) {
-        return ResponseEntity.ok(patientAnamnesisService.readById(patientId));
+    public ResponseEntity<List<PatAnamnesisReadRes>> readAllById(@PathVariable Long patientId) {
+        return ResponseEntity.ok(patientAnamnesisService.readAllById(patientId));
     }
 
 //    @PutMapping("/update/{id}")
