@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface PatientInsuranceRepository extends JpaRepository<PatientInsurance, Long> {
+    boolean existsByPolicyNumber(String policyNumber);
+
     @EntityGraph(attributePaths = {"insuranceCompany", "balances"})
     List<PatientInsurance> findByPatient_Id(Long patientId);
-
-    List<PatientInsurance> findByStatus(Status status);
 
     @Modifying
     @Transactional

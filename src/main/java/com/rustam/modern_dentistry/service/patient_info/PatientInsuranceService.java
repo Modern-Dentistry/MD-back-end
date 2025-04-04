@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dto.request.create.PatientInsuranceCreateRequ
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceUpdateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceUpdateStatusReq;
 import com.rustam.modern_dentistry.dto.response.read.PatientInsuranceReadResponse;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.service.settings.InsuranceCompanyService;
 import com.rustam.modern_dentistry.util.UtilService;
@@ -24,6 +25,9 @@ public class PatientInsuranceService {
     private final InsuranceCompanyService insuranceCompanyService;
 
     public void create(PatientInsuranceCreateRequest request) {
+        var check = patientInsuranceRepository.existsByPolicyNumber(request.getPolicyNumber());
+        if (check) throw new ExistsException("Bu polis no artıq əlavə edilib.");
+
         var entity = PATIENT_INSURANCE_MAPPER.toEntity(request);
         var patient = utilService.findByPatientId(request.getPatientId());
         var insuranceCompany = insuranceCompanyService.getInsuranceById(request.getInsuranceCompanyId());
