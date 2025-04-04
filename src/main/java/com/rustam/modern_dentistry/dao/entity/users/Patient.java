@@ -1,12 +1,9 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
 
-
-
-
-import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
+import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
@@ -20,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -37,7 +33,7 @@ public class Patient {
     String name;
     String surname;
     String patronymic;
-    @Column(unique = true,name = "fin_code")
+    @Column(unique = true, name = "fin_code")
     String finCode;
     @Column(name = "gender_status")
     GenderStatus genderStatus;
@@ -70,4 +66,7 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<GeneralCalendar> generalCalendars;
+
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    List<PatientExaminations> examinations;
 }
