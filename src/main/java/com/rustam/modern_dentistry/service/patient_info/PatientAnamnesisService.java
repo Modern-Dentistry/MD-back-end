@@ -1,8 +1,10 @@
 package com.rustam.modern_dentistry.service.patient_info;
 
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientAnamnesis;
+import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.repository.patient_info.PatientAnamnesisRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatAnamnesisCreateReq;
+import com.rustam.modern_dentistry.dto.request.update.PatAnamnesisUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatAnamnesisReadRes;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.service.DoctorService;
@@ -10,6 +12,7 @@ import com.rustam.modern_dentistry.util.UtilService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,10 +27,8 @@ public class PatientAnamnesisService {
 
     public void create(PatAnamnesisCreateReq req) {
         var entity = PATIENT_ANEMNESIS_MAPPER.toEntity(req);
-        var currentUserId = utilService.getCurrentUserId();
-        var doctor = doctorService.findById(UUID.fromString(currentUserId));
         var patient = utilService.findByPatientId(req.getPatientId());
-        entity.setAddedByName(doctor.getName());
+        entity.setAddedByName(getDoctor().getName());
         entity.setPatient(patient);
         patientAnamnesisRepository.save(entity);
     }
@@ -41,11 +42,11 @@ public class PatientAnamnesisService {
         return getContent(patientAnamnesisList);
     }
 
-//    public void update(Long id, PatAnamnesisUpdateReq request) {
-//        var patientAnamnesis = fetchPatientAnamnesisById(id);
-//        PATIENT_ANEMNESIS_MAPPER.updatePatAnemnesis(patientAnamnesis, request);
-//        patientAnamnesisRepository.save(patientAnamnesis);
-//    }
+    public void update(Long id, PatAnamnesisUpdateReq request) {
+        var patientAnamnesis = fetchPatientAnamnesisById(id);
+        PATIENT_ANEMNESIS_MAPPER.updatePatAnemnesis(patientAnamnesis, request, getDoctor().getName(), LocalDateTime.now());
+        patientAnamnesisRepository.save(patientAnamnesis);
+    }
 
     public void delete(Long id) {
         var patientAnamnesis = fetchPatientAnamnesisById(id);
@@ -63,5 +64,10 @@ public class PatientAnamnesisService {
                 .stream()
                 .map(PATIENT_ANEMNESIS_MAPPER::toReadDto)
                 .toList();
+    }
+
+    private Doctor getDoctor() {
+        var currentUserId = utilService.getCurrentUserId();
+        return doctorService.findById(UUID.fromString(currentUserId));
     }
 }

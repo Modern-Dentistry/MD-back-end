@@ -2,7 +2,6 @@ package com.rustam.modern_dentistry.controller.patient_info;
 
 import com.rustam.modern_dentistry.dto.request.create.PatAnamnesisCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatAnamnesisUpdateReq;
-import com.rustam.modern_dentistry.dto.request.update.ReservationUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.read.PatAnamnesisReadRes;
 import com.rustam.modern_dentistry.dto.response.update.ReservationUpdateResponse;
 import com.rustam.modern_dentistry.service.patient_info.PatientAnamnesisService;
@@ -38,12 +37,12 @@ public class PatientAnamnesisController {
         return ResponseEntity.ok(patientAnamnesisService.readAllById(patientId));
     }
 
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<ReservationUpdateResponse> update(@PathVariable Long id,
-//                                                            @Valid @RequestBody PatAnamnesisUpdateReq request) {
-//        patientAnamnesisService.update(id, request);
-//        return ResponseEntity.ok().build();
-//    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ReservationUpdateResponse> update(@PathVariable Long id,
+                                                            @Valid @RequestBody PatAnamnesisUpdateReq request) {
+        patientAnamnesisService.update(id, request);
+        return ResponseEntity.ok().build();
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
