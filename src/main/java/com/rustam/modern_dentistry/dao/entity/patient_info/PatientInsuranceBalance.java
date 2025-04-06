@@ -7,6 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -22,9 +23,16 @@ public class PatientInsuranceBalance {
     Long id;
     LocalDate date;
     BigDecimal amount;
+
+    @Enumerated(STRING)
     Status status;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "patient_insurance_id", nullable = false)
     PatientInsurance patientInsurance;
+
+    @PrePersist
+    public void prePersist() {
+        status = Status.ACTIVE;
+    }
 }

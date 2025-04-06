@@ -7,7 +7,6 @@ import com.rustam.modern_dentistry.dto.response.read.PatAnamnesisReadRes;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;

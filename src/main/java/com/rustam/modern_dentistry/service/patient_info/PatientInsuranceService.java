@@ -63,7 +63,7 @@ public class PatientInsuranceService {
         patientInsuranceRepository.delete(patientInsurance);
     }
 
-    private PatientInsurance getPatientInsuranceById(Long id) {
+    protected PatientInsurance getPatientInsuranceById(Long id) {
         return patientInsuranceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də pasient sığortası tapımadı:" + id)
         );

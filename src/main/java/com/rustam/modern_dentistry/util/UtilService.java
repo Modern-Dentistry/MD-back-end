@@ -54,7 +54,7 @@ public class UtilService {
     }
 
     public BaseUser findByUsername(String username) {
-       return baseUserRepository.findByUsername(username)
+        return baseUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No such username found."));
     }
 
@@ -79,6 +79,7 @@ public class UtilService {
         return baseUserRepository.findById(UUID.fromString(currentUserId))
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
     }
+
     public List<Patient> findByDoctorIdWithPatients(UUID doctorId) {
         return patientRepository.findAllByDoctor_Id(doctorId);
     }
