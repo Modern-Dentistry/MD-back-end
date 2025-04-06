@@ -67,6 +67,6 @@ public class Patient {
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<GeneralCalendar> generalCalendars;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    List<PatientExaminations> examinations;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    List<PatientExaminations> examinations;
 }
