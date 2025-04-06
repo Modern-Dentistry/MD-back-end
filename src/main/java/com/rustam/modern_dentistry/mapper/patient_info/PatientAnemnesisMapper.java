@@ -7,6 +7,8 @@ import com.rustam.modern_dentistry.dto.response.read.PatAnamnesisReadRes;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.time.LocalDateTime;
+
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING,
@@ -19,7 +21,13 @@ public interface PatientAnemnesisMapper {
     PatientAnamnesis toEntity(PatAnamnesisCreateReq request);
 
     @Mapping(target = "patientId", source = "patient.id")
-    PatAnamnesisReadRes toReadDto(PatientAnamnesis request);
+    PatAnamnesisReadRes toReadDto(PatientAnamnesis patient);
 
-    void updatePatAnemnesis(@MappingTarget PatientAnamnesis entity, PatAnamnesisUpdateReq request);
+    @Mapping(target = "addedByName", source = "doctorName")
+    @Mapping(target = "addedDateTime", source = "currentDate")
+    void updatePatAnemnesis(@MappingTarget PatientAnamnesis entity,
+                            PatAnamnesisUpdateReq request,
+                            String doctorName,
+                            LocalDateTime currentDate
+    );
 }

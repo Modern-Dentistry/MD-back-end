@@ -89,7 +89,7 @@ public class InsuranceCompanyService {
 
     public InsuranceCompany getInsuranceById(Long id) {
         return repository.findById(id).orElseThrow(
-                () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
+                () -> new NotFoundException("Bu ID-də sığorta şirkəti tapımadı: " + id)
         );
     }
 

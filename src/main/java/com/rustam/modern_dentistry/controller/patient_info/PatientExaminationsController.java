@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.controller.patient_info;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.read.RequestToSeeTheExaminations;
@@ -25,37 +24,37 @@ public class PatientExaminationsController {
     private final PatientExaminationsService patientExaminationsService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<PatientExaminationsCreateResponse> create(@Valid @RequestBody PatientExaminationsCreateRequest patientExaminationsCreateRequest){
-        return new ResponseEntity<>(patientExaminationsService.create(patientExaminationsCreateRequest),HttpStatus.OK);
+    public ResponseEntity<PatientExaminationsCreateResponse> create(@Valid @RequestBody PatientExaminationsCreateRequest patientExaminationsCreateRequest) {
+        return new ResponseEntity<>(patientExaminationsService.create(patientExaminationsCreateRequest), HttpStatus.OK);
     }
 
     @GetMapping(path = "/see-historical-election-dental-examinations")
-    public ResponseEntity<List<PatientExaminationsResponse>> seeHistoricalElectionDentalExaminations(@RequestBody RequestToSeeTheExaminations requestToSeeTheExaminations){
-        return new ResponseEntity<>(patientExaminationsService.seeHistoricalElectionDentalExaminations(requestToSeeTheExaminations),HttpStatus.OK);
+    public ResponseEntity<List<PatientExaminationsResponse>> seeHistoricalElectionDentalExaminations(@RequestBody RequestToSeeTheExaminations requestToSeeTheExaminations) {
+        return new ResponseEntity<>(patientExaminationsService.seeHistoricalElectionDentalExaminations(requestToSeeTheExaminations), HttpStatus.OK);
     }
 
     @GetMapping(path = "/read-examinations")
-    public ResponseEntity<List<ExaminationResponse>> readExaminations(){
+    public ResponseEntity<List<ExaminationResponse>> readExaminations() {
         return new ResponseEntity<>(patientExaminationsService.readExaminations(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/read-teeth")
-    public ResponseEntity<List<TeethResponse>> readTeeth(){
-        return new ResponseEntity<>(patientExaminationsService.readTeeth(),HttpStatus.OK);
+    public ResponseEntity<List<TeethResponse>> readTeeth() {
+        return new ResponseEntity<>(patientExaminationsService.readTeeth(), HttpStatus.OK);
     }
 
     @PutMapping(path = "/update")
-    public ResponseEntity<PatientExaminationsCreateResponse> update(@RequestBody PatientExaminationsUpdateRequest patientExaminationsUpdateRequest){
-        return new ResponseEntity<>(patientExaminationsService.update(patientExaminationsUpdateRequest),HttpStatus.OK);
+    public ResponseEntity<PatientExaminationsCreateResponse> update(@RequestBody PatientExaminationsUpdateRequest patientExaminationsUpdateRequest) {
+        return new ResponseEntity<>(patientExaminationsService.update(patientExaminationsUpdateRequest), HttpStatus.OK);
     }
 
     @GetMapping(path = "/read")
-    public ResponseEntity<List<PatientExaminationsResponse>> read(){
-        return new ResponseEntity<>(patientExaminationsService.read(),HttpStatus.OK);
+    public ResponseEntity<List<PatientExaminationsResponse>> read() {
+        return new ResponseEntity<>(patientExaminationsService.read(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         patientExaminationsService.delete(id);
         return ResponseEntity.ok().build();
     }
