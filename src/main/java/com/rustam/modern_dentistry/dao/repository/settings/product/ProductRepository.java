@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("""
     SELECT new com.rustam.modern_dentistry.dto.response.create.ProductResponse(
-        p.id,p.category.id,p.category.categoryName,p.productName,p.quantity,p.price
+        p.id,p.category.id,p.category.categoryName,p.productName,p.quantity,p.price,p.sumPrice
     )
     FROM Product p
 """)
@@ -19,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     @Query("""
     SELECT new com.rustam.modern_dentistry.dto.response.create.ProductResponse(
-        p.id,p.category.id,p.category.categoryName,p.productName,p.quantity,p.price
+        p.id,p.category.id,p.category.categoryName,p.productName,p.quantity,p.price,p.sumPrice
     )
     FROM Product p
     where p.id =:id

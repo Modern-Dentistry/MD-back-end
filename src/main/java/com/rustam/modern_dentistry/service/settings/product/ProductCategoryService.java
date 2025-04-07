@@ -59,6 +59,7 @@ public class ProductCategoryService {
         }
         categoryRepository.save(category);
         return ProductCategoryResponse.builder()
+                .id(productCategoryUpdateRequest.getId())
                 .categoryName(productCategoryUpdateRequest.getCategoryName())
                 .build();
     }
