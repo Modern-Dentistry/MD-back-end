@@ -9,6 +9,7 @@ import com.rustam.modern_dentistry.dto.response.create.ProductResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.ModelMapperConfig;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -49,29 +50,38 @@ public class ProductService {
         return productRepository.findAllWithCategory();
     }
 
+    @Transactional
     public ProductResponse update(ProductUpdateRequest productUpdateRequest) {
         Product product = findById(productUpdateRequest.getId());
-        long quantitySum = 0L;
+        long quantitySum = product.getQuantity();
         if (productUpdateRequest.getCategoryId() != null){
             Category category = productCategoryService.findById(productUpdateRequest.getCategoryId());
             product.setCategory(category);
         }
-        if (productUpdateRequest.getProductName() != null && productUpdateRequest.getProductName().isEmpty()){
+        if (productUpdateRequest.getProductName() != null && !productUpdateRequest.getProductName().isBlank()){
             product.setProductName(productUpdateRequest.getProductName());
         }
         if (productUpdateRequest.getQuantity() != null && productUpdateRequest.getQuantity() != 0 ){
-            quantitySum = product.getQuantity() + productUpdateRequest.getQuantity();
+            quantitySum += productUpdateRequest.getQuantity();
             product.setQuantity(quantitySum);
+            BigDecimal resultValue = product.getPrice().multiply(BigDecimal.valueOf(quantitySum));
+            product.setSumPrice(resultValue);
         }
         if (productUpdateRequest.getPrice() != null && !productUpdateRequest.getPrice().equals(BigDecimal.ZERO)){
             BigDecimal sum = productUpdateRequest.getPrice().multiply(BigDecimal.valueOf(quantitySum));
-            product.setPrice(sum);
-        }else {
-            BigDecimal resultValue = product.getPrice().multiply(BigDecimal.valueOf(quantitySum));
-            product.setPrice(resultValue);
+            product.setPrice(productUpdateRequest.getPrice());
+            product.setSumPrice(sum);
         }
         productRepository.save(product);
-        return modelMapper.map(product, ProductResponse.class);
+        return ProductResponse.builder()
+                .id(productUpdateRequest.getId())
+                .categoryId(product.getCategory().getId())
+                .categoryName(product.getCategory().getCategoryName())
+                .productName(product.getProductName())
+                .quantity(product.getQuantity())
+                .price(product.getPrice())
+                .sumPrice(product.getSumPrice())
+                .build();
     }
 
     private Product findById(Long id) {

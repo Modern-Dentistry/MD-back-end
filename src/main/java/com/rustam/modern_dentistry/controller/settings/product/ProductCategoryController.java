@@ -21,7 +21,6 @@ public class ProductCategoryController {
 
     @PostMapping(path = "/create")
     public ResponseEntity<ProductCategoryResponse> create(@Valid @RequestBody ProductCategoryRequest productCategoryRequest) {
-        System.out.println("Request : " + productCategoryRequest);
         return new ResponseEntity<>(productCategoryService.create(productCategoryRequest), HttpStatus.CREATED);
     }
 

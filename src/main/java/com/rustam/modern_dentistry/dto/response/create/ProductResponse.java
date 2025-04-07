@@ -18,4 +18,5 @@ public class ProductResponse {
     String productName;
     Long quantity;
     BigDecimal price;
+    BigDecimal sumPrice;
 }
