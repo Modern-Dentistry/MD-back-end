@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.util.specification;
 
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
-import com.rustam.modern_dentistry.dao.entity.teeth.TeethOperation;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.TeethOperation;
 import com.rustam.modern_dentistry.dto.request.read.SearchTeethOperationRequest;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;

@@ -2,8 +2,8 @@ package com.rustam.modern_dentistry.service.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
-import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
-import com.rustam.modern_dentistry.dao.entity.teeth.TeethOperation;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.TeethOperation;
 import com.rustam.modern_dentistry.dao.repository.settings.teeth.TeethOperationRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethOperationRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeAndItemRequest;

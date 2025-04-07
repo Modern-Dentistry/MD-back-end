@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.mapper.settings.teeth;
 
-import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.Teeth;
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.dto.response.update.TeethUpdateResponse;
 import org.mapstruct.InjectionStrategy;

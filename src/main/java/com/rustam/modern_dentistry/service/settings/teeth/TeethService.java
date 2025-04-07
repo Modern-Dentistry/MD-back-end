@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.service.settings.teeth;
 
-import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
-import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.TeethExamination;
 import com.rustam.modern_dentistry.dao.repository.settings.teeth.TeethRepository;
 import com.rustam.modern_dentistry.dto.request.create.CreateTeethRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethRequest;
