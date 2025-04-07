@@ -1,10 +1,8 @@
 package com.rustam.modern_dentistry.service.patient_info;
 
 import com.rustam.modern_dentistry.dao.entity.Examination;
-import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
-import com.rustam.modern_dentistry.dao.entity.teeth.TeethExamination;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.TeethExamination;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.read.RequestToSeeTheExaminations;
 import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;

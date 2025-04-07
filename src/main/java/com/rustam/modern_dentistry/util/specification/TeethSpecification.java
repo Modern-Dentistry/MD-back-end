@@ -1,9 +1,8 @@
 package com.rustam.modern_dentistry.util.specification;
 
-import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.Teeth;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothLocation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothType;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
