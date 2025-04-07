@@ -26,6 +26,10 @@ public class RecipeService {
         return null;
     }
 
+    public RecipeReadResponse readById(Long id) {
+        return null;
+    }
+
     public void update(Long id, RecipeUpdateRequest request) {
 
     }
