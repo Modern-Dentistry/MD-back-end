@@ -1,8 +1,6 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.WorkersWorkSchedule;
-import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
-import com.rustam.modern_dentistry.dao.entity.teeth.Teeth;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.repository.WorkersWorkScheduleRepository;
 import com.rustam.modern_dentistry.dto.request.create.WorkersWorkScheduleRequest;
@@ -13,8 +11,6 @@ import com.rustam.modern_dentistry.exception.custom.WorkersWorkScheduleNotFoundE
 import com.rustam.modern_dentistry.mapper.WorkersWorkScheduleMapper;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.WorkersWorkScheduleSpecification;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

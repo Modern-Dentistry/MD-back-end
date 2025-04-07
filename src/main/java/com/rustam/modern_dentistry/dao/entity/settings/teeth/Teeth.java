@@ -1,7 +1,6 @@
-package com.rustam.modern_dentistry.dao.entity.teeth;
+package com.rustam.modern_dentistry.dao.entity.settings.teeth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rustam.modern_dentistry.dao.entity.Examination;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothLocation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothType;
 import jakarta.persistence.*;
@@ -10,8 +9,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "teeth")

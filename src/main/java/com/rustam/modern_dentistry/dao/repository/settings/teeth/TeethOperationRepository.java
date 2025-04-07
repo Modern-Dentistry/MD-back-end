@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.dao.repository.settings.teeth;
 
 
-import com.rustam.modern_dentistry.dao.entity.teeth.TeethOperation;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.TeethOperation;
 import com.rustam.modern_dentistry.dto.response.read.TeethOperationResponse;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
