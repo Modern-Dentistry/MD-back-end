@@ -14,6 +14,6 @@ import static lombok.AccessLevel.PRIVATE;
 public class RecipeReadResponse {
     Long id;
     String name;
-    Long medicineCount;
+    int medicineCount;
     Status status;
 }
