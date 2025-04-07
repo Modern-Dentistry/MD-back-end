@@ -29,6 +29,11 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.read());
     }
 
+    @GetMapping("/read-by-id")
+    public ResponseEntity<RecipeReadResponse> readById(@RequestParam Long id) {
+        return ResponseEntity.ok(recipeService.readById(id));
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id,
                                        @RequestBody RecipeUpdateRequest request) {
