@@ -1,8 +1,13 @@
 package com.rustam.modern_dentistry.controller.settings.product;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
 import com.rustam.modern_dentistry.dto.request.create.ProductRequest;
+import com.rustam.modern_dentistry.dto.request.read.ProductSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.ProductUpdateRequest;
+import com.rustam.modern_dentistry.dto.request.update.ProductUpdatedStatusRequest;
 import com.rustam.modern_dentistry.dto.response.create.ProductResponse;
+import com.rustam.modern_dentistry.dto.response.read.ProductReadResponse;
 import com.rustam.modern_dentistry.service.settings.product.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +39,11 @@ public class ProductController {
         return new ResponseEntity<>(productService.readById(id),HttpStatus.OK);
     }
 
+    @GetMapping(path = "/search")
+    public ResponseEntity<List<ProductReadResponse>> search(@RequestBody ProductSearchRequest productSearchRequest){
+        return new ResponseEntity<>(productService.search(productSearchRequest),HttpStatus.OK);
+    }
+
     @PutMapping(path = "/update")
     public ResponseEntity<ProductResponse> update(@RequestBody ProductUpdateRequest productUpdateRequest){
         return new ResponseEntity<>(productService.update(productUpdateRequest),HttpStatus.OK);
@@ -43,5 +53,10 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id){
         productService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(path = "/status-updated")
+    public ResponseEntity<ProductReadResponse> statusUpdated(@RequestBody ProductUpdatedStatusRequest productUpdatedStatusRequest){
+        return new ResponseEntity<>(productService.statusUpdated(productUpdatedStatusRequest),HttpStatus.OK);
     }
 }
