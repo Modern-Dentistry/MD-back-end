@@ -15,8 +15,7 @@ import java.math.BigDecimal;
 public class ProductUpdateRequest {
 
     Long id;
-    Long categoryId;
     String productName;
-    Long quantity;
-    BigDecimal price;
+    Long productNo;
+    String productTitle;
 }
