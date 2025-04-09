@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.settings.product;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,4 +24,7 @@ public class Category {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Product> products;
+
+    @Enumerated(EnumType.STRING)
+    Status status;
 }
