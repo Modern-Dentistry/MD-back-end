@@ -1,21 +1,16 @@
 package com.rustam.modern_dentistry.dto.request.update;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductUpdateRequest {
+public class ProductCategoryStatusUpdatedRequest {
 
     Long id;
-    String productName;
-    Long productNo;
-    String productTitle;
+    Status status;
 }

@@ -19,7 +19,7 @@ public class ProductRequest {
     @NotBlank
     String productName;
     @NotNull
-    Long quantity;
+    Long productNo;
     @NotNull
-    BigDecimal price;
+    String productTitle;
 }

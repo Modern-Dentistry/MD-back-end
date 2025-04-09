@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.settings.product;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,11 +25,20 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     String productName;
 
-    Long quantity;
-    BigDecimal price;
+//    Long quantity;
+//    BigDecimal price;
+//
+//    @Column(name = "sum_price")
+//    BigDecimal sumPrice;
 
-    @Column(name = "sum_price")
-    BigDecimal sumPrice;
+    @Enumerated(EnumType.STRING)
+    Status status;
+
+    @Column(name = "product_no")
+    Long productNo;
+
+    @Column(name = "product_title")
+    String productTitle;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id", nullable = false)

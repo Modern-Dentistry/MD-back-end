@@ -16,7 +16,6 @@ public class ProductResponse {
     Long categoryId;
     String categoryName;
     String productName;
-    Long quantity;
-    BigDecimal price;
-    BigDecimal sumPrice;
+    Long productNo;
+    String productTitle;
 }
