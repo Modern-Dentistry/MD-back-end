@@ -1,6 +1,8 @@
 package com.rustam.modern_dentistry.controller.settings.product;
 
 import com.rustam.modern_dentistry.dto.request.create.ProductCategoryRequest;
+import com.rustam.modern_dentistry.dto.request.read.ProductCategorySearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.ProductCategoryStatusUpdatedRequest;
 import com.rustam.modern_dentistry.dto.request.update.ProductCategoryUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.ProductCategoryResponse;
 import com.rustam.modern_dentistry.dto.response.read.ProductCategoryReadResponse;
@@ -29,6 +31,11 @@ public class ProductCategoryController {
         return new ResponseEntity<>(productCategoryService.read(), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/search")
+    public ResponseEntity<List<ProductCategoryResponse>> search(@RequestBody ProductCategorySearchRequest productCategorySearchRequest){
+        return new ResponseEntity<>(productCategoryService.search(productCategorySearchRequest),HttpStatus.OK);
+    }
+
     @GetMapping(path = "/read-by-id/{id}")
     public ResponseEntity<ProductCategoryReadResponse> readById(@PathVariable Long id) {
         return new ResponseEntity<>(productCategoryService.readById(id),HttpStatus.OK);
@@ -43,5 +50,10 @@ public class ProductCategoryController {
     public ResponseEntity<Void> delete(@PathVariable Long id){
         productCategoryService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(path = "/status-updated")
+    public ResponseEntity<ProductCategoryResponse> statusUpdated(@RequestBody ProductCategoryStatusUpdatedRequest productCategoryStatusUpdatedRequest){
+        return new ResponseEntity<>(productCategoryService.statusUpdated(productCategoryStatusUpdatedRequest),HttpStatus.OK);
     }
 }
