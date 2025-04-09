@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,5 +15,6 @@ public class ProductCategoryReadResponse {
 
     Long id;
     String categoryName;
+    Status status;
     List<ProductReadResponse> products;
 }
