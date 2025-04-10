@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -31,4 +32,9 @@ public class WarehouseEntry {
     List<WarehouseEntryProduct> warehouseEntryProducts;
 
     String description;
+
+    Integer number;
+
+    @Column(name = "sum_price")
+    BigDecimal sumPrice;
 }
