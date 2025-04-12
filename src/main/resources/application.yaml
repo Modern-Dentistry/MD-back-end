@@ -33,7 +33,7 @@ spring:
     open-in-view: false
   data:
     redis:
-      host: localhost
+      host: redis-server
       port: 6379
 
 server:
