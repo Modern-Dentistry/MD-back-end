@@ -19,6 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/v1/add-worker")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class AddWorkerController {
 
