@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -41,6 +42,7 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll)
                 .httpBasic(withDefaults())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .cors(cors -> cors.configurationSource(request -> getCorsConfiguration()))
                 .build();
     }
 
@@ -63,6 +65,14 @@ public class SecurityConfig {
         return new String[]{
                 "/api/v1/add-worker/create"
         };
+    }
+
+    private CorsConfiguration getCorsConfiguration() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*"); 
+        corsConfiguration.addAllowedMethod("*"); 
+        corsConfiguration.addAllowedHeader("*"); 
+        return corsConfiguration;
     }
 
 }
