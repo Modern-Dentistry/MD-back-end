@@ -1,33 +1,38 @@
+version: "3.9"
 services:
-  db:
+  postgres-db:
     image: postgres:latest
-    container_name: postgres_db
+    container_name: postgres-db
     environment:
+      POSTGRES_DB: modern_dentistry
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "012345"
-      POSTGRES_DB: modern_dentistry
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     networks:
-      - my_network
-    restart: unless-stopped
+      - modern-net
 
-  redis:
+  redis-server:
     image: redis:latest
-    container_name: redis
+    container_name: redis-server
     ports:
       - "6379:6379"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
     networks:
-      - my_network
-    restart: unless-stopped
+      - modern-net
 
-volumes:
-  postgres_data:
+  modern-dentistry:
+    image: rustemh/modern-dentistry:latest
+    container_name: modern-dentistry
+    depends_on:
+      - postgres-db
+      - redis-server
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "5555:5555"
+    networks:
+      - modern-net
 
 networks:
-  my_network:
+  modern-net:
     driver: bridge
