@@ -69,9 +69,9 @@ public class SecurityConfig {
 
     private CorsConfiguration getCorsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOrigin("*"); 
         corsConfiguration.addAllowedMethod("*"); 
-        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedHeader("*"); 
         return corsConfiguration;
     }
 
