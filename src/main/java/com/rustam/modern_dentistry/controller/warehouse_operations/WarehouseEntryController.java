@@ -3,9 +3,11 @@ package com.rustam.modern_dentistry.controller.warehouse_operations;
 
 import com.rustam.modern_dentistry.dto.request.create.WarehouseEntryCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.WarehouseEntrySearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.WarehouseEntryUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.ProductCategoryResponse;
 import com.rustam.modern_dentistry.dto.response.create.WarehouseEntryCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryResponse;
 import com.rustam.modern_dentistry.service.warehouse_entry.WarehouseEntryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,22 @@ public class WarehouseEntryController {
     @GetMapping(path = "/search")
     public ResponseEntity<List<WarehouseEntryReadResponse>> search(@RequestBody WarehouseEntrySearchRequest warehouseEntrySearchRequest){
         return new ResponseEntity<>(warehouseEntryService.search(warehouseEntrySearchRequest),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/info/{id}")
+    public ResponseEntity<WarehouseEntryResponse> info(@PathVariable Long id){
+        return new ResponseEntity<>(warehouseEntryService.info(id),HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<WarehouseEntryCreateResponse> update(@RequestBody WarehouseEntryUpdateRequest warehouseEntryUpdateRequest){
+        return new ResponseEntity<>(warehouseEntryService.update(warehouseEntryUpdateRequest),HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<Void> delete(@RequestBody Long id){
+        warehouseEntryService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
 }
