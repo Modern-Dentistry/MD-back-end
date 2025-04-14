@@ -27,8 +27,8 @@ public class PatientInsuranceController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    @GetMapping("/read/{patientId}")
-    ResponseEntity<List<PatientInsuranceReadResponse>> readAllById(@PathVariable Long patientId) {
+    @GetMapping("/read")
+    ResponseEntity<List<PatientInsuranceReadResponse>> readAllById(@RequestParam Long patientId) {
         return ResponseEntity.ok(patientInsuranceService.readAllById(patientId));
     }
 

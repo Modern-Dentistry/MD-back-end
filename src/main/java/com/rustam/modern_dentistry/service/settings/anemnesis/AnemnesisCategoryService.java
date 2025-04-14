@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service.settings.anemnesis;
 
 import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisCategory;
+import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisList;
 import com.rustam.modern_dentistry.dao.repository.settings.anemnesis.AnemnesisCategoryRepository;
 import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
@@ -65,8 +66,8 @@ public class AnemnesisCategoryService {
     }
 
     public void delete(Long id) {
-        var insurance = getAnemnesisCatById(id);
-        repository.delete(insurance);
+        var anamnesisCategory = getAnemnesisCatById(id);
+        repository.delete(anamnesisCategory);
     }
 
     public PageResponse<AnamnesisCategory> search(AnemnesisCatSearchReq request, PageCriteria pageCriteria) {

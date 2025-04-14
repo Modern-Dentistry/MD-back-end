@@ -73,8 +73,8 @@ public class AnemnesisListService {
     }
 
     public void delete(Long id) {
-        var insurance = getAnemnesisListById(id);
-        repository.delete(insurance);
+        var anamnesis = getAnemnesisListById(id);
+        repository.delete(anamnesis);
     }
 
     public PageResponse<AnamnesisList> search(AnemnesisListSearchReq request, PageCriteria pageCriteria) {

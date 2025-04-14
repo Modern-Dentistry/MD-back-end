@@ -31,4 +31,9 @@ public class Medicine {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(referencedColumnName = "id", name = "recipe_id")
     Recipe recipe;
+
+    @PrePersist
+    void prePersist() {
+        status = Status.ACTIVE;
+    }
 }
