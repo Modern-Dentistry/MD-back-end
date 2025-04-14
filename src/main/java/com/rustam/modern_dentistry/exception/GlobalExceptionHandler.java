@@ -38,6 +38,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(WarehouseEntryNotFoundException.class)
+    public ResponseEntity<ExceptionResponseMessages> warehouseEntryNotFoundException(WarehouseEntryNotFoundException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.NOT_FOUND) ,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(TeethExaminationNotFoundException.class)
     public ResponseEntity<ExceptionResponseMessages> teethExaminationNotFoundException(TeethExaminationNotFoundException ex) {
         return new ResponseEntity<>(
