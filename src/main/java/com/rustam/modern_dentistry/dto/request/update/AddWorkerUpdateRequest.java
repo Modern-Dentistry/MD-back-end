@@ -39,13 +39,13 @@ public class AddWorkerUpdateRequest {
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
     String degree;
-    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{4}", message = "Please enter your phone number in the format (000)-000-0000.")
+    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{2}-\\d{2}", message = "Please enter your phone number in the format (000)-000-0000.")
     String phone;
-    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{4}", message = "Please enter your phone number in the format (000)-000-0000.")
+    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{2}-\\d{2}", message = "Please enter your phone number in the format (000)-000-0000.")
     String phone2;
-    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{4}", message = "Please enter your phone number in the format (000)-000-0000.")
+    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{2}-\\d{2}", message = "Please enter your phone number in the format (000)-000-0000.")
     String phone3;
-    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{4}", message = "Please enter your phone number in the format (000)-000-0000.")
+    @Pattern(regexp = "\\(\\d{3}\\)-\\d{3}-\\d{2}-\\d{2}", message = "Please enter your phone number in the format (000)-000-0000.")
     String homePhone;
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Enter a valid email address.")
     String email;
