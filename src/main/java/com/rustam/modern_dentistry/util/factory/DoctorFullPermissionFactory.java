@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dao.repository.DoctorRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import jakarta.persistence.Column;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,26 +47,28 @@ public class DoctorFullPermissionFactory implements UserRoleFactory {
     }
 
     @Override
-    public void updateUser(AddWorkerUpdateRequest addWorkerUpdateRequest) {
-        Doctor doctor = doctorRepository.findById(addWorkerUpdateRequest.getId())
+    public void updateUser(AddWorkerUpdateRequest request) {
+        Doctor doctor = doctorRepository.findById(request.getId())
                 .orElseThrow(() -> new UserNotFountException("No such Doctor found."));
-        doctor.setName(addWorkerUpdateRequest.getName());
-        doctor.setSurname(addWorkerUpdateRequest.getSurname());
-        doctor.setPatronymic(addWorkerUpdateRequest.getPatronymic());
-        doctor.setUsername(addWorkerUpdateRequest.getUsername());
-        doctor.setAddress(addWorkerUpdateRequest.getAddress());
-        doctor.setExperience(addWorkerUpdateRequest.getExperience());
-        doctor.setDateOfBirth(addWorkerUpdateRequest.getDateOfBirth());
-        doctor.setFinCode(addWorkerUpdateRequest.getFinCode());
-        doctor.setHomePhone(addWorkerUpdateRequest.getHomePhone());
-        doctor.setGenderStatus(addWorkerUpdateRequest.getGenderStatus());
-        doctor.setAuthorities(addWorkerUpdateRequest.getAuthorities());
-        doctor.setEmail(addWorkerUpdateRequest.getEmail());
-        doctor.setDegree(addWorkerUpdateRequest.getDegree());
-        doctor.setColorCode(addWorkerUpdateRequest.getColorCode());
+        FieldSetter.setIfNotBlank(request.getName(), doctor::setName);
+        FieldSetter.setIfNotBlank(request.getSurname(), doctor::setSurname);
+        FieldSetter.setIfNotBlank(request.getPatronymic(), doctor::setPatronymic);
+        FieldSetter.setIfNotBlank(request.getUsername(), doctor::setUsername);
+        FieldSetter.setIfNotBlank(request.getAddress(), doctor::setAddress);
+        FieldSetter.setIfNotNull(request.getExperience(), doctor::setExperience);
+        FieldSetter.setIfNotNull(request.getDateOfBirth(), doctor::setDateOfBirth);
+        FieldSetter.setIfNotBlank(request.getFinCode(), doctor::setFinCode);
+        FieldSetter.setIfNotBlank(request.getHomePhone(), doctor::setHomePhone);
+        FieldSetter.setIfNotNull(request.getGenderStatus(), doctor::setGenderStatus);
+        FieldSetter.setIfNotEmpty(request.getAuthorities(), doctor::setAuthorities);
+        FieldSetter.setIfNotBlank(request.getEmail(), doctor::setEmail);
+        FieldSetter.setIfNotBlank(request.getDegree(), doctor::setDegree);
+        FieldSetter.setIfNotBlank(request.getPhone(), doctor::setPhone);
+        FieldSetter.setIfNotBlank(request.getPhone2(), doctor::setPhone2);
+        FieldSetter.setIfNotBlank(request.getPhone3(), doctor::setPhone3);
+        FieldSetter.setIfNotBlank(request.getPassword(),
+                pass -> doctor.setPassword(passwordEncoder.encode(pass)));
         doctor.setEnabled(true);
-        doctor.setPassword(passwordEncoder.encode(addWorkerUpdateRequest.getPassword()));
-        doctor.setPhone(addWorkerUpdateRequest.getPhone());
         doctorRepository.save(doctor);
     }
 
