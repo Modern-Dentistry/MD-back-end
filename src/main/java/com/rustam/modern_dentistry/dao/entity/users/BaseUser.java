@@ -39,9 +39,8 @@ public class BaseUser {
     String name;
     String surname;
     String phone;
-    @Column(unique = true)
     String email;
-    @Column(unique = true, name = "fin_code")
+    @Column(name = "fin_code")
     String finCode;
     String username;
     String patronymic;
