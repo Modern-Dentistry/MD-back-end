@@ -35,17 +35,13 @@ public class Doctor extends BaseUser {
     @OneToMany(mappedBy = "doctor", fetch = LAZY)
     @JsonIgnore
     Set<Patient> patients;
-    String patronymic;
     @Column(name = "fin_code")
-    String finCode;
-    @Column(name = "color_code")
     String colorCode;
-    GenderStatus genderStatus;
-    @Column(name = "date_of_birth")
-    LocalDate dateOfBirth;
     String degree;
     @Column(name = "phone_2")
     String phone2;
+    @Column(name = "phone_3")
+    String phone3;
     @Column(name = "home_phone")
     String homePhone;
     String address;
