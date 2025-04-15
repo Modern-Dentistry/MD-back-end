@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
@@ -79,12 +78,8 @@ public class InsuranceCompanyService {
     public InputStreamResource exportReservationsToExcel() {
         List<InsuranceCompany> reservations = repository.findAll();
         var list = reservations.stream().map(INSURANCE_COMPANY_MAPPER::toReadDto).toList();
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, InsuranceReadResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, InsuranceReadResponse.class);
+        return new InputStreamResource(excelFile);
     }
 
     public InsuranceCompany getInsuranceById(Long id) {

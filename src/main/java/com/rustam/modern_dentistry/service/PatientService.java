@@ -22,7 +22,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -97,11 +96,7 @@ public class PatientService {
     public InputStreamResource exportReservationsToExcel() {
         List<Patient> patients = patientRepository.findAll();
         List<PatientReadResponse> list = patientMapper.toDtos(patients);
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PatientReadResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PatientReadResponse.class);
+        return new InputStreamResource(excelFile);
     }
 }

@@ -12,6 +12,9 @@ import com.rustam.modern_dentistry.dto.response.TokenPair;
 import com.rustam.modern_dentistry.exception.custom.DoctorNotFoundException;
 import com.rustam.modern_dentistry.exception.custom.InvalidUUIDFormatException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -41,9 +44,6 @@ public class UtilService {
                 .orElseThrow(() -> new UserNotFountException("No such patient found."));
     }
 
-    public boolean existsByUsernameExists(String username) {
-       return doctorRepository.existsByUsername(username);
-    }
 
     public UUID convertToUUID(String id) {
         try {
@@ -82,5 +82,9 @@ public class UtilService {
 
     public List<Patient> findByDoctorIdWithPatients(UUID doctorId) {
         return patientRepository.findAllByDoctor_Id(doctorId);
+    }
+
+    public boolean existsByUsernameAndEmailAndFinCodeAndColorCode(String username, String email,String finCode,String colorCode) {
+        return baseUserRepository.existsUserFully(username,email,finCode,colorCode);
     }
 }

@@ -10,7 +10,7 @@ import com.rustam.modern_dentistry.dto.response.read.AnemnesisListReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.ExcelUtil;
-import com.rustam.modern_dentistry.util.specification.settings.AnemnesisListSpecification;
+import com.rustam.modern_dentistry.util.specification.settings.anemnesis.AnemnesisListSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
@@ -73,8 +72,8 @@ public class AnemnesisListService {
     }
 
     public void delete(Long id) {
-        var insurance = getAnemnesisListById(id);
-        repository.delete(insurance);
+        var anamnesis = getAnemnesisListById(id);
+        repository.delete(anamnesis);
     }
 
     public PageResponse<AnamnesisList> search(AnemnesisListSearchReq request, PageCriteria pageCriteria) {
@@ -87,12 +86,8 @@ public class AnemnesisListService {
     public InputStreamResource exportReservationsToExcel() {
         List<AnamnesisList> reservations = repository.findAll();
         var list = reservations.stream().map(ANAMNESIS_LIST_MAPPER::toReadDto).toList();
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnemnesisListReadResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnemnesisListReadResponse.class);
+        return new InputStreamResource(excelFile);
     }
 
     public AnamnesisList getAnemnesisListById(Long id) {

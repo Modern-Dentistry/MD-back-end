@@ -29,7 +29,10 @@ public class PatientCreateRequest {
     @NotBlank(message = "Ata adı boş ola bilməz")
     @Size(min = 3, max = 20, message = "Ata adı 3-20 simvol arasında olmalıdır")
     String patronymic;
-    @Size(min = 7, max = 7, message = "FIN kod 7 simvol olmalıdır")
+    @Pattern(
+            regexp = "^[A-Z0-9]{7}$",
+            message = "FIN kod yalnız böyük hərflər və rəqəmlərdən ibarət 7 simvol olmalıdır."
+    )
     String finCode;
     @NotNull(message = "zəhmət olmasa cinsiyyəti daxil edin")
     GenderStatus genderStatus;

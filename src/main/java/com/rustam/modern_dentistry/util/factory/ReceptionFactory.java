@@ -1,11 +1,16 @@
 package com.rustam.modern_dentistry.util.factory;
 
+import com.rustam.modern_dentistry.dao.entity.users.Admin;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Reception;
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.repository.ReceptionRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import com.rustam.modern_dentistry.util.UtilService;
+import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -18,9 +23,16 @@ public class ReceptionFactory implements UserRoleFactory {
 
     private final ReceptionRepository receptionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UtilService utilService;
 
     @Override
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(addWorkerCreateRequest.getUsername(), addWorkerCreateRequest.getEmail(),
+                addWorkerCreateRequest.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
         Reception reception = Reception.builder()
                 .username(addWorkerCreateRequest.getUsername())
                 .password(passwordEncoder.encode(addWorkerCreateRequest.getPassword()))
@@ -31,6 +43,9 @@ public class ReceptionFactory implements UserRoleFactory {
                 .genderStatus(addWorkerCreateRequest.getGenderStatus())
                 .dateOfBirth(addWorkerCreateRequest.getDateOfBirth())
                 .phone(addWorkerCreateRequest.getPhone())
+                .phone2(addWorkerCreateRequest.getPhone2())
+                .phone3(addWorkerCreateRequest.getPhone3())
+                .degree(addWorkerCreateRequest.getDegree())
                 .homePhone(addWorkerCreateRequest.getHomePhone())
                 .email(addWorkerCreateRequest.getEmail())
                 .address(addWorkerCreateRequest.getAddress())
@@ -41,24 +56,35 @@ public class ReceptionFactory implements UserRoleFactory {
         receptionRepository.save(reception);
     }
     @Override
-    public void updateUser(AddWorkerUpdateRequest addWorkerUpdateRequest) {
-        Reception reception = receptionRepository.findById(addWorkerUpdateRequest.getId())
+    public void updateUser(AddWorkerUpdateRequest request) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(request.getUsername(), request.getEmail(),
+                request.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
+        Reception reception = receptionRepository.findById(request.getId())
                 .orElseThrow(() -> new UserNotFountException("No such Reception found."));
-        reception.setName(addWorkerUpdateRequest.getName());
-        reception.setSurname(addWorkerUpdateRequest.getSurname());
-        reception.setPatronymic(addWorkerUpdateRequest.getPatronymic());
-        reception.setUsername(addWorkerUpdateRequest.getUsername());
-        reception.setAddress(addWorkerUpdateRequest.getAddress());
-        reception.setExperience(addWorkerUpdateRequest.getExperience());
-        reception.setDateOfBirth(addWorkerUpdateRequest.getDateOfBirth());
-        reception.setFinCode(addWorkerUpdateRequest.getFinCode());
-        reception.setHomePhone(addWorkerUpdateRequest.getHomePhone());
-        reception.setGenderStatus(addWorkerUpdateRequest.getGenderStatus());
-        reception.setAuthorities(addWorkerUpdateRequest.getAuthorities());
-        reception.setEmail(addWorkerUpdateRequest.getEmail());
+
+        FieldSetter.setIfNotBlank(request.getName(), reception::setName);
+        FieldSetter.setIfNotBlank(request.getSurname(), reception::setSurname);
+        FieldSetter.setIfNotBlank(request.getPatronymic(), reception::setPatronymic);
+        FieldSetter.setIfNotBlank(request.getUsername(), reception::setUsername);
+        FieldSetter.setIfNotBlank(request.getAddress(), reception::setAddress);
+        FieldSetter.setIfNotNull(request.getExperience(), reception::setExperience);
+        FieldSetter.setIfNotNull(request.getDateOfBirth(), reception::setDateOfBirth);
+        FieldSetter.setIfNotBlank(request.getFinCode(), reception::setFinCode);
+        FieldSetter.setIfNotBlank(request.getHomePhone(), reception::setHomePhone);
+        FieldSetter.setIfNotNull(request.getGenderStatus(), reception::setGenderStatus);
+        FieldSetter.setIfNotEmpty(request.getAuthorities(), reception::setAuthorities);
+        FieldSetter.setIfNotBlank(request.getEmail(), reception::setEmail);
+        FieldSetter.setIfNotBlank(request.getDegree(), reception::setDegree);
+        FieldSetter.setIfNotBlank(request.getPhone(), reception::setPhone);
+        FieldSetter.setIfNotBlank(request.getPhone2(), reception::setPhone2);
+        FieldSetter.setIfNotBlank(request.getPhone3(), reception::setPhone3);
+        FieldSetter.setIfNotBlank(request.getPassword(),
+                pass -> reception.setPassword(passwordEncoder.encode(pass)));
         reception.setEnabled(true);
-        reception.setPassword(passwordEncoder.encode(addWorkerUpdateRequest.getPassword()));
-        reception.setPhone(addWorkerUpdateRequest.getPhone());
         receptionRepository.save(reception);
     }
 

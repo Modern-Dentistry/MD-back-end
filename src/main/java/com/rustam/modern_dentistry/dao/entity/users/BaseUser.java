@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.dao.entity.users;
 
 import com.rustam.modern_dentistry.dao.entity.WorkersWorkSchedule;
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
+import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,9 +39,16 @@ public class BaseUser {
     String name;
     String surname;
     String phone;
-    @Column(unique = true)
     String email;
+    @Column(name = "fin_code")
+    String finCode;
     String username;
+    String patronymic;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender_status")
+    GenderStatus genderStatus;
+    @Column(name = "date_of_birth")
+    LocalDate dateOfBirth;
     String password;
     Boolean enabled;
     @Column(name = "user_type", insertable = false, updatable = false)

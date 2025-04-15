@@ -14,7 +14,8 @@ public class ExcelUtil {
     private static final int MAX_COLUMN_WIDTH = 4500; // Maksimum sütun genişliyi (px ekvivalentində)
     private static final int COLUMN_WIDTH_PADDING = 500; // Sütun genişliyinə əlavə ediləcək piksel sayı
 
-    public static <T> ByteArrayInputStream dataToExcel(List<T> dataList, Class<T> clazz) throws IOException {
+
+    public static <T> ByteArrayInputStream dataToExcel(List<T> dataList, Class<T> clazz)  {
 //        if (dataList == null || dataList.isEmpty()) {
 //            throw new IllegalArgumentException("Data list cannot be null or empty");
 //        }
@@ -33,6 +34,8 @@ public class ExcelUtil {
 
             workbook.write(byteArrayOutputStream);
             return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("Error generating Excel file", e);
         }
     }
 

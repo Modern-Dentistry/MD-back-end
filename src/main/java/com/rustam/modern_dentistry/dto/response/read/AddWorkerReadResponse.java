@@ -15,9 +15,8 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AddWorkerReadResponse {
-    UUID id;
+    String id;
     String username;
-    String password;
     String name;
     String surname;
     String patronymic;
@@ -29,6 +28,7 @@ public class AddWorkerReadResponse {
     String degree;
     String phone;
     String phone2;
+    String phone3;
     String homePhone;
     String email;
     String address;

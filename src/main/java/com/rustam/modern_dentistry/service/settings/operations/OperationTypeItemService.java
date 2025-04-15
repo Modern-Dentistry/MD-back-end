@@ -12,14 +12,13 @@ import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadByIdResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.util.ExcelUtil;
-import com.rustam.modern_dentistry.util.specification.settings.OpTypeItemSearchSpec;
+import com.rustam.modern_dentistry.util.specification.settings.operations.OpTypeItemSearchSpec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
@@ -94,11 +93,7 @@ public class OperationTypeItemService {
     public InputStreamResource exportReservationsToExcel() {
         List<OpTypeItem> operations = repository.findAll();
         var list = operations.stream().map(OP_TYPE_ITEM_MAPPER::toExcelDto).toList();
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, OpTypeItemExcelResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, OpTypeItemExcelResponse.class);
+        return new InputStreamResource(excelFile);
     }
 }

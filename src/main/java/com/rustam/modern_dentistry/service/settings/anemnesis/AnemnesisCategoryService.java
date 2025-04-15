@@ -7,11 +7,10 @@ import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.AnemnesisCatSearchReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisCatReq;
 import com.rustam.modern_dentistry.dto.response.read.AnamnesisCatReadResponse;
-import com.rustam.modern_dentistry.dto.response.read.AnemnesisListReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.ExcelUtil;
-import com.rustam.modern_dentistry.util.specification.settings.AnemnesisCatSpecification;
+import com.rustam.modern_dentistry.util.specification.settings.anemnesis.AnemnesisCatSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
@@ -65,8 +63,8 @@ public class AnemnesisCategoryService {
     }
 
     public void delete(Long id) {
-        var insurance = getAnemnesisCatById(id);
-        repository.delete(insurance);
+        var anamnesisCategory = getAnemnesisCatById(id);
+        repository.delete(anamnesisCategory);
     }
 
     public PageResponse<AnamnesisCategory> search(AnemnesisCatSearchReq request, PageCriteria pageCriteria) {
@@ -79,12 +77,8 @@ public class AnemnesisCategoryService {
     public InputStreamResource exportReservationsToExcel() {
         List<AnamnesisCategory> reservations = repository.findAll();
         var list = reservations.stream().map(ANAMNESIS_CAT_MAPPER::toReadDto).toList();
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnamnesisCatReadResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnamnesisCatReadResponse.class);
+        return new InputStreamResource(excelFile);
     }
 
     protected AnamnesisCategory getAnemnesisCatById(Long id) {
