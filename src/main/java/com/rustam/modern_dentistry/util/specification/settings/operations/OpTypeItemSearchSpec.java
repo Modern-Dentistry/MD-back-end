@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.util.specification.settings;
+package com.rustam.modern_dentistry.util.specification.settings.operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
 import com.rustam.modern_dentistry.dto.request.read.OpTypeItemSearchRequest;

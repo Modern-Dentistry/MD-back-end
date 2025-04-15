@@ -1,10 +1,17 @@
 package com.rustam.modern_dentistry.controller.settings.recipes;
 
 import com.rustam.modern_dentistry.dto.request.create.RecipeCreateRequest;
+import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
+import com.rustam.modern_dentistry.dto.request.read.SearchByNameAndStatus;
 import com.rustam.modern_dentistry.dto.request.update.RecipeUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.RecipeReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.MedicineReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.service.settings.recipes.RecipeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +32,13 @@ public class RecipeController {
     }
 
     @GetMapping("/read")
+    public ResponseEntity<PageResponse<RecipeReadResponse>> read(PageCriteria pageCriteria) {
+        return ResponseEntity.ok(recipeService.read(pageCriteria));
+    }
+
+    @GetMapping("/read-list")
     public ResponseEntity<List<RecipeReadResponse>> read() {
-        return ResponseEntity.ok(recipeService.read());
+        return ResponseEntity.ok(recipeService.readList());
     }
 
     @GetMapping("/read-by-id")
@@ -51,5 +63,19 @@ public class RecipeController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         recipeService.delete(id);
         return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<RecipeReadResponse>> search(PageCriteria pageCriteria,
+                                                                     SearchByNameAndStatus request) {
+        return ResponseEntity.ok(recipeService.search(pageCriteria, request));
+    }
+
+    @GetMapping("/export/excel")
+    public ResponseEntity<InputStreamResource> exportToExcel() {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reseptler.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(recipeService.exportReservationsToExcel());
     }
 }

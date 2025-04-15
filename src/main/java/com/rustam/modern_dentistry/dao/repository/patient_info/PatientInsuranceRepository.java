@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.dao.repository.patient_info;
 
-import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientInsurance;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

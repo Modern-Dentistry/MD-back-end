@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PatientInsuranceBalanceRepository extends JpaRepository<PatientInsuranceBalance, Long> {
 
-    boolean existsByDate(LocalDate date);
+    boolean existsByDateAndPatientInsurance_Id(LocalDate date, Long patientInsuranceId);
 
     List<PatientInsuranceBalance> findAllByPatientInsurance_Id(Long patientInsuranceId);
 

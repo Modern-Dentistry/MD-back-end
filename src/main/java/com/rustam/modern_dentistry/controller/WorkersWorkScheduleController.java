@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.controller;
 
-import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
 import com.rustam.modern_dentistry.dto.request.create.WorkersWorkScheduleRequest;
 import com.rustam.modern_dentistry.dto.request.read.WorkersWorkScheduleSearchRequest;
 import com.rustam.modern_dentistry.dto.response.read.WorkersWorkScheduleResponse;

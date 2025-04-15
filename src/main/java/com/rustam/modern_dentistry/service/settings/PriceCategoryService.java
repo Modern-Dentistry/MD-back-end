@@ -14,7 +14,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
@@ -59,22 +58,18 @@ public class PriceCategoryService {
     }
 
     public List<PriceCategoryReadResponse> search(PriceCategorySearchRequest request) {
-       return priceCategoryRepository
-               .findAll(PriceCategorySpecification.filterBy(request))
-               .stream()
-               .map(MAPPER::toDto)
-               .toList();
+        return priceCategoryRepository
+                .findAll(PriceCategorySpecification.filterBy(request))
+                .stream()
+                .map(MAPPER::toDto)
+                .toList();
     }
 
     public InputStreamResource exportReservationsToExcel() {
         List<PriceCategory> priceCategories = priceCategoryRepository.findAll();
         var list = priceCategories.stream().map(MAPPER::toDto).toList();
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PriceCategoryReadResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PriceCategoryReadResponse.class);
+        return new InputStreamResource(excelFile);
     }
 
     private PriceCategory getPriceCategoryById(Long id) {

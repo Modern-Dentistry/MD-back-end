@@ -51,7 +51,7 @@ public class PriceCategoryController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         priceCategoryService.delete(id);
         return ResponseEntity.status(NO_CONTENT).build();

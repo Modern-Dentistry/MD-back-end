@@ -13,7 +13,7 @@ import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NoTeethFoundException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.teeth.TeethMapper;
-import com.rustam.modern_dentistry.util.specification.TeethSpecification;
+import com.rustam.modern_dentistry.util.specification.settings.teeth.TeethSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

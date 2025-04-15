@@ -23,6 +23,7 @@ public interface PatientAnemnesisMapper {
     @Mapping(target = "patientId", source = "patient.id")
     PatAnamnesisReadRes toReadDto(PatientAnamnesis patient);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "addedByName", source = "doctorName")
     @Mapping(target = "addedDateTime", source = "currentDate")
     void updatePatAnemnesis(@MappingTarget PatientAnamnesis entity,

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.ReservationStatus.ACTIVE;
@@ -88,12 +87,8 @@ public class ReservationService {
     public InputStreamResource exportReservationsToExcel() {
         List<Reservation> reservations = reservationRepository.findAll();
         var list = reservations.stream().map(reservationMapper::toExcelDto).toList();
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, ReservationExcelResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, ReservationExcelResponse.class);
+        return new InputStreamResource(excelFile);
     }
 
     private Reservation getReservationById(Long id) {

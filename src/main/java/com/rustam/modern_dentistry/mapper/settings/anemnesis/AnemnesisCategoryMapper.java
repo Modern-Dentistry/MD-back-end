@@ -4,10 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisCatego
 import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisCatReq;
 import com.rustam.modern_dentistry.dto.response.read.AnamnesisCatReadResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
@@ -19,6 +16,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface AnemnesisCategoryMapper {
     AnemnesisCategoryMapper ANAMNESIS_CAT_MAPPER = Mappers.getMapper(AnemnesisCategoryMapper.class);
 
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     AnamnesisCategory toEntity(AnemnesisCatCreateReq request);
 
     AnamnesisCatReadResponse toReadDto(AnamnesisCategory entity);
