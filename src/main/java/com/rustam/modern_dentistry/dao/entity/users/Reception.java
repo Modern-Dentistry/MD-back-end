@@ -19,13 +19,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Reception extends BaseUser {
-    String patronymic;
-    @Column(unique = true,name = "fin_code")
-    String finCode;
-    @Column(name = "gender_status")
-    GenderStatus genderStatus;
-    @Column(name = "date_of_birth")
-    LocalDate dateOfBirth;
+    String degree;
+    @Column(name = "phone_2")
+    String phone2;
+    @Column(name = "phone_3")
+    String phone3;
     @Column(name = "home_phone")
     String homePhone;
     String address;
