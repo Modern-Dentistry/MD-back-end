@@ -18,6 +18,7 @@ import com.rustam.modern_dentistry.mapper.AddWorkerMapper;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.UserRoleFactory;
 import com.rustam.modern_dentistry.util.specification.UserSpecification;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -190,6 +190,7 @@ public class AddWorkerService {
         return "Silindi";
     }
 
+    @Transactional
     public AddWorkerReadResponse info(UUID id) {
         BaseUser baseUser = baseUserRepository.findById(id)
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
