@@ -1,11 +1,15 @@
 package com.rustam.modern_dentistry.util.factory;
 
+import com.rustam.modern_dentistry.dao.entity.users.Admin;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Reception;
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.repository.ReceptionRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,9 +23,16 @@ public class ReceptionFactory implements UserRoleFactory {
 
     private final ReceptionRepository receptionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UtilService utilService;
 
     @Override
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(addWorkerCreateRequest.getUsername(), addWorkerCreateRequest.getEmail(),
+                addWorkerCreateRequest.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
         Reception reception = Reception.builder()
                 .username(addWorkerCreateRequest.getUsername())
                 .password(passwordEncoder.encode(addWorkerCreateRequest.getPassword()))
@@ -46,8 +57,15 @@ public class ReceptionFactory implements UserRoleFactory {
     }
     @Override
     public void updateUser(AddWorkerUpdateRequest request) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(request.getUsername(), request.getEmail(),
+                request.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
         Reception reception = receptionRepository.findById(request.getId())
                 .orElseThrow(() -> new UserNotFountException("No such Reception found."));
+
         FieldSetter.setIfNotBlank(request.getName(), reception::setName);
         FieldSetter.setIfNotBlank(request.getSurname(), reception::setSurname);
         FieldSetter.setIfNotBlank(request.getPatronymic(), reception::setPatronymic);
