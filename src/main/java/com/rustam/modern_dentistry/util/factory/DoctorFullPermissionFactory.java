@@ -5,7 +5,9 @@ import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.repository.DoctorRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import jakarta.persistence.Column;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,16 @@ public class DoctorFullPermissionFactory implements UserRoleFactory {
 
     private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UtilService utilService;
 
     @Override
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(addWorkerCreateRequest.getUsername(), addWorkerCreateRequest.getEmail(),
+                addWorkerCreateRequest.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
         Doctor doctor = Doctor.builder()
                 .username(addWorkerCreateRequest.getUsername())
                 .password(passwordEncoder.encode(addWorkerCreateRequest.getPassword()))
@@ -48,8 +57,15 @@ public class DoctorFullPermissionFactory implements UserRoleFactory {
 
     @Override
     public void updateUser(AddWorkerUpdateRequest request) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(request.getUsername(), request.getEmail(),
+                request.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
         Doctor doctor = doctorRepository.findById(request.getId())
                 .orElseThrow(() -> new UserNotFountException("No such Doctor found."));
+
         FieldSetter.setIfNotBlank(request.getName(), doctor::setName);
         FieldSetter.setIfNotBlank(request.getSurname(), doctor::setSurname);
         FieldSetter.setIfNotBlank(request.getPatronymic(), doctor::setPatronymic);
