@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
+import com.rustam.modern_dentistry.dao.entity.users.Admin;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Reception;
@@ -88,25 +89,34 @@ public class AddWorkerService {
     public List<AddWorkerReadResponse> read() {
         String currentUserId = utilService.getCurrentUserId();
         BaseUser baseUser = utilService.findByBaseUserId(currentUserId);
-        String role = baseUser.getUserType();
+        Set<Role> roles = baseUser.getAuthorities();
+
         List<? extends BaseUser> users = List.of();
-        if ("ADMIN".equals(role)) {
+
+        if (roles.contains(Role.ADMIN)) {
             users = baseUserRepository.findAll();
-        } else if ("DOCTOR".equals(role)) {
+        } else if (roles.contains(Role.DOCTOR_FULL_PERMISSION)) {
             users = doctorService.readAll();
-        } else if ("RECEPTION".equals(role)) {
+        } else if (roles.contains(Role.RECEPTION)) {
             users = receptionService.findAll();
         }
 
-        return users.stream().map(this::convertToDto).toList();
+        return users.stream()
+                .map(this::convertToDto)
+                .toList();
     }
 
     private AddWorkerReadResponse convertToDto(BaseUser user) {
         AddWorkerReadResponse dto = AddWorkerReadResponse.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .finCode(user.getFinCode())
+                .patronymic(user.getPatronymic())
+                .genderStatus(user.getGenderStatus())
+                .dateOfBirth(user.getDateOfBirth())
                 .phone(user.getPhone())
                 .enabled(user.getEnabled())
                 .authorities(user.getAuthorities())
@@ -117,23 +127,32 @@ public class AddWorkerService {
             dto.setDegree(doctor.getDegree());
             dto.setExperience(doctor.getExperience());
             dto.setColorCode(doctor.getColorCode());
-            dto.setFinCode(doctor.getFinCode());
-            dto.setDateOfBirth(doctor.getDateOfBirth());
-            dto.setGenderStatus(doctor.getGenderStatus());
             dto.setHomePhone(doctor.getHomePhone());
             dto.setPhone2(doctor.getPhone2());
-            dto.setPatronymic(doctor.getPatronymic());
+        } else if (user instanceof Reception reception) {
+            dto.setHomePhone(reception.getHomePhone());
+            dto.setPhone2(reception.getPhone2());
+            dto.setPhone3(reception.getPhone3());
+            dto.setExperience(reception.getExperience());
+            dto.setDegree(reception.getDegree());
+        } else if (user instanceof Admin admin) {
+            dto.setHomePhone(admin.getHomePhone());
+            dto.setPhone2(admin.getPhone2());
+            dto.setPhone3(admin.getPhone3());
+            dto.setExperience(admin.getExperience());
+            dto.setDegree(admin.getDegree());
         }
+
         return dto;
     }
 
     public AddWorkerUpdateResponse update(AddWorkerUpdateRequest addWorkerUpdateRequest) {
         BaseUser baseUser = baseUserRepository.findById(addWorkerUpdateRequest.getId())
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
-//        baseUser.getAuthorities().stream()
-//                .map(roleFactories::get)
-//                .filter(Objects::nonNull)
-//                .forEach(factory -> factory.updateUser(addWorkerUpdateRequest));
+        baseUser.getAuthorities().stream()
+                .map(roleFactories::get)
+                .filter(Objects::nonNull)
+                .forEach(factory -> factory.updateUser(addWorkerUpdateRequest));
         return addWorkerUpdateResponse(addWorkerUpdateRequest);
     }
 
