@@ -7,6 +7,7 @@ import com.rustam.modern_dentistry.dao.repository.AdminRepository;
 import com.rustam.modern_dentistry.dao.repository.DoctorRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
@@ -26,6 +27,12 @@ public class AdminFactory implements UserRoleFactory {
 
     @Override
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(addWorkerCreateRequest.getUsername(), addWorkerCreateRequest.getEmail(),
+                addWorkerCreateRequest.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
         Admin admin = Admin.builder()
                 .username(addWorkerCreateRequest.getUsername())
                 .password(passwordEncoder.encode(addWorkerCreateRequest.getPassword()))
