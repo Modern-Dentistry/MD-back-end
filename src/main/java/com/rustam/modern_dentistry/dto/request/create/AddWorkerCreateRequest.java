@@ -25,7 +25,7 @@ public class AddWorkerCreateRequest {
     @Size(min = 3, max = 20, message = "İstifadəçi Adı 3-20 simvol arasında olmalıdır")
     String username;
     @Pattern(
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$",
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!_]).{8,}$",
             message = "Şifrə minimum 8 simvol olmalı, böyük/kiçik hərf, rəqəm və xüsusi simvol içerməlidir."
     )
     String password;
