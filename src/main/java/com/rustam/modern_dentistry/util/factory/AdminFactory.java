@@ -62,6 +62,12 @@ public class AdminFactory implements UserRoleFactory {
 
     @Override
     public void updateUser(AddWorkerUpdateRequest request) {
+        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(request.getUsername(), request.getEmail(),
+                request.getFinCode(), null
+        );
+        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
+            throw new ExistsException("bu fieldlar database-de movcuddur");
+        }
         Admin admin = adminRepository.findById(request.getId())
                 .orElseThrow(() -> new UserNotFountException("No such Admin found."));
 
