@@ -16,6 +16,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface AnemnesisListMapper {
     AnemnesisListMapper ANAMNESIS_LIST_MAPPER = Mappers.getMapper(AnemnesisListMapper.class);
 
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     AnamnesisList toEntity(AnemnesisListCreateReq request);
 
     AnemnesisListReadResponse toReadDto(AnamnesisList entity);

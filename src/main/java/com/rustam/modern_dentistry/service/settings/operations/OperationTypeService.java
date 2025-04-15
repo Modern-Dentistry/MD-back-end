@@ -16,7 +16,7 @@ import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.service.settings.InsuranceCompanyService;
 import com.rustam.modern_dentistry.util.ExcelUtil;
-import com.rustam.modern_dentistry.util.specification.settings.OpTypeSpecification;
+import com.rustam.modern_dentistry.util.specification.settings.operations.OpTypeSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,7 +40,7 @@ public class OperationTypeService {
     public void create(OpTypeCreateRequest request) {
         var opType = OP_TYPE_MAPPER.toEntity(request);
         if (request.getInsurances() != null) {
-            var insurances = getInsurances(request.getInsurances(),  opType);
+            var insurances = getInsurances(request.getInsurances(), opType);
             opType.setInsurances(insurances);
         }
         repository.save(opType);
@@ -94,12 +93,8 @@ public class OperationTypeService {
     public InputStreamResource exportReservationsToExcel() {
         List<OpType> reservations = repository.findAll();
         var list = reservations.stream().map(OP_TYPE_MAPPER::toExcelDto).toList();
-        try {
-            ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, OperationTypeExcelResponse.class);
-            return new InputStreamResource(excelFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error generating Excel file", e);
-        }
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, OperationTypeExcelResponse.class);
+        return new InputStreamResource(excelFile);
     }
 
     // Helper methods

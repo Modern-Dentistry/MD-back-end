@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
@@ -16,8 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class PatInsuranceBalanceUpdateReq {
-    LocalDate date;
-    BigDecimal amount;
-    Long patientInsuranceId;
+public class MedicineUpdateRequest {
+    String name;
+    String description;
 }

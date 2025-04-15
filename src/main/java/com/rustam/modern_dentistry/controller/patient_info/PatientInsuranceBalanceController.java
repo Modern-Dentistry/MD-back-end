@@ -53,3 +53,26 @@ public class PatientInsuranceBalanceController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 }
+
+//    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<Void> createUser(@RequestPart("patBalance") @Valid PatInsuranceBalanceCreateReq patBalance,
+//                                           @RequestPart("image") MultipartFile image) {
+//        patientInsuranceBalanceService.create(patBalance, image);
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @GetMapping("/image/{fileName}")
+//    public ResponseEntity<InputStreamResource> getImage(@PathVariable @Valid @NotBlank String fileName) {
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")  // Faylı inline göstərmək üçün
+//                .contentType(MediaType.IMAGE_JPEG)
+//                .body(patientInsuranceBalanceService.getFile(fileName));
+//    }
+//
+//    @GetMapping("/download/image/{fileName}")
+//    public ResponseEntity<InputStreamResource> downloadImage(@PathVariable @Valid @NotBlank String fileName) {
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")  // Faylı inline göstərmək üçün
+//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                .body(patientInsuranceBalanceService.getFile(fileName));
+//    }
