@@ -30,6 +30,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ExceptionResponseMessages> notFoundException(NotFoundException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.NOT_FOUND) ,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(WorkersWorkScheduleNotFoundException.class)
     public ResponseEntity<ExceptionResponseMessages> workersWorkScheduleNotFoundException(WorkersWorkScheduleNotFoundException ex) {
         return new ResponseEntity<>(
