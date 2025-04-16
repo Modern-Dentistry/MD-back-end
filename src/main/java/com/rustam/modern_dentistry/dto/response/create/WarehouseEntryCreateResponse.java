@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dto.response.create;
 
 import com.rustam.modern_dentistry.dao.entity.warehouse_entry.WarehouseEntryProduct;
+import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryProductResponse;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
 import lombok.*;
@@ -21,7 +22,7 @@ public class WarehouseEntryCreateResponse {
 
     LocalTime time;
 
-    List<WarehouseEntryProduct> warehouseEntryProducts;
+    List<WarehouseEntryProductResponse> warehouseEntryProducts;
 
     String description;
 }
