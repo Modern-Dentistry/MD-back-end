@@ -54,4 +54,11 @@ public class WarehouseEntryController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping(path = "/delete-entry-product/warehouse-entry/{id}/warehouse-entry-product/{productId}")
+    public ResponseEntity<Void> deleteEntryProduct(@PathVariable Long id,@PathVariable Long productId){
+        warehouseEntryService.deleteEntryProduct(id,productId);
+        return ResponseEntity.ok().build();
+    }
+
+
 }
