@@ -21,7 +21,7 @@ public class WarehouseEntryUpdateRequest {
 
     LocalTime time;
 
-    List<WarehouseEntryProductCreateRequest> warehouseEntryProductCreateRequests;
+    List<WarehouseEntryProductUpdateRequest> warehouseEntryProductUpdateRequests;
 
     String description;
 }
