@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
+import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
@@ -8,9 +9,7 @@ import com.rustam.modern_dentistry.dao.repository.GeneralCalendarRepository;
 import com.rustam.modern_dentistry.dto.request.create.NewAppointmentRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAppointmentRequest;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
-import com.rustam.modern_dentistry.dto.response.read.GeneralCalendarResponse;
-import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
-import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.*;
 import com.rustam.modern_dentistry.exception.custom.DoctorIsPatientsWereNotFound;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NoSuchPatientWasFound;
@@ -22,8 +21,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -151,5 +152,11 @@ public class GeneralCalendarService {
     public SelectingPatientToReadResponse findByPatientId(Long patientId) {
         return generalCalendarRepository.findByPatientId(patientId)
                 .orElseThrow(() -> new NoSuchPatientWasFound("bele bir patient tapilmadi"));
+    }
+
+    public List<ReadRooms> read() {
+        return Arrays.stream(Room.values())
+                .map(role -> new ReadRooms(role.name()))
+                .collect(Collectors.toList());
     }
 }
