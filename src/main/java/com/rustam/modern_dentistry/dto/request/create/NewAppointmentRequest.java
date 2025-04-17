@@ -22,8 +22,6 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewAppointmentRequest {
     @NotNull
-    UUID doctorId;
-    @NotNull
     Room room;
     @NotNull(message = "patient bos ola bilmez")
     Long patientId;
@@ -37,4 +35,5 @@ public class NewAppointmentRequest {
     LocalTime time;
 
     LocalTime period;
+    
 }
