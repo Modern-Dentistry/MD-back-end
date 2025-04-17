@@ -71,6 +71,8 @@ public class AppointmentTypeService {
 
     public void delete(Long id) {
         AppointmentType appointmentType = findById(id);
+        appointmentType.getCalendars().forEach(calendar -> calendar.getAppointmentTypes().remove(appointmentType));
+        appointmentTypeRepository.save(appointmentType);
         appointmentTypeRepository.delete(appointmentType);
     }
 
