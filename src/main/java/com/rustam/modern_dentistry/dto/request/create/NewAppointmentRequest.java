@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -28,6 +29,8 @@ public class NewAppointmentRequest {
     Long patientId;
 
     Appointment appointment;
+
+    List<AppointmentTypeRequestId> appointmentTypeRequestIds;
 
     LocalDate date;
 
