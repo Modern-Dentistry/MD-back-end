@@ -35,4 +35,5 @@ public class NewAppointmentRequest {
     LocalTime time;
 
     LocalTime period;
+    
 }
