@@ -5,10 +5,7 @@ import com.rustam.modern_dentistry.dto.request.create.NewAppointmentRequest;
 import com.rustam.modern_dentistry.dto.request.delete.DeleteAppointmentRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAppointmentRequest;
 import com.rustam.modern_dentistry.dto.response.create.NewAppointmentResponse;
-import com.rustam.modern_dentistry.dto.response.read.GeneralCalendarResponse;
-import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
-import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
-import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.*;
 import com.rustam.modern_dentistry.service.GeneralCalendarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -62,5 +59,10 @@ public class GeneralCalendarController {
     @PutMapping(path = "/update-appointment")
     public ResponseEntity<NewAppointmentResponse> updateAppointment(@Valid @RequestBody UpdateAppointmentRequest updateAppointmentRequest){
         return new ResponseEntity<>(generalCalendarService.update(updateAppointmentRequest),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/read-rooms")
+    public ResponseEntity<List<ReadRooms>> readRooms(){
+        return new ResponseEntity<>(generalCalendarService.read(),HttpStatus.OK);
     }
 }
