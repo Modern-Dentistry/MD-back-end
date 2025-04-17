@@ -65,4 +65,5 @@ public class GeneralCalendarController {
     public ResponseEntity<List<ReadRooms>> readRooms(){
         return new ResponseEntity<>(generalCalendarService.read(),HttpStatus.OK);
     }
+
 }
