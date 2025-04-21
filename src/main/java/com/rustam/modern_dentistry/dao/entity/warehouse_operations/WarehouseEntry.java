@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.dao.entity.warehouse_entry;
+package com.rustam.modern_dentistry.dao.entity.warehouse_operations;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

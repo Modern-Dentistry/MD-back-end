@@ -1,24 +1,21 @@
-package com.rustam.modern_dentistry.service.warehouse_entry;
+package com.rustam.modern_dentistry.service.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
-import com.rustam.modern_dentistry.dao.entity.warehouse_entry.WarehouseEntry;
-import com.rustam.modern_dentistry.dao.entity.warehouse_entry.WarehouseEntryProduct;
-import com.rustam.modern_dentistry.dao.repository.warehouse_entry.WarehouseEntryRepository;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
+import com.rustam.modern_dentistry.dao.repository.warehouse_operations.WarehouseEntryRepository;
 import com.rustam.modern_dentistry.dto.request.create.WarehouseEntryCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.WarehouseEntrySearchRequest;
+import com.rustam.modern_dentistry.dto.request.read.WarehouseSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.WarehouseEntryProductUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.update.WarehouseEntryUpdateRequest;
-import com.rustam.modern_dentistry.dto.response.create.ProductCategoryResponse;
 import com.rustam.modern_dentistry.dto.response.create.WarehouseEntryCreateResponse;
-import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryProductResponse;
-import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryReadResponse;
-import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryResponse;
-import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.dto.response.read.*;
 import com.rustam.modern_dentistry.exception.custom.WarehouseEntryNotFoundException;
 import com.rustam.modern_dentistry.mapper.warehouse_operations.WarehouseEntryMapper;
-import com.rustam.modern_dentistry.service.settings.product.ProductCategoryService;
 import com.rustam.modern_dentistry.service.settings.product.ProductService;
 import com.rustam.modern_dentistry.util.specification.warehouse_entry.WarehouseEntrySpecification;
+import com.rustam.modern_dentistry.util.specification.warehouse_entry.WarehouseSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +23,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -249,4 +244,33 @@ public class WarehouseEntryService {
     }
 
 
+    public List<WarehouseReadResponse> readWarehouse() {
+        return warehouseEntryRepository.readWarehouse().stream()
+                .map(p -> new WarehouseReadResponse(
+                        p.getId(),
+                        p.getCategoryName(),
+                        p.getProductName(),
+                        p.getProductNo(),
+                        p.getSumQuantity()
+                ))
+                .toList();
+    }
+
+    public List<WarehouseReadResponse> searchWarehouse(WarehouseSearchRequest request) {
+        List<WarehouseReadProjection> projections = warehouseEntryRepository.readWarehouse(
+                request.getCategoryId(),
+                request.getProductName(),
+                request.getProductNo()
+        );
+
+        return projections.stream()
+                .map(p -> new WarehouseReadResponse(
+                        p.getId(),
+                        p.getCategoryName(),
+                        p.getProductName(),
+                        p.getProductNo(),
+                        p.getSumQuantity()
+                ))
+                .collect(Collectors.toList());
+    }
 }

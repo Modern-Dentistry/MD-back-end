@@ -1,8 +1,6 @@
-package com.rustam.modern_dentistry.dao.entity.warehouse_entry;
+package com.rustam.modern_dentistry.dao.entity.warehouse_operations;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.rustam.modern_dentistry.dao.entity.settings.product.Category;
-import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
