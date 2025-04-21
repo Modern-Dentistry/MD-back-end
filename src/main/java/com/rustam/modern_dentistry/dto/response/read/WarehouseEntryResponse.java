@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
-import com.rustam.modern_dentistry.dao.entity.warehouse_entry.WarehouseEntryProduct;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
