@@ -1,11 +1,8 @@
 package com.rustam.modern_dentistry.util.specification.warehouse_entry;
 
-import com.rustam.modern_dentistry.dao.entity.warehouse_entry.WarehouseEntry;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
 import com.rustam.modern_dentistry.dto.request.read.WarehouseEntrySearchRequest;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class WarehouseEntrySpecification {
 
