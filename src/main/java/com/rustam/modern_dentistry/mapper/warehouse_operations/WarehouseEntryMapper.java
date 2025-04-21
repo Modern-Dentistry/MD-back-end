@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.mapper.warehouse_operations;
 
-import com.rustam.modern_dentistry.dao.entity.warehouse_entry.WarehouseEntry;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
 import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
