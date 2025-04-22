@@ -18,5 +18,8 @@ public interface PatientInsuranceBalanceMapper {
     @Mapping(target = "patientInsuranceId", source = "patientInsurance.id")
     PatInsuranceBalanceReadResponse toReadDto(PatientInsuranceBalance entity);
 
-    void update(@MappingTarget PatientInsuranceBalance entity, PatInsuranceBalanceUpdateReq request);
+    void update(@MappingTarget PatientInsuranceBalance entity,
+                PatInsuranceBalanceUpdateReq request,
+                String fileName
+    );
 }

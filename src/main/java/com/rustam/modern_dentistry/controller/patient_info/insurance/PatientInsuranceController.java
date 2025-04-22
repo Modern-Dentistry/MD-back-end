@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.controller.patient_info;
+package com.rustam.modern_dentistry.controller.patient_info.insurance;
 
 import com.rustam.modern_dentistry.dto.request.create.PatientInsuranceCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceUpdateReq;

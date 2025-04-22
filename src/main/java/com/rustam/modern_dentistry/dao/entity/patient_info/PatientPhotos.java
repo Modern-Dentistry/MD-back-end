@@ -1,10 +1,10 @@
 package com.rustam.modern_dentistry.dao.entity.patient_info;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static jakarta.persistence.EnumType.STRING;
@@ -16,21 +16,22 @@ import static jakarta.persistence.FetchType.LAZY;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "patient_insurance_balance ")
-public class PatientInsuranceBalance {
+@Table(name = "patient_photos")
+public class PatientPhotos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     LocalDate date;
-    BigDecimal amount;
+    String description;
     String fileName;
 
     @Enumerated(STRING)
     Status status;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "patient_insurance_id", nullable = false)
-    PatientInsurance patientInsurance;
+    @ManyToOne(fetch =  LAZY)
+    @JoinColumn(name = "patient_id", referencedColumnName = "id")
+    Patient patient;
 
     @PrePersist
     public void prePersist() {

@@ -23,8 +23,3 @@ spring:
 server:
   port: 5555
   address: 0.0.0.0
-
-file:
-  path:
-    pat-insurance-balance: src/main/java/com/rustam/modern_dentistry/upload/patient/insurance/balance
-    xray: src/main/java/com/rustam/modern_dentistry/upload/patient/xray

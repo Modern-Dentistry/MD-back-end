@@ -1,12 +1,15 @@
-package com.rustam.modern_dentistry.controller.patient_info;
+package com.rustam.modern_dentistry.controller.patient_info.insurance;
 
 import com.rustam.modern_dentistry.dto.request.create.PatInsuranceBalanceCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceBalanceUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatInsuranceBalanceReadResponse;
 import com.rustam.modern_dentistry.service.patient_info.PatientInsuranceBalanceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,9 +21,10 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class PatientInsuranceBalanceController {
     private final PatientInsuranceBalanceService patientInsuranceBalanceService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Void> create(@RequestBody PatInsuranceBalanceCreateReq request) {
-        patientInsuranceBalanceService.create(request);
+    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createUser(@RequestPart("obj") @Valid PatInsuranceBalanceCreateReq patBalance,
+                                           @RequestPart("file") MultipartFile file) {
+        patientInsuranceBalanceService.create(patBalance, file);
         return ResponseEntity.ok().build();
     }
 
@@ -36,8 +40,9 @@ public class PatientInsuranceBalanceController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id,
-                                       @RequestBody PatInsuranceBalanceUpdateReq request) {
-        patientInsuranceBalanceService.update(id, request);
+                                       @RequestPart("obj") PatInsuranceBalanceUpdateReq request,
+                                       @RequestPart("file") MultipartFile file) {
+        patientInsuranceBalanceService.update(id, request, file);
         return ResponseEntity.ok().build();
     }
 
@@ -53,26 +58,3 @@ public class PatientInsuranceBalanceController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 }
-
-//    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<Void> createUser(@RequestPart("patBalance") @Valid PatInsuranceBalanceCreateReq patBalance,
-//                                           @RequestPart("image") MultipartFile image) {
-//        patientInsuranceBalanceService.create(patBalance, image);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @GetMapping("/image/{fileName}")
-//    public ResponseEntity<InputStreamResource> getImage(@PathVariable @Valid @NotBlank String fileName) {
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")  // Faylı inline göstərmək üçün
-//                .contentType(MediaType.IMAGE_JPEG)
-//                .body(patientInsuranceBalanceService.getFile(fileName));
-//    }
-//
-//    @GetMapping("/download/image/{fileName}")
-//    public ResponseEntity<InputStreamResource> downloadImage(@PathVariable @Valid @NotBlank String fileName) {
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")  // Faylı inline göstərmək üçün
-//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                .body(patientInsuranceBalanceService.getFile(fileName));
-//    }
