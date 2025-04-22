@@ -33,10 +33,10 @@ public class PatientInsuranceBalanceService {
     @Transactional
     public void create(PatInsuranceBalanceCreateReq request, MultipartFile file) {
         checkDate(request.getDate(), request.getPatientInsuranceId());
-        fileService.checkFileIfExist(file);
         var patientInsurance = patientInsuranceService.getPatientInsuranceById(request.getPatientInsuranceId());
         var entity = patientInsuranceBalanceMapper.toEntity(request);
         var newFileName = fileService.getNewFileName(file, "insurance_balance_");
+        fileService.checkFileIfExist(file);
         fileService.writeFile(file, pathPatInsuranceBalance, newFileName);
         entity.setPatientInsurance(patientInsurance);
         entity.setFileName(newFileName);
