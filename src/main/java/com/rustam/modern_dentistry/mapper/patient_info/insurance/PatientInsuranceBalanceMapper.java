@@ -1,6 +1,6 @@
-package com.rustam.modern_dentistry.mapper.patient_info;
+package com.rustam.modern_dentistry.mapper.patient_info.insurance;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientInsuranceBalance;
+import com.rustam.modern_dentistry.dao.entity.patient_info.insurance.PatientInsuranceBalance;
 import com.rustam.modern_dentistry.dto.request.create.PatInsuranceBalanceCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceBalanceUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatInsuranceBalanceReadResponse;

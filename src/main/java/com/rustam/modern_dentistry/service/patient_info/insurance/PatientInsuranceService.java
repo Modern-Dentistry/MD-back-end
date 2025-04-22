@@ -1,7 +1,7 @@
-package com.rustam.modern_dentistry.service.patient_info;
+package com.rustam.modern_dentistry.service.patient_info.insurance;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientInsurance;
-import com.rustam.modern_dentistry.dao.repository.patient_info.PatientInsuranceRepository;
+import com.rustam.modern_dentistry.dao.entity.patient_info.insurance.PatientInsurance;
+import com.rustam.modern_dentistry.dao.repository.patient_info.insurance.PatientInsuranceRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatientInsuranceCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceUpdateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceUpdateStatusReq;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.rustam.modern_dentistry.mapper.patient_info.PatientInsuranceMapper.PATIENT_INSURANCE_MAPPER;
+import static com.rustam.modern_dentistry.mapper.patient_info.insurance.PatientInsuranceMapper.PATIENT_INSURANCE_MAPPER;
 
 @Service
 @RequiredArgsConstructor

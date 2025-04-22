@@ -1,13 +1,13 @@
-package com.rustam.modern_dentistry.service.patient_info;
+package com.rustam.modern_dentistry.service.patient_info.insurance;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientInsuranceBalance;
-import com.rustam.modern_dentistry.dao.repository.patient_info.PatientInsuranceBalanceRepository;
+import com.rustam.modern_dentistry.dao.entity.patient_info.insurance.PatientInsuranceBalance;
+import com.rustam.modern_dentistry.dao.repository.patient_info.insurance.PatientInsuranceBalanceRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatInsuranceBalanceCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceBalanceUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatInsuranceBalanceReadResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
-import com.rustam.modern_dentistry.mapper.patient_info.PatientInsuranceBalanceMapper;
+import com.rustam.modern_dentistry.mapper.patient_info.insurance.PatientInsuranceBalanceMapper;
 import com.rustam.modern_dentistry.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

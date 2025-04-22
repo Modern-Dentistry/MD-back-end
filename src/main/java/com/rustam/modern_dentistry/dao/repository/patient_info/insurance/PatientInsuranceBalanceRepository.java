@@ -1,6 +1,6 @@
-package com.rustam.modern_dentistry.dao.repository.patient_info;
+package com.rustam.modern_dentistry.dao.repository.patient_info.insurance;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientInsuranceBalance;
+import com.rustam.modern_dentistry.dao.entity.patient_info.insurance.PatientInsuranceBalance;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

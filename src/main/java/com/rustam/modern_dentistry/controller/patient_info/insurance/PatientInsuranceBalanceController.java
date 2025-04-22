@@ -3,7 +3,7 @@ package com.rustam.modern_dentistry.controller.patient_info.insurance;
 import com.rustam.modern_dentistry.dto.request.create.PatInsuranceBalanceCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceBalanceUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatInsuranceBalanceReadResponse;
-import com.rustam.modern_dentistry.service.patient_info.PatientInsuranceBalanceService;
+import com.rustam.modern_dentistry.service.patient_info.insurance.PatientInsuranceBalanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
