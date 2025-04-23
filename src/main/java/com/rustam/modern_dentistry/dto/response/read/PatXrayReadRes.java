@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class PatPhotosReadRes {
+public class PatXrayReadRes {
     Long id;
     LocalDate date;
     String description;

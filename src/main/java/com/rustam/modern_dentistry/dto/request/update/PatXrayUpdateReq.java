@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.dto.response.read;
+package com.rustam.modern_dentistry.dto.request.update;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,10 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class PatPhotosReadRes {
-    Long id;
+public class PatXrayUpdateReq {
     LocalDate date;
     String description;
-    Long patientId;
-    String url;
 }
