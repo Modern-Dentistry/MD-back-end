@@ -1,7 +1,6 @@
 package com.rustam.modern_dentistry.dto.request.create;
 
 import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +27,7 @@ public class ReservationCreateRequest {
     LocalTime endTime;
     Set<WeekDay> weekDays;
 
-    @NotBlank(message = "Pasienti seçin.")
+    @NotNull(message = "Pasienti seçin.")
     UUID doctorId;
 
     @NotNull(message = "Həkimi seçin.")

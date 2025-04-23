@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,11 +21,15 @@ import static lombok.AccessLevel.PRIVATE;
 public class ReservationReadResponse {
     Long id;
     String mobilePhone;
-    LocalDate startDate;
-    LocalDate endDate;
-    LocalTime startTime;
-    LocalTime endTime;
     String doctor;
     String patient;
     ReservationStatus status;
+    LocalDate startDate;
+    LocalDate endDate;
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    LocalTime startTime;
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    LocalTime endTime;
 }

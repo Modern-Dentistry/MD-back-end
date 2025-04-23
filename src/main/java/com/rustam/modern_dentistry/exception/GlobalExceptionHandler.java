@@ -38,6 +38,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidDateOrTimeException.class)
+    public ResponseEntity<ExceptionResponseMessages> invalidDateOrTimeException(InvalidDateOrTimeException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.BAD_REQUEST) ,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(WorkersWorkScheduleNotFoundException.class)
     public ResponseEntity<ExceptionResponseMessages> workersWorkScheduleNotFoundException(WorkersWorkScheduleNotFoundException ex) {
         return new ResponseEntity<>(

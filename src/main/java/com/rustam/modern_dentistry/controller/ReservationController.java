@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.controller;
 
-import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dto.request.create.ReservationCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
@@ -33,7 +32,7 @@ public class ReservationController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<PageResponse<Reservation>> read(PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<ReservationReadResponse>> read(PageCriteria pageCriteria) {
         return ResponseEntity.ok(reservationService.read(pageCriteria));
     }
 
@@ -61,7 +60,7 @@ public class ReservationController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<Reservation>> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<ReservationReadResponse>> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
         return ResponseEntity.ok(reservationService.search(request, pageCriteria));
     }
 
