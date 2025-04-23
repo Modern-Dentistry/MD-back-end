@@ -35,6 +35,7 @@ public class PatientXrayService {
     }
 
     public List<PatXrayReadRes> read(Long patientId) {
+        
         return null;
     }
 
