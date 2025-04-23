@@ -12,8 +12,6 @@ public class PatPhotosReadRes {
     Long id;
     LocalDate date;
     String description;
-    String fileName;
-    Status status;
     Long patientId;
     String url;
 }

@@ -26,15 +26,7 @@ public class PatientPhotos {
     String description;
     String fileName;
 
-    @Enumerated(STRING)
-    Status status;
-
     @ManyToOne(fetch =  LAZY)
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     Patient patient;
-
-    @PrePersist
-    public void prePersist() {
-        status = Status.ACTIVE;
-    }
 }

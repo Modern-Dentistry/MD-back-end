@@ -35,13 +35,13 @@ public class PatientPhotosController {
     }
 
     @GetMapping("/read-by-id/{id}")
-    public ResponseEntity<PatPhotosReadRes> readByİd(@PathVariable Long id) {
+    public ResponseEntity<PatPhotosReadRes> readById(@PathVariable Long id) {
         return ResponseEntity.ok(patientPhotosService.readById(id));
     }
 
     @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> update(@PathVariable Long id,
-                                       @RequestPart("obj") PatPhotosUpdateReq request,
+                                       @RequestPart("data") PatPhotosUpdateReq request,
                                        @RequestPart("file") MultipartFile file) {
         patientPhotosService.update(id, request, file);
         return ResponseEntity.ok().build();

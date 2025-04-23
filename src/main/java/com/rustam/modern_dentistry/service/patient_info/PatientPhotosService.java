@@ -1,13 +1,14 @@
 package com.rustam.modern_dentistry.service.patient_info;
 
+import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
 import com.rustam.modern_dentistry.dao.repository.patient_info.PatientPhotosRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatPhotosCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatPhotosUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatPhotosReadRes;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.patient_info.PatientPhotosMapper;
 import com.rustam.modern_dentistry.service.FileService;
 import com.rustam.modern_dentistry.util.UtilService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,12 +44,28 @@ public class PatientPhotosService {
     }
 
     public PatPhotosReadRes readById(Long id) {
-        return null;
+        var entity = getPatientPhotos(id);
+        return patientPhotosMapper.toResponse(entity, getUrl(pathPatPhoto, entity.getFileName()));
     }
 
     public void update(Long id, PatPhotosUpdateReq request, MultipartFile file) {
+        var patientPhotos = getPatientPhotos(id);
+        var newFileName = fileService.getNewFileName(file, "patient_photo_");
+        fileService.updateFile(file, pathPatPhoto, patientPhotos.getFileName(), newFileName);
+        patientPhotosMapper.update(patientPhotos, request, newFileName);
+        patientPhotosRepository.save(patientPhotos);
     }
 
     public void delete(Long id) {
+        var patientInsurance = getPatientPhotos(id);
+        var fullPath = pathPatPhoto + "/" + patientInsurance.getFileName();
+        patientPhotosRepository.delete(patientInsurance);
+        fileService.deleteFile(fullPath);
+    }
+
+    private PatientPhotos getPatientPhotos(Long id) {
+        return patientPhotosRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Bu ID-də istifadəçi şəkili tapımadı:" + id)
+        );
     }
 }

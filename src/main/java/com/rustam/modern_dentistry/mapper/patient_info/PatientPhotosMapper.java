@@ -2,11 +2,9 @@ package com.rustam.modern_dentistry.mapper.patient_info;
 
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
 import com.rustam.modern_dentistry.dto.request.create.PatPhotosCreateReq;
+import com.rustam.modern_dentistry.dto.request.update.PatPhotosUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatPhotosReadRes;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -18,6 +16,11 @@ public interface PatientPhotosMapper {
 
     PatientPhotos toEntity(PatPhotosCreateReq request, String fileName);
 
-    @Mapping(target = "patientId", source = "patient.id")
+    @Mapping(target = "patientId", source = "entity.patient.id")
     PatPhotosReadRes toResponse(PatientPhotos entity, String url);
+
+    void update(@MappingTarget PatientPhotos entity,
+                PatPhotosUpdateReq request,
+                String fileName
+    );
 }
