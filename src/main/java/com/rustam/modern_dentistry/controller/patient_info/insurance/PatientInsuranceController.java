@@ -1,10 +1,10 @@
-package com.rustam.modern_dentistry.controller.patient_info;
+package com.rustam.modern_dentistry.controller.patient_info.insurance;
 
 import com.rustam.modern_dentistry.dto.request.create.PatientInsuranceCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceUpdateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceUpdateStatusReq;
 import com.rustam.modern_dentistry.dto.response.read.PatientInsuranceReadResponse;
-import com.rustam.modern_dentistry.service.patient_info.PatientInsuranceService;
+import com.rustam.modern_dentistry.service.patient_info.insurance.PatientInsuranceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

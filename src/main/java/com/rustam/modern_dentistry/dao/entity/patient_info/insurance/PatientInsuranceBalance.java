@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.dao.entity.patient_info;
+package com.rustam.modern_dentistry.dao.entity.patient_info.insurance;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
@@ -23,6 +23,7 @@ public class PatientInsuranceBalance {
     Long id;
     LocalDate date;
     BigDecimal amount;
+    String fileName;
 
     @Enumerated(STRING)
     Status status;
