@@ -11,7 +11,6 @@ import com.rustam.modern_dentistry.dto.response.excel.ReservationExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.ReservationUpdateResponse;
-import com.rustam.modern_dentistry.exception.custom.InvalidDateOrTimeException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.ReservationMapper;
 import com.rustam.modern_dentistry.util.ExcelUtil;
@@ -25,8 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.ReservationStatus.ACTIVE;
@@ -43,7 +40,6 @@ public class ReservationService {
 
     @Transactional
     public ReservationCreateResponse create(ReservationCreateRequest request) {
-        validateDatesAndTimes(request.getStartDate(), request.getEndDate(), request.getStartTime(), request.getEndTime());
         var doctor = doctorService.findById(request.getDoctorId());
         var patient = utilService.findByPatientId(request.getPatientId());
         var queueReservation = reservationMapper.toEntity(request, doctor, patient);
@@ -63,7 +59,6 @@ public class ReservationService {
     }
 
     public ReservationUpdateResponse update(Long id, ReservationUpdateRequest request) {
-        validateDatesAndTimes(request.getStartDate(), request.getEndDate(),  request.getStartTime(), request.getEndTime());
         var reservation = getReservationById(id);
         var doctor = doctorService.findById(request.getDoctorId());
         var patient = utilService.findByPatientId(request.getPatientId());
@@ -107,19 +102,4 @@ public class ReservationService {
     private List<ReservationReadResponse> getContentResponse(List<Reservation> content) {
         return content.stream().map((reservationMapper::toReadDto)).toList();
     }
-
-
-    private void validateDatesAndTimes(LocalDate startDate,
-                                       LocalDate endDate,
-                                       LocalTime startTime,
-                                       LocalTime endTime) {
-        if (endDate.isBefore(startDate)) {
-            throw new InvalidDateOrTimeException("Bitmə tarixi başlama tarixindən əvvəl ola bilməz");
-        }
-
-        if (startDate.isEqual(endDate) && endTime.isBefore(startTime)) {
-            throw new InvalidDateOrTimeException("Bitmə vaxtı başlama vaxtından əvvəl ola bilməz");
-        }
-    }
-
 }
