@@ -49,17 +49,17 @@ public class PatientPhotosService {
     }
 
     public void update(Long id, PatPhotosUpdateReq request, MultipartFile file) {
-        var patientPhotos = getPatientPhotos(id);
+        var patientPhoto = getPatientPhotos(id);
         var newFileName = fileService.getNewFileName(file, "patient_photo_");
-        fileService.updateFile(file, pathPatPhoto, patientPhotos.getFileName(), newFileName);
-        patientPhotosMapper.update(patientPhotos, request, newFileName);
-        patientPhotosRepository.save(patientPhotos);
+        fileService.updateFile(file, pathPatPhoto, patientPhoto.getFileName(), newFileName);
+        patientPhotosMapper.update(patientPhoto, request, newFileName);
+        patientPhotosRepository.save(patientPhoto);
     }
 
     public void delete(Long id) {
-        var patientInsurance = getPatientPhotos(id);
-        var fullPath = pathPatPhoto + "/" + patientInsurance.getFileName();
-        patientPhotosRepository.delete(patientInsurance);
+        var patientPhoto = getPatientPhotos(id);
+        var fullPath = pathPatPhoto + "/" + patientPhoto.getFileName();
+        patientPhotosRepository.delete(patientPhoto);
         fileService.deleteFile(fullPath);
     }
 
