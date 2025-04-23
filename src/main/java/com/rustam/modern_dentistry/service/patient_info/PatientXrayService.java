@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.service.patient_info;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientXray;
 import com.rustam.modern_dentistry.dao.repository.patient_info.PatientXrayRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatXrayCreateReq;

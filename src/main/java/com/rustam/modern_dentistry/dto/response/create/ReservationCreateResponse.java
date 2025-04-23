@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dto.response.create;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ReservationStatus;
 import lombok.AllArgsConstructor;
@@ -21,12 +22,16 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class ReservationCreateResponse {
     Long id;
-    LocalDate startDate;
-    LocalDate endDate;
-    LocalTime startTime;
-    LocalTime endTime;
     Set<WeekDay> weekDays;
     String doctorId;
     Long patientId;
     ReservationStatus status;
+    LocalDate startDate;
+    LocalDate endDate;
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    LocalTime startTime;
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    LocalTime endTime;
 }

@@ -1,10 +1,7 @@
 package com.rustam.modern_dentistry.controller.patient_info;
 
-import com.rustam.modern_dentistry.dto.request.create.PatPhotosCreateReq;
 import com.rustam.modern_dentistry.dto.request.create.PatXrayCreateReq;
-import com.rustam.modern_dentistry.dto.request.update.PatPhotosUpdateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatXrayUpdateReq;
-import com.rustam.modern_dentistry.dto.response.read.PatPhotosReadRes;
 import com.rustam.modern_dentistry.dto.response.read.PatXrayReadRes;
 import com.rustam.modern_dentistry.service.patient_info.PatientXrayService;
 import jakarta.validation.Valid;
