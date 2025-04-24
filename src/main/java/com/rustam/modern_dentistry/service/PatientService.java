@@ -10,6 +10,7 @@ import com.rustam.modern_dentistry.dto.request.update.PatientUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.PatientCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.mapper.PatientMapper;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.UtilService;
@@ -37,6 +38,9 @@ public class PatientService {
     DoctorService doctorService;
 
     public PatientCreateResponse create(PatientCreateRequest patientCreateRequest) {
+        if (existsByEmailAndFinCode(patientCreateRequest.getEmail(),patientCreateRequest.getFinCode())){
+            throw new ExistsException("bu email ve ya finkod movcutdur");
+        }
         Doctor doctor = doctorService.findById(patientCreateRequest.getDoctor_id());
         Patient patient = Patient.builder()
                 .name(patientCreateRequest.getName())
@@ -98,5 +102,9 @@ public class PatientService {
         List<PatientReadResponse> list = patientMapper.toDtos(patients);
         ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PatientReadResponse.class);
         return new InputStreamResource(excelFile);
+    }
+
+    public Boolean existsByEmailAndFinCode(String email,String finCode){
+        return patientRepository.existsByEmailOrFinCode(email,finCode);
     }
 }
