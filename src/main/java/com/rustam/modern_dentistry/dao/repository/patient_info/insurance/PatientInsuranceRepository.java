@@ -1,6 +1,6 @@
-package com.rustam.modern_dentistry.dao.repository.patient_info;
+package com.rustam.modern_dentistry.dao.repository.patient_info.insurance;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientInsurance;
+import com.rustam.modern_dentistry.dao.entity.patient_info.insurance.PatientInsurance;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,6 +23,6 @@ public interface PatientInsuranceRepository extends JpaRepository<PatientInsuran
            "     (CASE WHEN pi.status = 'ACTIVE' THEN 'PASSIVE' ELSE 'ACTIVE' END) " +
            "     ELSE 'PASSIVE' END " +
            "WHERE pi.patient.id = :patientId AND (pi.status = 'ACTIVE' OR pi.id = :id)")
-    int updatePatientInsuranceStatus(@Param("id") Long id, @Param("patientId") Long patientId);
+    void updatePatientInsuranceStatus(@Param("id") Long id, @Param("patientId") Long patientId);
 
 }

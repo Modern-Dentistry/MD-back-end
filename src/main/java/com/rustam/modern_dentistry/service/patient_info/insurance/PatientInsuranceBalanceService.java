@@ -1,38 +1,46 @@
-package com.rustam.modern_dentistry.service.patient_info;
+package com.rustam.modern_dentistry.service.patient_info.insurance;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientInsuranceBalance;
-import com.rustam.modern_dentistry.dao.repository.patient_info.PatientInsuranceBalanceRepository;
+import com.rustam.modern_dentistry.dao.entity.patient_info.insurance.PatientInsuranceBalance;
+import com.rustam.modern_dentistry.dao.repository.patient_info.insurance.PatientInsuranceBalanceRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatInsuranceBalanceCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatInsuranceBalanceUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatInsuranceBalanceReadResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
-import com.rustam.modern_dentistry.mapper.patient_info.PatientInsuranceBalanceMapper;
+import com.rustam.modern_dentistry.mapper.patient_info.insurance.PatientInsuranceBalanceMapper;
+import com.rustam.modern_dentistry.service.FileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.PASSIVE;
+import static com.rustam.modern_dentistry.util.constants.Directory.getUrl;
+import static com.rustam.modern_dentistry.util.constants.Directory.pathPatInsuranceBalance;
 
 @Service
 @RequiredArgsConstructor
 public class PatientInsuranceBalanceService {
+    private final FileService fileService;
     private final PatientInsuranceService patientInsuranceService;
     private final PatientInsuranceBalanceMapper patientInsuranceBalanceMapper;
     private final PatientInsuranceBalanceRepository patientInsuranceBalanceRepository;
 
-//    @Value("${file.path.pat-insurance-balance}")
-//    private String uploadDir;
-
-    public void create(PatInsuranceBalanceCreateReq request) {
+    @Transactional
+    public void create(PatInsuranceBalanceCreateReq request, MultipartFile file) {
         checkDate(request.getDate(), request.getPatientInsuranceId());
         var patientInsurance = patientInsuranceService.getPatientInsuranceById(request.getPatientInsuranceId());
         var entity = patientInsuranceBalanceMapper.toEntity(request);
+        var newFileName = fileService.getNewFileName(file, "insurance_balance_");
+        fileService.checkFileIfExist(file);
+        fileService.writeFile(file, pathPatInsuranceBalance, newFileName);
         entity.setPatientInsurance(patientInsurance);
+        entity.setFileName(newFileName);
+
         patientInsuranceBalanceRepository.save(entity);
     }
 
@@ -45,13 +53,19 @@ public class PatientInsuranceBalanceService {
 
     public PatInsuranceBalanceReadResponse readById(Long id) {
         var patientInsurance = getPatientInsurance(id);
-        return patientInsuranceBalanceMapper.toReadDto(patientInsurance);
+        var response = patientInsuranceBalanceMapper.toReadDto(patientInsurance);
+        response.setUrl(getUrl(pathPatInsuranceBalance, patientInsurance.getFileName()));
+        return response;
     }
 
-    public void update(Long id, PatInsuranceBalanceUpdateReq request) {
-        checkDate(request.getDate(), request.getPatientInsuranceId());
+    @Transactional
+    public void update(Long id, PatInsuranceBalanceUpdateReq request, MultipartFile file) {
         var patientInsurance = getPatientInsurance(id);
-        patientInsuranceBalanceMapper.update(patientInsurance, request);
+        if (!patientInsurance.getDate().equals(request.getDate()))
+            checkDate(request.getDate(), request.getPatientInsuranceId());
+        var newFileName = fileService.getNewFileName(file, "insurance_balance_");
+        fileService.updateFile(file, pathPatInsuranceBalance, patientInsurance.getFileName(), newFileName);
+        patientInsuranceBalanceMapper.update(patientInsurance, request, newFileName);
         patientInsuranceBalanceRepository.save(patientInsurance);
     }
 
@@ -61,9 +75,12 @@ public class PatientInsuranceBalanceService {
         patientInsuranceBalanceRepository.save(patientInsurance);
     }
 
+    @Transactional
     public void delete(Long id) {
         var patientInsurance = getPatientInsurance(id);
+        var fullPath = pathPatInsuranceBalance + "/" + patientInsurance.getFileName();
         patientInsuranceBalanceRepository.delete(patientInsurance);
+        fileService.deleteFile(fullPath);
     }
 
     private PatientInsuranceBalance getPatientInsurance(Long id) {
@@ -77,39 +94,3 @@ public class PatientInsuranceBalanceService {
         if (result) throw new ExistsException("Bu tarix artıq əlavə edilib.");
     }
 }
-
-//    public void create(PatInsuranceBalanceCreateReq request, MultipartFile file) {
-//        checkDate(request.getDate());
-//        var patientInsurance = patientInsuranceService.getPatientInsuranceById(request.getPatientInsuranceId());
-//        var entity = patientInsuranceBalanceMapper.toEntity(request);
-//        var path = writeFile(file, uploadDir);
-//        System.out.println("path : " + path);
-//        entity.setPatientInsurance(patientInsurance);
-//        entity.setUrl(file.getOriginalFilename());
-//
-//        patientInsuranceBalanceRepository.save(entity);
-//    }
-//
-//    public InputStreamResource getFile(String fileName) {
-//        Path targetLocation = Paths.get(uploadDir).resolve(fileName).normalize();
-//        File file = targetLocation.toFile();
-//        if (!file.exists()) throw new NotFoundException("Fayl tapılmadı: " + fileName);
-//        try {
-//            InputStream inputStream = Files.newInputStream(targetLocation);
-//            return new InputStreamResource(inputStream);
-//        } catch (IOException e) {
-//            throw new RuntimeException("Fayl oxunarkən xəta baş verdi: " + fileName, e);
-//        }
-//    }
-//
-//
-//    public String writeFile(MultipartFile file, String uploadDir) {
-//        try {
-//            String fileName = file.getOriginalFilename();
-//            Path targetLocation = Paths.get(uploadDir).resolve(fileName);
-//            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-//            return targetLocation.toAbsolutePath().normalize().toString();
-//        } catch (IOException e) {
-//            throw new RuntimeException("File yüklənə bilmədi"); // FileOperationException
-//        }
-//    }

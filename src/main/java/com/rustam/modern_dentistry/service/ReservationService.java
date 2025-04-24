@@ -46,10 +46,11 @@ public class ReservationService {
         return reservationMapper.toCreateDto(reservationRepository.save(queueReservation));
     }
 
-    public PageResponse<Reservation> read(PageCriteria pageCriteria) {
+    public PageResponse<ReservationReadResponse> read(PageCriteria pageCriteria) {
         var reservations = reservationRepository.findAll(
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(reservations.getTotalPages(), reservations.getTotalElements(), reservations.getContent());
+        var reservationReadResponse = getContentResponse(reservations.getContent());
+        return new PageResponse<>(reservations.getTotalPages(), reservations.getTotalElements(), reservationReadResponse);
     }
 
     public ReservationReadResponse readById(Long id) {
@@ -77,11 +78,12 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
-    public PageResponse<Reservation> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
+    public PageResponse<ReservationReadResponse> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
         Page<Reservation> response = reservationRepository.findAll(
                 ReservationSpecification.filterBy(request),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
+        var reservationReadResponse = getContentResponse(response.getContent());
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), reservationReadResponse);
     }
 
     public InputStreamResource exportReservationsToExcel() {
@@ -95,5 +97,9 @@ public class ReservationService {
         return reservationRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də növbə tapımadı: " + id)
         );
+    }
+
+    private List<ReservationReadResponse> getContentResponse(List<Reservation> content) {
+        return content.stream().map((reservationMapper::toReadDto)).toList();
     }
 }

@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.dto.request.create;
 
 import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,15 +22,35 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
 public class ReservationCreateRequest {
+
+    @NotNull(message = "Başlama tarixi daxil edin")
     LocalDate startDate;
+    @NotNull(message = "Bitmə tarixi daxil edin")
     LocalDate endDate;
+    @NotNull(message = "Başlama vaxtı daxil edin")
     LocalTime startTime;
+    @NotNull(message = "Bitmə vaxtı daxil edin")
     LocalTime endTime;
-    Set<WeekDay> weekDays;
-
-    @NotBlank(message = "Pasienti seçin.")
+    @NotNull(message = "Pasienti seçin.")
     UUID doctorId;
-
     @NotNull(message = "Həkimi seçin.")
     Long patientId;
+
+    Set<WeekDay> weekDays;
+
+    @AssertTrue(message = "Bitmə tarixi başlama tarixindən əvvələ ola bilməz")
+    public boolean isValidDateRange() {
+        if (startDate == null || endDate == null) {
+            return true;
+        }
+        return !endDate.isBefore(startDate);
+    }
+
+    @AssertTrue(message = "Bitmə vaxtı başlama vaxtından əvvələ ola bilməz")
+    public boolean isValidTimeRange() {
+        if (startTime == null || endTime == null) {
+            return true;
+        }
+        return !endTime.isBefore(startTime);
+    }
 }

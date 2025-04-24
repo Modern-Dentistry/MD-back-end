@@ -8,6 +8,7 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
+import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -69,4 +70,7 @@ public class Patient {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<PatientExaminations> examinations;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    List<PatientPhotos> photos;
 }
