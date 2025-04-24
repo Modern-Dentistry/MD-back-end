@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 public class PatientSearchRequest {
     String name;
     String surname;
+    String fullName;
     String finCode;
     GenderStatus genderStatus;
     String phone;
