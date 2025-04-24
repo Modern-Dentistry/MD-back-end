@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
@@ -82,5 +83,11 @@ public class UtilService {
 
     public boolean existsByUsernameAndEmailAndFinCodeAndColorCode(String username, String email,String finCode,String colorCode) {
         return baseUserRepository.existsUserFully(username,email,finCode,colorCode);
+    }
+
+    public  <T> void updateFieldIfPresent(T newValue, Consumer<T> setter) {
+        if (newValue != null && !(newValue instanceof String str && str.isBlank())) {
+            setter.accept(newValue);
+        }
     }
 }
