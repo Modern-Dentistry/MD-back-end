@@ -1,12 +1,9 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
-import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "receptions")

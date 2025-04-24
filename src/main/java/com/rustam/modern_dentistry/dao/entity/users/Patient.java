@@ -73,4 +73,7 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     List<PatientPhotos> photos;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    List<PatientPhotos> videos;
 }
