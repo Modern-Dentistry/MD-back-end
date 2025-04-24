@@ -24,4 +24,8 @@ public class OrderFromWarehouseResponse {
     List<OrderFromWarehouseProductResponse> orderFromWarehouseProductResponses;
 
     String description;
+
+    String personWhoPlacedOrder;
+
+    Integer number;
 }
