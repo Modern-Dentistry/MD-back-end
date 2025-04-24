@@ -1,9 +1,11 @@
 package com.rustam.modern_dentistry.service.patient_info;
 
+import com.rustam.modern_dentistry.dao.entity.patient_info.PatientVideos;
 import com.rustam.modern_dentistry.dao.repository.patient_info.PatientVideosRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatVideosCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatVideosUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatVideosReadRes;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,5 +33,11 @@ public class PatientVideosService {
     }
 
     public void delete(Long id) {
+    }
+
+    private PatientVideos getPatientVideos(Long id) {
+        return patientVideosRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Bu ID-də istifadəçi videosu tapımadı:" + id)
+        );
     }
 }
