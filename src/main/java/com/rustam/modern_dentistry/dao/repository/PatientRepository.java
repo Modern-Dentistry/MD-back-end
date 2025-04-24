@@ -20,4 +20,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> , JpaSpe
 
     @EntityGraph(attributePaths = {"doctor"})
     List<Patient> findAll();
+
+    boolean existsByEmailOrFinCode(String email, String finCode);
 }
