@@ -80,10 +80,6 @@ public class UtilService {
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
     }
 
-    public List<Patient> findByDoctorIdWithPatients(UUID doctorId) {
-        return patientRepository.findAllByDoctor_Id(doctorId);
-    }
-
     public boolean existsByUsernameAndEmailAndFinCodeAndColorCode(String username, String email,String finCode,String colorCode) {
         return baseUserRepository.existsUserFully(username,email,finCode,colorCode);
     }
