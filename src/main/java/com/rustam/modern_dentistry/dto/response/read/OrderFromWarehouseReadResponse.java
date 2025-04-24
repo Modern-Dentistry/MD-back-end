@@ -13,15 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderFromWarehouseResponse {
+public class OrderFromWarehouseReadResponse {
 
     LocalDate date;
 
     LocalTime time;
 
     Room room;
-
-    List<OrderFromWarehouseProductResponse> orderFromWarehouseProductResponses;
 
     String description;
 
