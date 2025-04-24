@@ -118,6 +118,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ProductDoesnotWeighThatMuchException.class)
+    public ResponseEntity<ExceptionResponseMessages> productDoesnotWeighThatMuchException(ProductDoesnotWeighThatMuchException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.BAD_REQUEST) ,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(InvalidUUIDFormatException.class)
     public ResponseEntity<ExceptionResponseMessages> invalidUuidFormatException(InvalidUUIDFormatException ex) {
         return new ResponseEntity<>(

@@ -75,6 +75,7 @@ public class WarehouseEntryService {
                 .build();
     }
 
+
     private BigDecimal calculateSumPrice(List<WarehouseEntryProduct> products) {
         return products.stream()
                 .map(p -> p.getPrice().multiply(BigDecimal.valueOf(p.getQuantity())))

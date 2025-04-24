@@ -16,6 +16,18 @@ public class UserSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (request.getFullName() != null && !request.getFullName().isBlank()) {
+                String[] parts = request.getFullName().split(" ");
+                if (parts.length >= 2) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + parts[0].toLowerCase() + "%"));
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), "%" + parts[1].toLowerCase() + "%"));
+                } else {
+                    Predicate nameLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + parts[0].toLowerCase() + "%");
+                    Predicate surnameLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), "%" + parts[0].toLowerCase() + "%");
+                    predicates.add(criteriaBuilder.or(nameLike, surnameLike));
+                }
+            }
+
             if (request.getName() != null && !request.getName().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + request.getName().toLowerCase() + "%"));
             }
