@@ -38,8 +38,12 @@ public class OrderFromWarehouse {
 
     String description;
 
+    @Column(name = "person_who_placed_order")
     String personWhoPlacedOrder;
 
     Integer number;
+
+    @Column(name = "sum_quantity")
+    Long sumQuantity;
 
 }

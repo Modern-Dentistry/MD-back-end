@@ -26,4 +26,6 @@ public class OrderFromWarehouseReadResponse {
     String personWhoPlacedOrder;
 
     Integer number;
+
+    Long sumQuantity;
 }

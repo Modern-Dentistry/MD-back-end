@@ -19,6 +19,7 @@ import com.rustam.modern_dentistry.dto.response.read.OrderFromWarehouseReadRespo
 import com.rustam.modern_dentistry.dto.response.read.OrderFromWarehouseResponse;
 import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryProductResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.exception.custom.ProductDoesnotQuantityThatMuchException;
 import com.rustam.modern_dentistry.mapper.warehouse_operations.OrderFromWarehouseMapper;
 import com.rustam.modern_dentistry.service.settings.product.ProductService;
 import com.rustam.modern_dentistry.util.UtilService;
@@ -60,6 +61,7 @@ public class OrderFromWarehouseService {
         List<OrderFromWarehouseProduct> orderFromWarehouseProducts = buildOrderFromWarehouseProducts(request,orderFromWarehouse);
         orderFromWarehouse.setNumber(orderFromWarehouseProducts.size());
         orderFromWarehouse.setOrderFromWarehouseProducts(orderFromWarehouseProducts);
+        orderFromWarehouse.setSumQuantity(calculateSumQuantity(orderFromWarehouseProducts));
 
         orderFromWarehouseRepository.save(orderFromWarehouse);
         return buildWarehouseEntryResponse(orderFromWarehouse, orderFromWarehouseProducts);
@@ -83,7 +85,14 @@ public class OrderFromWarehouseService {
                 .room(orderFromWarehouse.getRoom())
                 .personWhoPlacedOrder(orderFromWarehouse.getPersonWhoPlacedOrder())
                 .number(orderFromWarehouse.getNumber())
+                .quantity(orderFromWarehouse.getSumQuantity())
                 .build();
+    }
+
+    private Long calculateSumQuantity(List<OrderFromWarehouseProduct> products) {
+        return products.stream()
+                .mapToLong(OrderFromWarehouseProduct::getQuantity)
+                .sum();
     }
 
     private List<OrderFromWarehouseProduct> buildOrderFromWarehouseProducts(OrderFromWarehouseCreateRequest request, OrderFromWarehouse orderFromWarehouse) {
@@ -120,6 +129,11 @@ public class OrderFromWarehouseService {
                 .orElseThrow(() -> new NotFoundException("No such order from warehouse found."));
     }
 
+//    public OrderFromWarehouse findByOrderFromWarehouseProductId(Long id){
+//        return orderFromWarehouseRepository.findByIdWithProducts(id)
+//                .orElseThrow(() -> new RuntimeException("OrderFromWarehouse not found"));
+//    }
+
     public List<OrderFromWarehouseReadResponse> search(OrderFromWarehouseSearchRequest orderFromWarehouseSearchRequest) {
         List<OrderFromWarehouse> orderFromWarehouses = orderFromWarehouseRepository.findAll(OrderFromWarehouseSpecification.filterBy(orderFromWarehouseSearchRequest));
         return orderFromWarehouseMapper.toDtos(orderFromWarehouses);
@@ -138,6 +152,7 @@ public class OrderFromWarehouseService {
             orderFromWarehouse.getOrderFromWarehouseProducts().clear();
             orderFromWarehouse.getOrderFromWarehouseProducts().addAll(entryProducts);
             orderFromWarehouse.setNumber(entryProducts.size());
+            orderFromWarehouse.setSumQuantity(calculateSumQuantity(entryProducts));
         }
 
         orderFromWarehouseRepository.save(orderFromWarehouse);
@@ -155,10 +170,12 @@ public class OrderFromWarehouseService {
 
         for (OrderFromWarehouseProductUpdateRequest dto : orderFromWarehouseUpdateRequest.getOrderFromWarehouseProductUpdateRequests()) {
             Product product = productService.findByIdAndCategoryId(dto.getProductId(), dto.getCategoryId());
-            warehouseEntryProductService.decreaseProductQuantity(dto.getProductId(),dto.getQuantity());
-            if (dto.getOrderFromWarehouseProductId() != null && existingProductsMap.containsKey(dto.getOrderFromWarehouseProductId())) {
 
+            if (dto.getOrderFromWarehouseProductId() != null && existingProductsMap.containsKey(dto.getOrderFromWarehouseProductId())) {
                 OrderFromWarehouseProduct existing = existingProductsMap.get(dto.getOrderFromWarehouseProductId());
+
+                warehouseEntryProductService.increaseProductQuantity(dto.getProductId(), existing.getQuantity());
+                warehouseEntryProductService.decreaseProductQuantity(dto.getProductId(), dto.getQuantity());
 
                 utilService.updateFieldIfPresent(dto.getCategoryId(), existing::setCategoryId);
                 utilService.updateFieldIfPresent(dto.getProductId(), existing::setProductId);
@@ -170,7 +187,13 @@ public class OrderFromWarehouseService {
 
                 finalList.add(existing);
                 updatedIds.add(dto.getOrderFromWarehouseProductId());
+
             } else {
+                if (dto.getOrderFromWarehouseProductId() != null && !existingProductsMap.containsKey(dto.getOrderFromWarehouseProductId())) {
+                    throw new ProductDoesnotQuantityThatMuchException("OrderFromWarehouseProduct with id " + dto.getOrderFromWarehouseProductId() + " not found in this OrderFromWarehouse!");
+                }
+
+                warehouseEntryProductService.decreaseProductQuantity(dto.getProductId(), dto.getQuantity());
 
                 OrderFromWarehouseProduct newProduct = OrderFromWarehouseProduct.builder()
                         .categoryId(dto.getCategoryId())
@@ -181,9 +204,12 @@ public class OrderFromWarehouseService {
                         .productTitle(product.getProductTitle())
                         .orderFromWarehouse(orderFromWarehouse)
                         .build();
+
                 finalList.add(newProduct);
             }
+
         }
+
 
         for (OrderFromWarehouseProduct old : existingProductsMap.values()) {
             if (!updatedIds.contains(old.getId())) {

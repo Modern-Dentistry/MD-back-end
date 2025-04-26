@@ -28,4 +28,6 @@ public class OrderFromWarehouseResponse {
     String personWhoPlacedOrder;
 
     Integer number;
+
+    Long quantity;
 }
