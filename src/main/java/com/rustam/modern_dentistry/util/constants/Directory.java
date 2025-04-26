@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.util.constants;
 
 public interface Directory {
-    String domain = "http://localhost:80";
+    String domain = "http://159.89.3.81:80";
     String pathPatInsuranceBalance = "media/patient/insurance/balance";
     String pathPatPhoto = "media/patient/photo";
     String pathPatXray = "media/patient/xray";

@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.settings.recipes;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.patient_info.PatientRecipe;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,4 +34,7 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = ALL)
     List<Medicine> medicines;
+
+    @OneToMany(mappedBy = "recipe", cascade = ALL)
+    List<PatientRecipe> recipes;
 }
