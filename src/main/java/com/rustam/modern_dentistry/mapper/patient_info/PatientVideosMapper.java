@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.mapper.patient_info;
 
-import com.rustam.modern_dentistry.dao.entity.patient_info.PatientVideos;
+import com.rustam.modern_dentistry.dao.entity.patient_info.PatientVideo;
 import com.rustam.modern_dentistry.dto.request.create.PatVideosCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.PatVideosUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatVideosReadRes;
@@ -13,12 +13,12 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface PatientVideosMapper {
-    PatientVideos toEntity(PatVideosCreateReq request, String fileName);
+    PatientVideo toEntity(PatVideosCreateReq request, String fileName);
 
     @Mapping(target = "patientId", source = "entity.patient.id")
-    PatVideosReadRes toResponse(PatientVideos entity, String url);
+    PatVideosReadRes toResponse(PatientVideo entity, String url);
 
-    void update(@MappingTarget PatientVideos entity,
+    void update(@MappingTarget PatientVideo entity,
                 PatVideosUpdateReq request,
                 String fileName
     );
