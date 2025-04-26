@@ -118,8 +118,8 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ProductDoesnotWeighThatMuchException.class)
-    public ResponseEntity<ExceptionResponseMessages> productDoesnotWeighThatMuchException(ProductDoesnotWeighThatMuchException ex) {
+    @ExceptionHandler(ProductDoesnotQuantityThatMuchException.class)
+    public ResponseEntity<ExceptionResponseMessages> productDoesnotQuantityThatMuchException(ProductDoesnotQuantityThatMuchException ex) {
         return new ResponseEntity<>(
                 new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.BAD_REQUEST) ,
                 HttpStatus.BAD_REQUEST
