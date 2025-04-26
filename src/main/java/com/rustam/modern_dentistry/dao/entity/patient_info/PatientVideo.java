@@ -15,7 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "patient_videos")
-public class PatientVideos {
+public class PatientVideo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
