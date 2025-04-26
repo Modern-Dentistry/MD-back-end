@@ -3,7 +3,8 @@ package com.rustam.modern_dentistry.service.warehouse_operations;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
 import com.rustam.modern_dentistry.dao.repository.warehouse_operations.WarehouseEntryProductRepository;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
-import com.rustam.modern_dentistry.exception.custom.ProductDoesnotWeighThatMuchException;
+
+import com.rustam.modern_dentistry.exception.custom.ProductDoesnotQuantityThatMuchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class WarehouseEntryProductService {
         long totalQuantity = calculateTotalQuantity(products);
 
         if (totalQuantity < quantityToDecrease) {
-            throw new IllegalArgumentException("Anbarda kifayət qədər məhsul yoxdur");
+            throw new ProductDoesnotQuantityThatMuchException("Anbarda kifayət qədər məhsul yoxdur");
         }
 
         updateProductQuantities(products, quantityToDecrease);
@@ -34,7 +35,7 @@ public class WarehouseEntryProductService {
         return products;
     }
 
-    private long calculateTotalQuantity(List<WarehouseEntryProduct> products) {
+    public long calculateTotalQuantity(List<WarehouseEntryProduct> products) {
         return products.stream()
                 .mapToLong(WarehouseEntryProduct::getQuantity)
                 .sum();
@@ -54,6 +55,18 @@ public class WarehouseEntryProductService {
 
             warehouseEntryProductRepository.save(product);
         }
+    }
+
+    public void increaseProductQuantity(Long productId, long quantityToIncrease) {
+        List<WarehouseEntryProduct> products = warehouseEntryProductRepository.findAllByProductId(productId);
+
+        if (products.isEmpty()) {
+            throw new NotFoundException("Bu məhsul anbarda tapılmadı");
+        }
+
+        WarehouseEntryProduct product = products.get(0);
+        product.setQuantity(product.getQuantity() + quantityToIncrease);
+        warehouseEntryProductRepository.save(product);
     }
 
 }
