@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouseProduct;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
 import com.rustam.modern_dentistry.dao.repository.warehouse_operations.WarehouseEntryRepository;
@@ -72,6 +73,7 @@ public class WarehouseEntryService {
                 .time(entry.getTime())
                 .description(entry.getDescription())
                 .warehouseEntryProducts(productResponses)
+                .sumPrice(entry.getSumPrice())
                 .build();
     }
 
@@ -90,6 +92,7 @@ public class WarehouseEntryService {
                             .categoryId(dto.getCategoryId())
                             .productId(dto.getProductId())
                             .quantity(dto.getQuantity())
+                            .usedQuantity(0L)
                             .price(dto.getPrice())
                             .productName(product.getProductName())
                             .categoryName(product.getCategory().getCategoryName())
@@ -99,7 +102,6 @@ public class WarehouseEntryService {
                 })
                 .collect(Collectors.toList());
     }
-
 
     public List<WarehouseEntryReadResponse> read() {
         List<WarehouseEntry> entries = warehouseEntryRepository.findAll();
