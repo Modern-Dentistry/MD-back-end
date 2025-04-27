@@ -31,7 +31,7 @@ public class TeethOperationController {
         return new ResponseEntity<>(teethOperationService.read(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<TeethOperationResponse>> search(@RequestBody SearchTeethOperationRequest searchTeethOperationRequest){
         return new ResponseEntity<>(teethOperationService.search(searchTeethOperationRequest),HttpStatus.OK);
     }
