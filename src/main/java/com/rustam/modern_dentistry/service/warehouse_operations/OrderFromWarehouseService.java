@@ -9,15 +9,14 @@ import com.rustam.modern_dentistry.dao.repository.warehouse_operations.OrderFrom
 import com.rustam.modern_dentistry.dto.request.create.OrderFromWarehouseCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.OrderFromWarehouseProductRequest;
 import com.rustam.modern_dentistry.dto.request.read.OrderFromWarehouseSearchRequest;
+import com.rustam.modern_dentistry.dto.request.read.RoomStockRequest;
 import com.rustam.modern_dentistry.dto.request.update.OrderFromWarehouseProductUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.update.OrderFromWarehouseUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.update.WarehouseEntryProductUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.update.WarehouseEntryUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.OrderProductStockProjection;
 import com.rustam.modern_dentistry.dto.response.create.WarehouseEntryCreateResponse;
-import com.rustam.modern_dentistry.dto.response.read.OrderFromWarehouseProductResponse;
-import com.rustam.modern_dentistry.dto.response.read.OrderFromWarehouseReadResponse;
-import com.rustam.modern_dentistry.dto.response.read.OrderFromWarehouseResponse;
-import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryProductResponse;
+import com.rustam.modern_dentistry.dto.response.read.*;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.exception.custom.ProductDoesnotQuantityThatMuchException;
 import com.rustam.modern_dentistry.mapper.warehouse_operations.OrderFromWarehouseMapper;
@@ -42,7 +41,6 @@ import java.util.stream.Collectors;
 public class OrderFromWarehouseService {
 
     OrderFromWarehouseRepository orderFromWarehouseRepository;
-    ProductService productService;
     UtilService utilService;
     WarehouseEntryProductService warehouseEntryProductService;
     OrderFromWarehouseMapper orderFromWarehouseMapper;
@@ -98,15 +96,15 @@ public class OrderFromWarehouseService {
     private List<OrderFromWarehouseProduct> buildOrderFromWarehouseProducts(OrderFromWarehouseCreateRequest request, OrderFromWarehouse orderFromWarehouse) {
         return request.getOrderFromWarehouseProductRequests().stream()
                 .map(dto -> {
-                    Product product = productService.findByIdAndCategoryId(dto.getProductId(), dto.getCategoryId());
-                    warehouseEntryProductService.decreaseProductQuantity(dto.getProductId(),dto.getQuantity());
+                    WarehouseEntryProduct warehouseEntryProduct = warehouseEntryProductService.findByIdAndCategoryIdAndProductId(dto.getWarehouseEntryId(),dto.getCategoryId(),dto.getProductId());
+                    warehouseEntryProductService.decreaseProductQuantity(warehouseEntryProduct.getId(),dto.getQuantity());
                     return OrderFromWarehouseProduct.builder()
                             .categoryId(dto.getCategoryId())
                             .productId(dto.getProductId())
                             .quantity(dto.getQuantity())
-                            .productName(product.getProductName())
-                            .categoryName(product.getCategory().getCategoryName())
-                            .productTitle(product.getProductTitle())
+                            .productName(warehouseEntryProduct.getProductName())
+                            .categoryName(warehouseEntryProduct.getCategoryName())
+                            .productTitle(warehouseEntryProduct.getProductTitle())
                             .orderFromWarehouse(orderFromWarehouse)
                             .build();
                 })
@@ -169,7 +167,7 @@ public class OrderFromWarehouseService {
         Set<Long> updatedIds = new HashSet<>();
 
         for (OrderFromWarehouseProductUpdateRequest dto : orderFromWarehouseUpdateRequest.getOrderFromWarehouseProductUpdateRequests()) {
-            Product product = productService.findByIdAndCategoryId(dto.getProductId(), dto.getCategoryId());
+            WarehouseEntryProduct warehouseEntryProduct = warehouseEntryProductService.findByIdAndCategoryIdAndProductId(dto.getWarehouseEntryId(),dto.getCategoryId(),dto.getProductId());
 
             if (dto.getOrderFromWarehouseProductId() != null && existingProductsMap.containsKey(dto.getOrderFromWarehouseProductId())) {
                 OrderFromWarehouseProduct existing = existingProductsMap.get(dto.getOrderFromWarehouseProductId());
@@ -181,9 +179,9 @@ public class OrderFromWarehouseService {
                 utilService.updateFieldIfPresent(dto.getProductId(), existing::setProductId);
                 utilService.updateFieldIfPresent(dto.getQuantity(), existing::setQuantity);
 
-                existing.setProductName(product.getProductName());
-                existing.setCategoryName(product.getCategory().getCategoryName());
-                existing.setProductTitle(product.getProductTitle());
+                existing.setProductName(warehouseEntryProduct.getProductName());
+                existing.setCategoryName(warehouseEntryProduct.getCategoryName());
+                existing.setProductTitle(warehouseEntryProduct.getProductTitle());
 
                 finalList.add(existing);
                 updatedIds.add(dto.getOrderFromWarehouseProductId());
@@ -199,9 +197,9 @@ public class OrderFromWarehouseService {
                         .categoryId(dto.getCategoryId())
                         .productId(dto.getProductId())
                         .quantity(dto.getQuantity())
-                        .productName(product.getProductName())
-                        .categoryName(product.getCategory().getCategoryName())
-                        .productTitle(product.getProductTitle())
+                        .productName(warehouseEntryProduct.getProductName())
+                        .categoryName(warehouseEntryProduct.getCategoryName())
+                        .productTitle(warehouseEntryProduct.getProductTitle())
                         .orderFromWarehouse(orderFromWarehouse)
                         .build();
 
@@ -240,5 +238,24 @@ public class OrderFromWarehouseService {
         orderFromWarehouse.setNumber(orderFromWarehouse.getOrderFromWarehouseProducts().size());
 
         orderFromWarehouseRepository.save(orderFromWarehouse);
+    }
+
+    @Transactional
+    public List<RoomStockResponse> search(RoomStockRequest request){
+        List<OrderProductStockProjection> products = orderFromWarehouseRepository.searchOrderRoomStockProducts(
+                request.getRoomName().name(),request.getCategoryName(),
+                request.getProductName(),request.getProductNo()
+        );
+
+        return products.stream()
+                .map(p -> new RoomStockResponse(
+                        p.getCategoryName(),
+                        p.getProductName(),
+                        p.getProductCode(),
+                        p.getEntryQuantity(),
+                        p.getUsedQuantity(),
+                        p.getRemainingQuantity()
+                ))
+                .toList();
     }
 }

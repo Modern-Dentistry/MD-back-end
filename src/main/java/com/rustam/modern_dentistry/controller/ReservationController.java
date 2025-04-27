@@ -59,7 +59,7 @@ public class ReservationController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<PageResponse<ReservationReadResponse>> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
         return ResponseEntity.ok(reservationService.search(request, pageCriteria));
     }

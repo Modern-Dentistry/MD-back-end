@@ -4,6 +4,7 @@ import com.rustam.modern_dentistry.dto.response.read.WarehouseEntryProductRespon
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,4 +23,7 @@ public class WarehouseEntryCreateResponse {
     List<WarehouseEntryProductResponse> warehouseEntryProducts;
 
     String description;
+
+    BigDecimal sumPrice;
+
 }

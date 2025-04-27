@@ -49,7 +49,7 @@ public class AddWorkerController {
         return new ResponseEntity<>(addWorkerService.info(id),HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<AddWorkerReadResponse>> search(@RequestBody AddWorkerSearchRequest addWorkerSearchRequest){
         return new ResponseEntity<>(addWorkerService.search(addWorkerSearchRequest),HttpStatus.OK);
     }

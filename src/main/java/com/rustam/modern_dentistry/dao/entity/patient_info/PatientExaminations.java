@@ -1,7 +1,5 @@
 package com.rustam.modern_dentistry.dao.entity.patient_info;
 
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
-import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

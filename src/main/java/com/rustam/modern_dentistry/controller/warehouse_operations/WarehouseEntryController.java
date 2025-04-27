@@ -32,7 +32,7 @@ public class WarehouseEntryController {
         return new ResponseEntity<>(warehouseEntryService.read(),HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<WarehouseEntryReadResponse>> search(@RequestBody WarehouseEntrySearchRequest warehouseEntrySearchRequest){
         return new ResponseEntity<>(warehouseEntryService.search(warehouseEntrySearchRequest),HttpStatus.OK);
     }

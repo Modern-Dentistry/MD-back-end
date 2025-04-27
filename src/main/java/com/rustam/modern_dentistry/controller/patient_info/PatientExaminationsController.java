@@ -28,7 +28,7 @@ public class PatientExaminationsController {
         return new ResponseEntity<>(patientExaminationsService.create(patientExaminationsCreateRequest), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/see-historical-election-dental-examinations")
+    @PostMapping(path = "/see-historical-election-dental-examinations")
     public ResponseEntity<List<PatientExaminationsResponse>> seeHistoricalElectionDentalExaminations(@RequestBody RequestToSeeTheExaminations requestToSeeTheExaminations) {
         return new ResponseEntity<>(patientExaminationsService.seeHistoricalElectionDentalExaminations(requestToSeeTheExaminations), HttpStatus.OK);
     }

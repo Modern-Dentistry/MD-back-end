@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.dto.request.read;
 
-import jakarta.validation.constraints.NotNull;
+import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,10 +9,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderFromWarehouseProductRequest {
+public class RoomStockRequest {
 
-    Long warehouseEntryId;
-    Long categoryId;
-    Long productId;
-    Long quantity;
+    Room roomName;
+    String categoryName;
+    String productName;
+    Long productNo;
 }

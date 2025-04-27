@@ -36,7 +36,7 @@ public class OrderFromWarehouseController {
         return new ResponseEntity<>(orderFromWarehouseService.info(id),HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<OrderFromWarehouseReadResponse>> search(@RequestBody OrderFromWarehouseSearchRequest orderFromWarehouseSearchRequest){
         return new ResponseEntity<>(orderFromWarehouseService.search(orderFromWarehouseSearchRequest),HttpStatus.OK);
     }

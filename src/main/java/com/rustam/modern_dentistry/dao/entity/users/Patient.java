@@ -9,6 +9,7 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
+import com.rustam.modern_dentistry.dao.entity.patient_info.PatientRecipe;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -76,4 +77,7 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     List<PatientPhotos> videos;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    List<PatientRecipe> recipes;
 }

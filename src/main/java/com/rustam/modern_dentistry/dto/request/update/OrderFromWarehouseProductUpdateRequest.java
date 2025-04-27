@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderFromWarehouseProductUpdateRequest {
     Long orderFromWarehouseProductId;
+    Long warehouseEntryId;
     Long categoryId;
     Long productId;
     Long quantity;

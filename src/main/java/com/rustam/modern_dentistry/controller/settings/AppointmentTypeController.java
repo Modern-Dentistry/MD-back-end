@@ -43,7 +43,7 @@ public class AppointmentTypeController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<AppointmentTypeResponse>> search(@RequestBody AppointmentTypeSearchRequest appointmentTypeSearchRequest){
         return new ResponseEntity<>(appointmentTypeService.search(appointmentTypeSearchRequest),HttpStatus.OK);
     }

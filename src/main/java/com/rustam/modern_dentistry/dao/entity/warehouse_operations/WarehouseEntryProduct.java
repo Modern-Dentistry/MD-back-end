@@ -44,5 +44,8 @@ public class WarehouseEntryProduct {
 
     Long quantity;
 
+    @Column(name = "used_quantity")
+    Long usedQuantity;
+
     BigDecimal price;
 }

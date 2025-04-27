@@ -31,7 +31,7 @@ public class WorkersWorkScheduleController {
         return new ResponseEntity<>(workersWorkScheduleService.read(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<WorkersWorkScheduleResponse>> search(@RequestBody WorkersWorkScheduleSearchRequest workersWorkScheduleSearchRequest){
         return new ResponseEntity<>(workersWorkScheduleService.search(workersWorkScheduleSearchRequest),HttpStatus.OK);
     }

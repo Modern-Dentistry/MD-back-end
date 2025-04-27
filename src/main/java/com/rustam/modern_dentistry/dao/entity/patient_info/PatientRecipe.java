@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.patient_info;
 
+import com.rustam.modern_dentistry.dao.entity.settings.recipes.Recipe;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,14 +15,16 @@ import static jakarta.persistence.FetchType.LAZY;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "patient_videos")
-public class PatientVideos {
+@Table(name = "patient_recipes")
+public class PatientRecipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     LocalDate date;
-    String description;
-    String fileName;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "recipe_id", referencedColumnName = "id")
+    Recipe recipe;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "patient_id", referencedColumnName = "id")

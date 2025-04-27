@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.exception.custom.FileException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -43,14 +44,26 @@ public class FileService {
     }
 
     public String getNewFileName(MultipartFile file, String fileNameStart) {
-        int dotIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf('.');
-        var fileExtension = file.getOriginalFilename().substring(dotIndex + 1);
+        var dotIndex = StringUtils.cleanPath(fileNameStart).lastIndexOf('.');
+        var fileExtension = Objects.requireNonNull(file.getOriginalFilename()).substring(dotIndex + 1);
         return fileNameStart + UUID.randomUUID() + "." + fileExtension;
     }
 
     public void checkFileIfExist(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new FileException("Fayl boşdur və ya null-dır.");
+        }
+    }
+
+    public void checkVideoFile(MultipartFile file) {
+        // Fayl tipini yoxlamaq
+        if (Objects.requireNonNull(file.getContentType()).startsWith("video/")) {
+            throw new FileException("Yalnız video faylları qəbul olunur!");
+        }
+
+        // Fayl ölçüsünü yoxlamaq (10MB limit)
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new FileException("Fayl çox böyükdür (max 10MB)!");
         }
     }
 }
