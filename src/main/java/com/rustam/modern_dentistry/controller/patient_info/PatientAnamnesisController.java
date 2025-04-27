@@ -38,7 +38,7 @@ public class PatientAnamnesisController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ReservationUpdateResponse> update(@PathVariable Long id,
+    public ResponseEntity<Void> update(@PathVariable Long id,
                                                             @Valid @RequestBody PatAnamnesisUpdateReq request) {
         patientAnamnesisService.update(id, request);
         return ResponseEntity.ok().build();
