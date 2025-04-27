@@ -5,68 +5,70 @@ import com.rustam.modern_dentistry.dao.repository.warehouse_operations.Warehouse
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 
 import com.rustam.modern_dentistry.exception.custom.ProductDoesnotQuantityThatMuchException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class WarehouseEntryProductService {
 
-    private final WarehouseEntryProductRepository warehouseEntryProductRepository;
+    WarehouseEntryProductRepository warehouseEntryProductRepository;
 
     public void decreaseProductQuantity(Long productId, long quantityToDecrease) {
-        List<WarehouseEntryProduct> products = getProductsByProductId(productId);
-        long totalQuantity = calculateTotalQuantity(products);
+        WarehouseEntryProduct warehouseEntryProduct = findById(productId);
 
-        if (totalQuantity < quantityToDecrease) {
+        if (warehouseEntryProduct.getQuantity() < quantityToDecrease) {
             throw new ProductDoesnotQuantityThatMuchException("Anbarda kifayət qədər məhsul yoxdur");
         }
 
-        updateProductQuantities(products, quantityToDecrease);
+        updateProductQuantities(warehouseEntryProduct, quantityToDecrease);
     }
 
-    private List<WarehouseEntryProduct> getProductsByProductId(Long productId) {
-        List<WarehouseEntryProduct> products = warehouseEntryProductRepository.findAllByProductId(productId);
-        if (products.isEmpty()) {
-            throw new NotFoundException("Anbarda bu məhsul tapılmadı");
-        }
-        return products;
+    private WarehouseEntryProduct findById(Long productId) {
+        return warehouseEntryProductRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("such warehouse entry product not found"));
     }
 
-    public long calculateTotalQuantity(List<WarehouseEntryProduct> products) {
-        return products.stream()
-                .mapToLong(WarehouseEntryProduct::getQuantity)
-                .sum();
-    }
+    private void updateProductQuantities(WarehouseEntryProduct product, long quantityToDecrease) {
+        long currentQuantity = product.getQuantity();
 
-    private void updateProductQuantities(List<WarehouseEntryProduct> products, long quantityToDecrease) {
-        long remaining = quantityToDecrease;
+        product.setQuantity(currentQuantity - quantityToDecrease);
 
-        for (WarehouseEntryProduct product : products) {
-            if (remaining == 0) break;
+        product.setUsedQuantity(product.getUsedQuantity() + quantityToDecrease);
 
-            long current = product.getQuantity();
-            long deducted = Math.min(current, remaining);
-
-            product.setQuantity(current - deducted);
-            remaining -= deducted;
-
-            warehouseEntryProductRepository.save(product);
-        }
+        warehouseEntryProductRepository.save(product);
     }
 
     public void increaseProductQuantity(Long productId, long quantityToIncrease) {
-        List<WarehouseEntryProduct> products = warehouseEntryProductRepository.findAllByProductId(productId);
-
-        if (products.isEmpty()) {
-            throw new NotFoundException("Bu məhsul anbarda tapılmadı");
-        }
-
-        WarehouseEntryProduct product = products.get(0);
-        product.setQuantity(product.getQuantity() + quantityToIncrease);
-        warehouseEntryProductRepository.save(product);
+        WarehouseEntryProduct warehouseEntryProduct = findById(productId);
+        warehouseEntryProduct.setQuantity(warehouseEntryProduct.getQuantity() + quantityToIncrease);
+        warehouseEntryProductRepository.save(warehouseEntryProduct);
     }
+
+    public WarehouseEntryProduct findByIdAndCategoryIdAndProductId(Long warehouseEntryId, Long categoryId, Long productId) {
+        return warehouseEntryProductRepository.findByWarehouseEntryIdAndCategoryIdAndProductId(warehouseEntryId,categoryId,productId)
+                .orElseThrow(() -> new NotFoundException("such warehouse entry product not found"));
+    }
+
+//    @Transactional
+//    public void useProductFromWarehouse(Long warehouseEntryProductId, Long quantityToUse) {
+//        WarehouseEntryProduct entryProduct = warehouseEntryProductRepository.findById(warehouseEntryProductId)
+//                .orElseThrow(() -> new RuntimeException("WarehouseEntryProduct not found!"));
+//
+//        long availableQuantity = entryProduct.getQuantity() - quantityToUse;
+//
+//        if (availableQuantity < quantityToUse) {
+//            throw new ProductDoesnotQuantityThatMuchException("Not enough stock available! Available: " + availableQuantity);
+//        }
+//
+//        entryProduct.setQuantity(availableQuantity);
+//        entryProduct.setUsedQuantity(entryProduct.getUsedQuantity() + quantityToUse);
+//
+//        warehouseEntryProductRepository.save(entryProduct);
+//    }
 
 }
