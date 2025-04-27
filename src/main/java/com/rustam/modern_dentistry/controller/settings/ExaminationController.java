@@ -31,7 +31,7 @@ public class ExaminationController {
         return new ResponseEntity<>(examinationService.read(),HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<ExaminationResponse>> search(@RequestBody ExaminationRequest examinationRequest){
         return new ResponseEntity<>(examinationService.search(examinationRequest),HttpStatus.OK);
     }
