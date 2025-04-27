@@ -31,7 +31,7 @@ public class ProductCategoryController {
         return new ResponseEntity<>(productCategoryService.read(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<ProductCategoryResponse>> search(@RequestBody ProductCategorySearchRequest productCategorySearchRequest){
         return new ResponseEntity<>(productCategoryService.search(productCategorySearchRequest),HttpStatus.OK);
     }
