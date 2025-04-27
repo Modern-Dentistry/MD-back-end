@@ -51,7 +51,7 @@ public class PatientController {
         return new ResponseEntity<>(patientService.delete(id), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/search")
     public ResponseEntity<List<PatientReadResponse>> search(@RequestBody PatientSearchRequest patientSearchRequest){
         return new ResponseEntity<>(patientService.search(patientSearchRequest),HttpStatus.OK);
     }
