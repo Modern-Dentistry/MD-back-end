@@ -27,8 +27,8 @@ public class PatientRecipeController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<List<PatRecipeReadRes>> read() {
-        return ResponseEntity.ok(patientRecipeService.read());
+    public ResponseEntity<List<PatRecipeReadRes>> read(@RequestParam Long patientId) {
+        return ResponseEntity.ok(patientRecipeService.read(patientId));
     }
 
     @GetMapping("/read/{patientId}")
