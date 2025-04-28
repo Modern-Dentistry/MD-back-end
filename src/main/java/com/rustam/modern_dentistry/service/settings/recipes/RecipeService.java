@@ -92,7 +92,7 @@ public class RecipeService {
         if (result) throw new ExistsException("Bu ad artıq əlavə edilib.");
     }
 
-    protected Recipe getRecipeById(Long id) {
+    public Recipe getRecipeById(Long id) {
         return recipeRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də resept tapımadı: " + id));
     }

@@ -21,7 +21,8 @@ public class FileService {
             Path targetLocation = Paths.get(uploadDir).resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new FileException("File yüklənə bilmədi"); // FileOperationException
+            e.printStackTrace();
+             throw new FileException("File yüklənə bilmədi"); // FileOperationException
         }
     }
 
