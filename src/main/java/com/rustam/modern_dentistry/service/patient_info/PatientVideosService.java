@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static com.rustam.modern_dentistry.util.constants.Directory.getUrl;
-import static com.rustam.modern_dentistry.util.constants.Directory.pathPatXray;
+import static com.rustam.modern_dentistry.util.constants.Directory.pathPatVideo;
 
 @Service
 @RequiredArgsConstructor
@@ -34,33 +34,33 @@ public class PatientVideosService {
         entity.setPatient(patient);
         fileService.checkFileIfExist(file);
         fileService.checkVideoFile(file);
-        fileService.writeFile(file, pathPatXray, newFileName);
+        fileService.writeFile(file, pathPatVideo, newFileName);
         patientVideosRepository.save(entity);
     }
 
     public List<PatVideosReadRes> read(Long patientId) {
         var patientXray = patientVideosRepository.findAllByPatient_Id(patientId);
         return patientXray.stream()
-                .map(e -> patientVideosMapper.toResponse(e, getUrl(pathPatXray, e.getFileName())))
+                .map(e -> patientVideosMapper.toResponse(e, getUrl(pathPatVideo, e.getFileName())))
                 .toList();
     }
 
     public PatVideosReadRes readById(Long id) {
         var entity = getPatientVideo(id);
-        return patientVideosMapper.toResponse(entity, getUrl(pathPatXray, entity.getFileName()));
+        return patientVideosMapper.toResponse(entity, getUrl(pathPatVideo, entity.getFileName()));
     }
 
     public void update(Long id, PatVideosUpdateReq request, MultipartFile file) {
         var patientPhoto = getPatientVideo(id);
         var newFileName = fileService.getNewFileName(file, "patient_video_");
-        fileService.updateFile(file, pathPatXray, patientPhoto.getFileName(), newFileName);
+        fileService.updateFile(file, pathPatVideo, patientPhoto.getFileName(), newFileName);
         patientVideosMapper.update(patientPhoto, request, newFileName);
         patientVideosRepository.save(patientPhoto);
     }
 
     public void delete(Long id) {
         var patientXray = getPatientVideo(id);
-        var fullPath = pathPatXray + "/" + patientXray.getFileName();
+        var fullPath = pathPatVideo + "/" + patientXray.getFileName();
         patientVideosRepository.delete(patientXray);
         fileService.deleteFile(fullPath);
     }
