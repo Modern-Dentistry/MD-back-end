@@ -18,11 +18,20 @@ public class FileService {
 
     public void writeFile(MultipartFile file, String uploadDir, String newFileName) {
         try {
-            Path targetLocation = Paths.get(uploadDir).resolve(newFileName);
+//            Path targetLocation = Paths.get(uploadDir).resolve(newFileName);
+//            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            Path uploadPath = Paths.get(uploadDir);
+            if (Files.notExists(uploadPath)) {
+                Files.createDirectories(uploadPath); // <--- Directory'ni yarat
+            }
+
+            Path targetLocation = uploadPath.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            
         } catch (IOException e) {
             e.printStackTrace();
-             throw new FileException("File yüklənə bilmədi"); // FileOperationException
+            throw new FileException("File yüklənə bilmədi"); // FileOperationException
         }
     }
 
@@ -45,9 +54,10 @@ public class FileService {
     }
 
     public String getNewFileName(MultipartFile file, String fileNameStart) {
-        var dotIndex = StringUtils.cleanPath(fileNameStart).lastIndexOf('.');
-        var fileExtension = Objects.requireNonNull(file.getOriginalFilename()).substring(dotIndex + 1);
-        return fileNameStart + UUID.randomUUID() + "." + fileExtension;
+        var originalFileName = file.getOriginalFilename();
+        var dotIndex = StringUtils.cleanPath(originalFileName).lastIndexOf('.');
+        var fileExtension = originalFileName.substring(dotIndex);
+        return fileNameStart + UUID.randomUUID() + fileExtension;
     }
 
     public void checkFileIfExist(MultipartFile file) {
