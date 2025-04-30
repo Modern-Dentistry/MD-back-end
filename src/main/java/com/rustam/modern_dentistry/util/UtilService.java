@@ -4,13 +4,17 @@ import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.entity.users.Reception;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouse;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouseProduct;
 import com.rustam.modern_dentistry.dao.repository.BaseUserRepository;
 import com.rustam.modern_dentistry.dao.repository.DoctorRepository;
 import com.rustam.modern_dentistry.dao.repository.PatientRepository;
 import com.rustam.modern_dentistry.dao.repository.ReceptionRepository;
+import com.rustam.modern_dentistry.dao.repository.warehouse_operations.OrderFromWarehouseRepository;
 import com.rustam.modern_dentistry.dto.response.TokenPair;
 import com.rustam.modern_dentistry.exception.custom.DoctorNotFoundException;
 import com.rustam.modern_dentistry.exception.custom.InvalidUUIDFormatException;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -35,10 +39,10 @@ import java.util.function.Consumer;
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 public class UtilService {
 
-    DoctorRepository doctorRepository;
     PatientRepository patientRepository;
     BaseUserRepository baseUserRepository;
     JwtUtil jwtUtil;
+    OrderFromWarehouseRepository orderFromWarehouseRepository;
 
     public Patient findByPatientId(Long userId){
         return patientRepository.findById(userId)
@@ -90,4 +94,10 @@ public class UtilService {
             setter.accept(newValue);
         }
     }
+
+    public OrderFromWarehouse findById(Long id){
+        return orderFromWarehouseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No such order from warehouse found."));
+    }
+
 }
