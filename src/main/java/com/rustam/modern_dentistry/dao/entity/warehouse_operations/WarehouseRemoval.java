@@ -6,20 +6,19 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name = "order_from_warehouse")
+@Table(name = "warehouse_removal")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderFromWarehouse {
+public class WarehouseRemoval {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,25 +31,26 @@ public class OrderFromWarehouse {
     @Enumerated(EnumType.STRING)
     Room room;
 
-    @OneToOne
-    @JoinColumn(name = "warehouse_entry_id")
-    WarehouseEntry warehouseEntry;
-
-    @OneToMany(mappedBy = "orderFromWarehouse", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    List<OrderFromWarehouseProduct> orderFromWarehouseProducts;
-
-    String description;
-
     @Column(name = "person_who_placed_order")
     String personWhoPlacedOrder;
 
+    @OneToMany(mappedBy = "warehouseRemoval", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<WarehouseRemovalProduct> warehouseRemovalProducts;
+
+    @OneToOne
+    @JoinColumn(name = "order_from_warehouse_id")
+    OrderFromWarehouse orderFromWarehouse;
+
     Integer number;
 
-    @Column(name = "sum_quantity")
-    Long sumQuantity;
+    @Column(name = "send_amount")
+    Long sendAmount;
 
-    @OneToOne(mappedBy = "orderFromWarehouse", cascade = CascadeType.ALL, orphanRemoval = true)
-    WarehouseRemoval warehouseRemoval;
+    @Column(name = "order_amount")
+    Long orderAmount;
+
+    @Column(name = "remaining_amount")
+    Long remainingAmount;
 
 }

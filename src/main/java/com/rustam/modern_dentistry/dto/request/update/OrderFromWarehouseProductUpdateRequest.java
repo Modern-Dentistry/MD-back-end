@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class OrderFromWarehouseProductUpdateRequest {
     Long orderFromWarehouseProductId;
     Long warehouseEntryId;
+    Long warehouseEntryProductId;
     Long categoryId;
     Long productId;
     Long quantity;
