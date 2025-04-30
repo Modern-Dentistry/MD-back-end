@@ -1,10 +1,7 @@
 package com.rustam.modern_dentistry.service.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouse;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouseProduct;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.*;
 import com.rustam.modern_dentistry.dao.repository.warehouse_operations.OrderFromWarehouseRepository;
 import com.rustam.modern_dentistry.dto.request.create.OrderFromWarehouseCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.OrderFromWarehouseProductRequest;
@@ -31,6 +28,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -44,6 +42,11 @@ public class OrderFromWarehouseService {
     UtilService utilService;
     WarehouseEntryProductService warehouseEntryProductService;
     OrderFromWarehouseMapper orderFromWarehouseMapper;
+    WarehouseRemovalService warehouseRemovalService;
+
+    public OrderFromWarehouse findById(Long id) {
+        return utilService.findById(id);
+    }
 
     @Transactional
     public OrderFromWarehouseResponse create(OrderFromWarehouseCreateRequest request) {
@@ -60,8 +63,8 @@ public class OrderFromWarehouseService {
         orderFromWarehouse.setNumber(orderFromWarehouseProducts.size());
         orderFromWarehouse.setOrderFromWarehouseProducts(orderFromWarehouseProducts);
         orderFromWarehouse.setSumQuantity(calculateSumQuantity(orderFromWarehouseProducts));
-
         orderFromWarehouseRepository.save(orderFromWarehouse);
+        buildWarehouseExit(orderFromWarehouse); //burda anbardan mexarice elave edirik
         return buildWarehouseEntryResponse(orderFromWarehouse, orderFromWarehouseProducts);
     }
 
@@ -96,7 +99,7 @@ public class OrderFromWarehouseService {
     private List<OrderFromWarehouseProduct> buildOrderFromWarehouseProducts(OrderFromWarehouseCreateRequest request, OrderFromWarehouse orderFromWarehouse) {
         return request.getOrderFromWarehouseProductRequests().stream()
                 .map(dto -> {
-                    WarehouseEntryProduct warehouseEntryProduct = warehouseEntryProductService.findByIdAndCategoryIdAndProductId(dto.getWarehouseEntryId(),dto.getCategoryId(),dto.getProductId());
+                    WarehouseEntryProduct warehouseEntryProduct = warehouseEntryProductService.findAllByIdAndWarehouseEntryIdAndCategoryIdAndProductId(dto.getWarehouseEntryProductId(),dto.getWarehouseEntryId(),dto.getCategoryId(),dto.getProductId());
                     warehouseEntryProductService.decreaseProductQuantity(warehouseEntryProduct.getId(),dto.getQuantity());
                     return OrderFromWarehouseProduct.builder()
                             .categoryId(dto.getCategoryId())
@@ -111,6 +114,21 @@ public class OrderFromWarehouseService {
                 .collect(Collectors.toList());
     }
 
+    private void buildWarehouseExit(OrderFromWarehouse orderFromWarehouse) {
+        WarehouseRemoval warehouseRemoval = WarehouseRemoval.builder()
+                .date(orderFromWarehouse.getDate())
+                .time(orderFromWarehouse.getTime())
+                .room(orderFromWarehouse.getRoom())
+                .personWhoPlacedOrder(orderFromWarehouse.getPersonWhoPlacedOrder())
+                .orderFromWarehouse(orderFromWarehouse)
+                .number(orderFromWarehouse.getNumber())
+                .orderAmount(orderFromWarehouse.getSumQuantity())
+                .remainingAmount(orderFromWarehouse.getSumQuantity())
+                .sendAmount(0L)
+                .build();
+        warehouseRemovalService.save(warehouseRemoval);
+    }
+
     public List<OrderFromWarehouseReadResponse> read() {
         List<OrderFromWarehouse> entries = orderFromWarehouseRepository.findAll();
         return orderFromWarehouseMapper.toDtos(entries);
@@ -122,10 +140,6 @@ public class OrderFromWarehouseService {
         return buildWarehouseEntryResponse(orderFromWarehouse, orderFromWarehouse.getOrderFromWarehouseProducts());
     }
 
-    public OrderFromWarehouse findById(Long id){
-        return orderFromWarehouseRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No such order from warehouse found."));
-    }
 
 //    public OrderFromWarehouse findByOrderFromWarehouseProductId(Long id){
 //        return orderFromWarehouseRepository.findByIdWithProducts(id)
@@ -167,7 +181,7 @@ public class OrderFromWarehouseService {
         Set<Long> updatedIds = new HashSet<>();
 
         for (OrderFromWarehouseProductUpdateRequest dto : orderFromWarehouseUpdateRequest.getOrderFromWarehouseProductUpdateRequests()) {
-            WarehouseEntryProduct warehouseEntryProduct = warehouseEntryProductService.findByIdAndCategoryIdAndProductId(dto.getWarehouseEntryId(),dto.getCategoryId(),dto.getProductId());
+            WarehouseEntryProduct warehouseEntryProduct = warehouseEntryProductService.findAllByIdAndWarehouseEntryIdAndCategoryIdAndProductId(dto.getWarehouseEntryProductId(),dto.getWarehouseEntryId(),dto.getCategoryId(),dto.getProductId());
 
             if (dto.getOrderFromWarehouseProductId() != null && existingProductsMap.containsKey(dto.getOrderFromWarehouseProductId())) {
                 OrderFromWarehouseProduct existing = existingProductsMap.get(dto.getOrderFromWarehouseProductId());
