@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -49,9 +51,14 @@ public class WarehouseEntryProductService {
         warehouseEntryProductRepository.save(warehouseEntryProduct);
     }
 
-    public WarehouseEntryProduct findByIdAndCategoryIdAndProductId(Long warehouseEntryId, Long categoryId, Long productId) {
-        return warehouseEntryProductRepository.findByWarehouseEntryIdAndCategoryIdAndProductId(warehouseEntryId,categoryId,productId)
-                .orElseThrow(() -> new NotFoundException("such warehouse entry product not found"));
+    public WarehouseEntryProduct findAllByIdAndWarehouseEntryIdAndCategoryIdAndProductId(Long id,Long warehouseEntryId, Long categoryId, Long productId) {
+        List<WarehouseEntryProduct> products =
+                warehouseEntryProductRepository.findAllByIdAndWarehouseEntryIdAndCategoryIdAndProductId(
+                        id,warehouseEntryId,categoryId,productId);
+
+        return products.stream()
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("No matching WarehouseEntryProduct found"));
     }
 
 //    @Transactional
