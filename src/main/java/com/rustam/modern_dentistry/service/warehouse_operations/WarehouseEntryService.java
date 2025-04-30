@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouse;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouseProduct;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
@@ -38,6 +39,7 @@ public class WarehouseEntryService {
     WarehouseEntryRepository warehouseEntryRepository;
     WarehouseEntryMapper warehouseEntryMapper;
     ProductService productService;
+    OrderFromWarehouseService orderFromWarehouseService;
 
     @Transactional
     public WarehouseEntryCreateResponse create(WarehouseEntryCreateRequest request) {
@@ -139,9 +141,33 @@ public class WarehouseEntryService {
         return warehouseEntryMapper.toDto(warehouseEntry);
     }
 
+    @Transactional
     public void delete(Long id) {
         WarehouseEntry warehouseEntry = findById(id);
+        List<WarehouseEntryProduct> warehouseEntryProducts = warehouseEntry.getWarehouseEntryProducts();
+
+        // Hər bir WarehouseEntryProduct üçün əlaqəli sifarişləri tapırıq
+        for (WarehouseEntryProduct entryProduct : warehouseEntryProducts) {
+            List<OrderFromWarehouse> ordersFromWarehouse = findOrdersByProductId(entryProduct.getProductId());
+
+            for (OrderFromWarehouse order : ordersFromWarehouse) {
+                // Sifarişləri silirik (OrderFromWarehouseProduct obyektləri ilə birlikdə)
+                deleteOrderFromWarehouse(order);
+            }
+        }
+
+        // Axırda WarehouseEntry və əlaqəli WarehouseEntryProduct-ları silirik
         warehouseEntryRepository.delete(warehouseEntry);
+    }
+
+    private List<OrderFromWarehouse> findOrdersByProductId(Long productId) {
+        // Məhsul ID-yə əsasən sifarişləri tap
+        return orderFromWarehouseService.findByProductId(productId);
+    }
+
+    private void deleteOrderFromWarehouse(OrderFromWarehouse order) {
+        // OrderFromWarehouse'ı və ona bağlı məhsulları sil
+        orderFromWarehouseService.delete(order.getId());
     }
 
 
