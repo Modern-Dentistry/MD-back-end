@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface WarehouseEntryProductRepository extends JpaRepository<WarehouseEntryProduct,Long> {
 
-    Optional<WarehouseEntryProduct> findByWarehouseEntryIdAndCategoryIdAndProductId(Long warehouseEntryId, Long categoryId, Long productId);
+    List<WarehouseEntryProduct> findAllByIdAndWarehouseEntryIdAndCategoryIdAndProductId(Long id,Long warehouseEntryId, Long categoryId, Long productId);
 }
