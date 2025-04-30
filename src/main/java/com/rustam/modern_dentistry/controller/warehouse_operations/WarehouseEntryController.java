@@ -48,7 +48,7 @@ public class WarehouseEntryController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<Void> delete(@RequestBody Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id){
         warehouseEntryService.delete(id);
         return ResponseEntity.ok().build();
     }
