@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.dto.request.read;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class OrderFromWarehouseProductRequest {
 
     Long warehouseEntryId;
+    Long warehouseEntryProductId;
     Long categoryId;
     Long productId;
     Long quantity;
