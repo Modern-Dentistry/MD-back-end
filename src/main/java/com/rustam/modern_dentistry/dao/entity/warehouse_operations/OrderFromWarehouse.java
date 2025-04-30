@@ -50,7 +50,7 @@ public class OrderFromWarehouse {
     @Column(name = "sum_quantity")
     Long sumQuantity;
 
-    @OneToOne(mappedBy = "orderFromWarehouse")
+    @OneToOne(mappedBy = "orderFromWarehouse", cascade = CascadeType.ALL, orphanRemoval = true)
     WarehouseRemoval warehouseRemoval;
 
 }
