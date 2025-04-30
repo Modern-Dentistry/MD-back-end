@@ -32,6 +32,10 @@ public class OrderFromWarehouse {
     @Enumerated(EnumType.STRING)
     Room room;
 
+    @OneToOne
+    @JoinColumn(name = "warehouse_entry_id")
+    WarehouseEntry warehouseEntry;
+
     @OneToMany(mappedBy = "orderFromWarehouse", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<OrderFromWarehouseProduct> orderFromWarehouseProducts;
@@ -45,5 +49,8 @@ public class OrderFromWarehouse {
 
     @Column(name = "sum_quantity")
     Long sumQuantity;
+
+    @OneToOne(mappedBy = "orderFromWarehouse")
+    WarehouseRemoval warehouseRemoval;
 
 }
