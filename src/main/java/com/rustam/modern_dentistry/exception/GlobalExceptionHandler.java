@@ -134,6 +134,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(AmountSendException.class)
+    public ResponseEntity<ExceptionResponseMessages> amountSendException(AmountSendException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.BAD_REQUEST) ,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(ExistsException.class)
     public ResponseEntity<ExceptionResponseMessages> existsException(ExistsException ex) {
         return new ResponseEntity<>(
