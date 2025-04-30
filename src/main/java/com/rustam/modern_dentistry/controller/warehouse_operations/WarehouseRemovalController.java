@@ -7,10 +7,7 @@ import com.rustam.modern_dentistry.service.warehouse_operations.WarehouseRemoval
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/v1/warehouse-removal")
@@ -22,5 +19,11 @@ public class WarehouseRemovalController {
     @PostMapping(path = "/create")
     public ResponseEntity<WarehouseRemovalCreateResponse> create(@RequestBody WarehouseRemovalCreateRequest warehouseRemovalCreateRequest){
         return new ResponseEntity<>(warehouseRemovalService.create(warehouseRemovalCreateRequest), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        warehouseRemovalService.deleteWithReturn(id);
+        return ResponseEntity.ok().build();
     }
 }
