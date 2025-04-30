@@ -272,4 +272,8 @@ public class OrderFromWarehouseService {
                 ))
                 .toList();
     }
+
+    public List<OrderFromWarehouse> findByProductId(Long productId) {
+        return orderFromWarehouseRepository.findAllById(Collections.singleton(productId));
+    }
 }
