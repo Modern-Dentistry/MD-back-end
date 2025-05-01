@@ -7,8 +7,6 @@ import com.rustam.modern_dentistry.dto.response.excel.MedicineExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.MedicineReadResponse;
 import org.mapstruct.*;
 
-import java.util.List;
-
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING,

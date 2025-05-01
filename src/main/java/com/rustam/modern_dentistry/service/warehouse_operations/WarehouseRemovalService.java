@@ -38,13 +38,10 @@ public class WarehouseRemovalService {
 
     @Transactional
     public WarehouseRemovalCreateResponse create(WarehouseRemovalCreateRequest request) {
-        // WarehouseRemoval obyektini tapırıq
         WarehouseRemoval warehouseRemoval = findById(request.getWarehouseRemovalId());
 
-        // Bütün məhsulları işləyirik və DTO-ları hazırlayırıq
         List<OutOfTheWarehouseDto> outOfTheWarehouseDtos = processWarehouseRemovalRequests(request, warehouseRemoval);
 
-        // Cavab qaytarılır
         return WarehouseRemovalCreateResponse.builder()
                 .id(warehouseRemoval.getId())
                 .date(request.getDate())
@@ -81,10 +78,8 @@ public class WarehouseRemovalService {
     }
 
     private OrderFromWarehouseProduct findAndValidateProduct(WarehouseRemoval warehouseRemoval, WarehouseRemovalProductCreateRequest requestDetail) {
-        // OrderFromWarehouse obyektini tapırıq
         OrderFromWarehouse order = utilService.findById(warehouseRemoval.getOrderFromWarehouse().getId());
 
-        // Məhsulu OrderFromWarehouseProduct ID-yə əsasən tapırıq
         return order.getOrderFromWarehouseProducts().stream()
                 .filter(product -> product.getId().equals(requestDetail.getOrderFromWarehouseProductId()))
                 .findFirst()

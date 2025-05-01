@@ -1,7 +1,9 @@
 package com.rustam.modern_dentistry.mapper.patient_info;
 
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientRecipe;
+import com.rustam.modern_dentistry.dao.entity.settings.recipes.Recipe;
 import com.rustam.modern_dentistry.dto.request.create.PatRecipeCreateReq;
+import com.rustam.modern_dentistry.dto.request.update.PatRecipeUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PatRecipeReadRes;
 import org.mapstruct.*;
 
@@ -15,7 +17,9 @@ public interface PatientRecipeMapper {
 
     PatientRecipe toEntity(PatRecipeCreateReq request);
 
-//    @Mapping(target = "patientId", source = "patient.id")
-//    @Mapping(target = "recipeId", source = "recipe.id")
-//    PatRecipeReadRes toDto(PatientRecipe patientRecipe);
+    @Mapping(target = "patientId", source = "patient.id")
+    @Mapping(target = "recipeId", source = "recipe.id")
+    PatRecipeReadRes toDto(PatientRecipe patientRecipe);
+
+    void update(@MappingTarget PatientRecipe patientRecipe, PatRecipeUpdateReq request, Recipe recipe);
 }

@@ -48,6 +48,7 @@ public class WarehouseEntryProductService {
     public void increaseProductQuantity(Long productId, long quantityToIncrease) {
         WarehouseEntryProduct warehouseEntryProduct = findById(productId);
         warehouseEntryProduct.setQuantity(warehouseEntryProduct.getQuantity() + quantityToIncrease);
+        warehouseEntryProduct.setUsedQuantity(warehouseEntryProduct.getUsedQuantity() - quantityToIncrease);
         warehouseEntryProductRepository.save(warehouseEntryProduct);
     }
 
@@ -60,22 +61,5 @@ public class WarehouseEntryProductService {
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("No matching WarehouseEntryProduct found"));
     }
-
-//    @Transactional
-//    public void useProductFromWarehouse(Long warehouseEntryProductId, Long quantityToUse) {
-//        WarehouseEntryProduct entryProduct = warehouseEntryProductRepository.findById(warehouseEntryProductId)
-//                .orElseThrow(() -> new RuntimeException("WarehouseEntryProduct not found!"));
-//
-//        long availableQuantity = entryProduct.getQuantity() - quantityToUse;
-//
-//        if (availableQuantity < quantityToUse) {
-//            throw new ProductDoesnotQuantityThatMuchException("Not enough stock available! Available: " + availableQuantity);
-//        }
-//
-//        entryProduct.setQuantity(availableQuantity);
-//        entryProduct.setUsedQuantity(entryProduct.getUsedQuantity() + quantityToUse);
-//
-//        warehouseEntryProductRepository.save(entryProduct);
-//    }
 
 }

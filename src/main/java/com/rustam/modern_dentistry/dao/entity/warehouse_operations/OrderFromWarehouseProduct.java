@@ -40,5 +40,11 @@ public class OrderFromWarehouseProduct {
     @Column(name = "product_id")
     Long productId;
 
+    @Column(name = "warehouse_entry_id")
+    Long warehouseEntryId;
+
+    @Column(name = "warehouse_entry_product_id")
+    Long warehouseEntryProductId;
+
     Long quantity;
 }

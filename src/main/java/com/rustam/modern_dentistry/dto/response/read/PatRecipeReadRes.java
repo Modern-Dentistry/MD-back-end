@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Setter
 public class PatRecipeReadRes {
     Long recipeId;
+    Long patientId;
     String recipeName;
     LocalDate date;
 }

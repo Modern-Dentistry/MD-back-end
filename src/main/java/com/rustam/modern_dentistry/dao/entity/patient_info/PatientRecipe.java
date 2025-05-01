@@ -2,7 +2,9 @@ package com.rustam.modern_dentistry.dao.entity.patient_info;
 
 import com.rustam.modern_dentistry.dao.entity.settings.recipes.Recipe;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
+import com.rustam.modern_dentistry.dto.request.update.PatRecipeUpdateReq;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
 
 import java.time.LocalDate;
