@@ -108,6 +108,8 @@ public class OrderFromWarehouseService {
                             .productName(warehouseEntryProduct.getProductName())
                             .categoryName(warehouseEntryProduct.getCategoryName())
                             .productTitle(warehouseEntryProduct.getProductTitle())
+                            .warehouseEntryId(dto.getWarehouseEntryId())
+                            .warehouseEntryProductId(dto.getWarehouseEntryProductId())
                             .orderFromWarehouse(orderFromWarehouse)
                             .build();
                 })
@@ -158,7 +160,6 @@ public class OrderFromWarehouseService {
         utilService.updateFieldIfPresent(orderFromWarehouseUpdateRequest.getTime(), orderFromWarehouse::setTime);
         utilService.updateFieldIfPresent(orderFromWarehouseUpdateRequest.getDescription(), orderFromWarehouse::setDescription);
         utilService.updateFieldIfPresent(orderFromWarehouseUpdateRequest.getRoom(), orderFromWarehouse::setRoom);
-
         if (hasProducts(orderFromWarehouseUpdateRequest)){
             List<OrderFromWarehouseProduct> entryProducts = buildWarehouseEntryUpdateProducts(orderFromWarehouseUpdateRequest, orderFromWarehouse);
             orderFromWarehouse.getOrderFromWarehouseProducts().clear();
@@ -166,9 +167,22 @@ public class OrderFromWarehouseService {
             orderFromWarehouse.setNumber(entryProducts.size());
             orderFromWarehouse.setSumQuantity(calculateSumQuantity(entryProducts));
         }
-
+        WarehouseRemoval warehouseRemoval = warehouseRemovalService.findById(orderFromWarehouse.getWarehouseRemoval().getId());
+        buildWarehouseUpdateExit(warehouseRemoval,orderFromWarehouse);
         orderFromWarehouseRepository.save(orderFromWarehouse);
         return buildWarehouseEntryResponse(orderFromWarehouse, orderFromWarehouse.getOrderFromWarehouseProducts());
+    }
+
+    private void buildWarehouseUpdateExit(WarehouseRemoval warehouseRemoval, OrderFromWarehouse orderFromWarehouse) {
+        warehouseRemoval.setOrderAmount(orderFromWarehouse.getSumQuantity());
+        warehouseRemoval.setRemainingAmount(orderFromWarehouse.getSumQuantity());
+        warehouseRemoval.setDate(orderFromWarehouse.getDate());
+        warehouseRemoval.setTime(orderFromWarehouse.getTime());
+        warehouseRemoval.setRoom(orderFromWarehouse.getRoom());
+        warehouseRemoval.setSendAmount(0L);
+        warehouseRemoval.setOrderFromWarehouse(orderFromWarehouse);
+        warehouseRemoval.setNumber(orderFromWarehouse.getOrderFromWarehouseProducts().size());
+        warehouseRemovalService.save(warehouseRemoval);
     }
 
     private List<OrderFromWarehouseProduct> buildWarehouseEntryUpdateProducts(OrderFromWarehouseUpdateRequest orderFromWarehouseUpdateRequest, OrderFromWarehouse orderFromWarehouse) {
@@ -186,12 +200,14 @@ public class OrderFromWarehouseService {
             if (dto.getOrderFromWarehouseProductId() != null && existingProductsMap.containsKey(dto.getOrderFromWarehouseProductId())) {
                 OrderFromWarehouseProduct existing = existingProductsMap.get(dto.getOrderFromWarehouseProductId());
 
-                warehouseEntryProductService.increaseProductQuantity(dto.getProductId(), existing.getQuantity());
-                warehouseEntryProductService.decreaseProductQuantity(dto.getProductId(), dto.getQuantity());
+                warehouseEntryProductService.increaseProductQuantity(dto.getWarehouseEntryProductId(), existing.getQuantity());
+                warehouseEntryProductService.decreaseProductQuantity(dto.getWarehouseEntryProductId(), dto.getQuantity());
 
                 utilService.updateFieldIfPresent(dto.getCategoryId(), existing::setCategoryId);
                 utilService.updateFieldIfPresent(dto.getProductId(), existing::setProductId);
                 utilService.updateFieldIfPresent(dto.getQuantity(), existing::setQuantity);
+                utilService.updateFieldIfPresent(dto.getWarehouseEntryProductId(), existing::setWarehouseEntryProductId);
+                utilService.updateFieldIfPresent(dto.getWarehouseEntryId(), existing::setWarehouseEntryId);
 
                 existing.setProductName(warehouseEntryProduct.getProductName());
                 existing.setCategoryName(warehouseEntryProduct.getCategoryName());
@@ -215,13 +231,14 @@ public class OrderFromWarehouseService {
                         .categoryName(warehouseEntryProduct.getCategoryName())
                         .productTitle(warehouseEntryProduct.getProductTitle())
                         .orderFromWarehouse(orderFromWarehouse)
+                        .warehouseEntryId(dto.getWarehouseEntryId())
+                        .warehouseEntryProductId(dto.getWarehouseEntryProductId())
                         .build();
 
                 finalList.add(newProduct);
             }
 
         }
-
 
         for (OrderFromWarehouseProduct old : existingProductsMap.values()) {
             if (!updatedIds.contains(old.getId())) {
@@ -237,8 +254,21 @@ public class OrderFromWarehouseService {
                 !request.getOrderFromWarehouseProductUpdateRequests().isEmpty();
     }
 
+    @Transactional
     public void delete(Long id) {
         OrderFromWarehouse orderFromWarehouse = findById(id);
+
+        List<OrderFromWarehouseProduct> products = orderFromWarehouse.getOrderFromWarehouseProducts();
+        for (OrderFromWarehouseProduct product : products) {
+            WarehouseEntryProduct warehouseEntryProduct = warehouseEntryProductService.findAllByIdAndWarehouseEntryIdAndCategoryIdAndProductId(
+                    product.getWarehouseEntryProductId(),
+                    product.getWarehouseEntryId(),
+                    product.getCategoryId(),
+                    product.getProductId()
+            );
+
+            warehouseEntryProductService.increaseProductQuantity(warehouseEntryProduct.getId(), product.getQuantity());
+        }
         orderFromWarehouseRepository.delete(orderFromWarehouse);
     }
 
