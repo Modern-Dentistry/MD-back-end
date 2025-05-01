@@ -31,10 +31,6 @@ public class WarehouseEntry {
     @JsonIgnore
     List<WarehouseEntryProduct> warehouseEntryProducts;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "warehouseEntry")
-    @JsonIgnore
-    OrderFromWarehouse orderFromWarehouse;
-
     String description;
 
     Integer number;
