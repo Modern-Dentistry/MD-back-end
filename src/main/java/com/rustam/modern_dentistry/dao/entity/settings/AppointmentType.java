@@ -17,7 +17,6 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppointmentType {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
