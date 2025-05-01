@@ -146,27 +146,22 @@ public class WarehouseEntryService {
         WarehouseEntry warehouseEntry = findById(id);
         List<WarehouseEntryProduct> warehouseEntryProducts = warehouseEntry.getWarehouseEntryProducts();
 
-        // Hər bir WarehouseEntryProduct üçün əlaqəli sifarişləri tapırıq
         for (WarehouseEntryProduct entryProduct : warehouseEntryProducts) {
             List<OrderFromWarehouse> ordersFromWarehouse = findOrdersByProductId(entryProduct.getProductId());
 
             for (OrderFromWarehouse order : ordersFromWarehouse) {
-                // Sifarişləri silirik (OrderFromWarehouseProduct obyektləri ilə birlikdə)
                 deleteOrderFromWarehouse(order);
             }
         }
 
-        // Axırda WarehouseEntry və əlaqəli WarehouseEntryProduct-ları silirik
         warehouseEntryRepository.delete(warehouseEntry);
     }
 
     private List<OrderFromWarehouse> findOrdersByProductId(Long productId) {
-        // Məhsul ID-yə əsasən sifarişləri tap
         return orderFromWarehouseService.findByProductId(productId);
     }
 
     private void deleteOrderFromWarehouse(OrderFromWarehouse order) {
-        // OrderFromWarehouse'ı və ona bağlı məhsulları sil
         orderFromWarehouseService.delete(order.getId());
     }
 
