@@ -10,7 +10,7 @@ public class RecipeSpecification {
 
         return new SpecificationBuilder<Recipe>()
                 .addLike("name", request.getName())
-                .addEqual("categoryId", request.getStatus())
+                .addEqual("status", request.getStatus())
                 .build();
     }
 }
