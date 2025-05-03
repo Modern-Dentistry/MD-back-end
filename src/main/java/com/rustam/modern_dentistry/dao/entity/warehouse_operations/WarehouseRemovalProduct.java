@@ -24,12 +24,24 @@ public class WarehouseRemovalProduct {
 
     LocalDate date;
     LocalTime time;
+    @Column(name = "category_id")
     Long categoryId;
+    @Column(name = "product_id")
     Long productId;
-    Long sendQuantity;
+    @Column(name = "current_amount")
+    Long currentAmount;
+    @Column(name = "order_amount")
+    Long orderAmount;
+    @Column(name = "send_amount")
+    Long sendAmount;
+    @Column(name = "remaining_amount")
+    Long remainingAmount;
 
+    @Column(name = "product_name")
     String productName;
+    @Column(name = "category_name")
     String categoryName;
+    @Column(name = "product_description")
     String productDescription;
 
     @Enumerated(EnumType.STRING)

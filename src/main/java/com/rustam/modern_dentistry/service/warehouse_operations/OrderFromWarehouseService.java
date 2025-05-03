@@ -1,34 +1,24 @@
 package com.rustam.modern_dentistry.service.warehouse_operations;
 
-import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.*;
 import com.rustam.modern_dentistry.dao.repository.warehouse_operations.OrderFromWarehouseRepository;
 import com.rustam.modern_dentistry.dto.request.create.OrderFromWarehouseCreateRequest;
-import com.rustam.modern_dentistry.dto.request.read.OrderFromWarehouseProductRequest;
 import com.rustam.modern_dentistry.dto.request.read.OrderFromWarehouseSearchRequest;
 import com.rustam.modern_dentistry.dto.request.read.RoomStockRequest;
 import com.rustam.modern_dentistry.dto.request.update.OrderFromWarehouseProductUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.update.OrderFromWarehouseUpdateRequest;
-import com.rustam.modern_dentistry.dto.request.update.WarehouseEntryProductUpdateRequest;
-import com.rustam.modern_dentistry.dto.request.update.WarehouseEntryUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.OrderProductStockProjection;
-import com.rustam.modern_dentistry.dto.response.create.WarehouseEntryCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.*;
-import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.exception.custom.ProductDoesnotQuantityThatMuchException;
 import com.rustam.modern_dentistry.mapper.warehouse_operations.OrderFromWarehouseMapper;
-import com.rustam.modern_dentistry.service.settings.product.ProductService;
 import com.rustam.modern_dentistry.util.UtilService;
-import com.rustam.modern_dentistry.util.specification.warehouse_entry.OrderFromWarehouseSpecification;
+import com.rustam.modern_dentistry.util.specification.warehouse_operations.OrderFromWarehouseSpecification;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;

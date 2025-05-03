@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.util.specification.warehouse_entry;
+package com.rustam.modern_dentistry.util.specification.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
 import com.rustam.modern_dentistry.dto.request.read.WarehouseSearchRequest;
