@@ -2,7 +2,6 @@ package com.rustam.modern_dentistry.service.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.product.Product;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouse;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouseProduct;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
 import com.rustam.modern_dentistry.dao.repository.warehouse_operations.WarehouseEntryRepository;
@@ -16,8 +15,7 @@ import com.rustam.modern_dentistry.dto.response.read.*;
 import com.rustam.modern_dentistry.exception.custom.WarehouseEntryNotFoundException;
 import com.rustam.modern_dentistry.mapper.warehouse_operations.WarehouseEntryMapper;
 import com.rustam.modern_dentistry.service.settings.product.ProductService;
-import com.rustam.modern_dentistry.util.specification.warehouse_entry.WarehouseEntrySpecification;
-import com.rustam.modern_dentistry.util.specification.warehouse_entry.WarehouseSpecification;
+import com.rustam.modern_dentistry.util.specification.warehouse_operations.WarehouseEntrySpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
