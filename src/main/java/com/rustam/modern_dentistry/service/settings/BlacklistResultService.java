@@ -53,7 +53,7 @@ public class BlacklistResultService {
         return blackListResultMapper.toReadDto(entity);
     }
 
-    public void update(Long id, @Valid UpdateBlacklistResultReq request) {
+    public void update(Long id, UpdateBlacklistResultReq request) {
         var entity = getBlackListById(id);
         blackListResultMapper.update(entity, request);
         blacklistResultRepository.save(entity);
