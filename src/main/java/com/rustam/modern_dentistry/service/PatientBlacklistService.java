@@ -6,18 +6,22 @@ import com.rustam.modern_dentistry.dto.request.create.PatBlacklistCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.PatBlacklistSearchReq;
 import com.rustam.modern_dentistry.dto.request.update.PatBlacklistUpdateReq;
+import com.rustam.modern_dentistry.dto.response.excel.PatientBlacklistExcel;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatBlacklistReadRes;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.PatientBlacklistMapper;
 import com.rustam.modern_dentistry.service.settings.BlacklistResultService;
+import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.UtilService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @Service
@@ -29,6 +33,8 @@ public class PatientBlacklistService {
     private final PatientBlacklistRepository patientBlacklistRepository;
 
     public void create(PatBlacklistCreateReq request) {
+        var existsByPatientId = patientBlacklistRepository.existsByPatientId(request.getPatientId());
+        if (existsByPatientId) throw new ExistsException("Pasient artıq qara siyahıya əlavə edilib");
         var patient = utilService.findByPatientId(request.getPatientId());
         var blacklistResult = blResService.getBlackListById(request.getBlacklistId());
         var entity = patientBlacklistMapper.toEntity(blacklistResult, patient);
@@ -53,7 +59,9 @@ public class PatientBlacklistService {
 
     public void update(Long id, PatBlacklistUpdateReq request) {
         var patientBlacklistById = getPatientBlacklistById(id);
-        patientBlacklistMapper.update(patientBlacklistById, request);
+        var blacklistResult = blResService.getBlackListById(request.getBlacklistId());
+        patientBlacklistMapper.update(patientBlacklistById, blacklistResult);
+        patientBlacklistRepository.save(patientBlacklistById);
     }
 
     public void delete(Long id) {
@@ -66,7 +74,10 @@ public class PatientBlacklistService {
     }
 
     public InputStreamResource exportReservationsToExcel() {
-        return null;
+        List<PatientBlacklist> patientBlacklists = patientBlacklistRepository.findAll();
+        var list = patientBlacklists.stream().map(patientBlacklistMapper::toExcelDto).toList();
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PatientBlacklistExcel.class);
+        return new InputStreamResource(excelFile);
     }
 
     private PatientBlacklist getPatientBlacklistById(Long id) {

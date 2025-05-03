@@ -3,11 +3,12 @@ package com.rustam.modern_dentistry.mapper;
 import com.rustam.modern_dentistry.dao.entity.PatientBlacklist;
 import com.rustam.modern_dentistry.dao.entity.settings.BlacklistResult;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
-import com.rustam.modern_dentistry.dto.request.update.PatBlacklistUpdateReq;
+import com.rustam.modern_dentistry.dto.response.excel.PatientBlacklistExcel;
 import com.rustam.modern_dentistry.dto.response.read.PatBlacklistReadRes;
-import org.mapstruct.*;
-
-import java.time.LocalDate;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -19,15 +20,33 @@ public interface PatientBlacklistMapper {
     @Mapping(target = "id", ignore = true)
     PatientBlacklist toEntity(BlacklistResult blacklistResult, Patient patient);
 
-    void update(@MappingTarget PatientBlacklist patientBlacklist, PatBlacklistUpdateReq request);
+
+    default void update(PatientBlacklist patientBlacklist, BlacklistResult blacklistResult) {
+        patientBlacklist.setBlacklistResult(blacklistResult);
+    }
 
     default PatBlacklistReadRes toReadDto(PatientBlacklist patientBlacklist) {
+
         return PatBlacklistReadRes.builder()
-                .fullName(patientBlacklist.getPatient().getName() + patientBlacklist.getPatient().getSurname())
+                .id(patientBlacklist.getId())
+                .fullName(patientBlacklist.getPatient().getName() + " " + patientBlacklist.getPatient().getSurname())
                 .finCode(patientBlacklist.getPatient().getFinCode())
                 .mobilePhone(patientBlacklist.getPatient().getPhone())
-                .addedDate(LocalDate.now())
-                .blacklistReason(patientBlacklist.getBlacklistResult().getStatusName())
+                .addedDate(patientBlacklist.getCreatedDate())
+                .blacklistReason(patientBlacklist.getBlacklistResult() == null ?
+                        "" : patientBlacklist.getBlacklistResult().getStatusName())
+                .build();
+    }
+
+    default PatientBlacklistExcel toExcelDto(PatientBlacklist patientBlacklist) {
+
+        return PatientBlacklistExcel.builder()
+                .fullName(patientBlacklist.getPatient().getName() + " " + patientBlacklist.getPatient().getSurname())
+                .finCode(patientBlacklist.getPatient().getFinCode())
+                .mobilePhone(patientBlacklist.getPatient().getPhone())
+                .addedDate(patientBlacklist.getCreatedDate())
+                .blacklistReason(patientBlacklist.getBlacklistResult() == null ?
+                        "" : patientBlacklist.getBlacklistResult().getStatusName())
                 .build();
     }
 }
