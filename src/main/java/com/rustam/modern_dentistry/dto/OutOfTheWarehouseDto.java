@@ -13,7 +13,8 @@ public class OutOfTheWarehouseDto {
     String categoryName;
     String productName;
     String productDescription;
+    Long sendQuantity;
     Long orderQuantity;
     Long remainingQuantity;
-    Long currentQuantity;
+    Long currentAmount;
 }
