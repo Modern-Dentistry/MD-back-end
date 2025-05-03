@@ -60,7 +60,7 @@ public class WarehouseRemovalService {
                                 new NotFoundException("Cannot find related OrderFromWarehouseProduct for product ID: " + removalProduct.getProductId()));
 
                 // Məhsul miqdarını geri qaytarırıq
-                long updatedQuantity = matchedProduct.getQuantity() + removalProduct.getSendQuantity();
+                long updatedQuantity = matchedProduct.getQuantity() + removalProduct.getCurrentAmount();
                 matchedProduct.setQuantity(updatedQuantity);
 
                 // Məhsulu yeniləyirik (Verilənlər bazasına yazılır)

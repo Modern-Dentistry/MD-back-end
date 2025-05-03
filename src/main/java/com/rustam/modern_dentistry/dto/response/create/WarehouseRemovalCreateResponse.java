@@ -26,5 +26,7 @@ public class WarehouseRemovalCreateResponse {
 
     String description;
 
+    Integer number;
+
     PendingStatus status;
 }

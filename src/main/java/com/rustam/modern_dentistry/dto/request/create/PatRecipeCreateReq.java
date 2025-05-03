@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-import static com.rustam.modern_dentistry.dao.entity.enums.ValidationErrorMessage.*;
+import static com.rustam.modern_dentistry.util.constants.ValidationErrorMessage.*;
 
 @Getter
 @Setter
