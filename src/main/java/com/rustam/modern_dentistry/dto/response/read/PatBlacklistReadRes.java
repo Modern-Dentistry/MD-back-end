@@ -14,6 +14,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @FieldDefaults(level = PRIVATE)
 public class PatBlacklistReadRes {
+    Long id;
     String fullName;
     String finCode;
     String mobilePhone;
