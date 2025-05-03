@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @Table(name = "warehouse_removal_product")
 @Data
@@ -19,6 +22,8 @@ public class WarehouseRemovalProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    LocalDate date;
+    LocalTime time;
     Long categoryId;
     Long productId;
     Long sendQuantity;
@@ -29,6 +34,9 @@ public class WarehouseRemovalProduct {
 
     @Enumerated(EnumType.STRING)
     PendingStatus pendingStatus;
+
+    @Column(name = "order_from_warehouse_product_id")
+    Long orderFromWarehouseProductId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_removal_id")
