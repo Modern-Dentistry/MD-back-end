@@ -49,7 +49,6 @@ public class UtilService {
                 .orElseThrow(() -> new UserNotFountException("No such patient found."));
     }
 
-
     public UUID convertToUUID(String id) {
         try {
             return UUID.fromString(id);
@@ -95,7 +94,7 @@ public class UtilService {
         }
     }
 
-    public OrderFromWarehouse findById(Long id){
+    public OrderFromWarehouse findByOrderFromWarehouseId(Long id){
         return orderFromWarehouseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No such order from warehouse found."));
     }
