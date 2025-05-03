@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface BlacklistResultRepository extends
         JpaRepository<BlacklistResult, Long>,
         JpaSpecificationExecutor<BlacklistResult> {
+    boolean existsByStatusNameIgnoreCase(String statusName);
 }

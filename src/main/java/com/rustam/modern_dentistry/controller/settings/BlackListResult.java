@@ -76,7 +76,7 @@ public class BlackListResult {
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Qara-siyahı-səbəbi.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Qara_siyahi_sebebi.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(blacklistResultService.exportReservationsToExcel());
     }
