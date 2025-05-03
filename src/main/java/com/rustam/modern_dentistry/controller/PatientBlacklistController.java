@@ -3,7 +3,6 @@ package com.rustam.modern_dentistry.controller;
 import com.rustam.modern_dentistry.dto.request.create.PatBlacklistCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.PatBlacklistSearchReq;
-import com.rustam.modern_dentistry.dto.request.update.PatBlacklistUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatBlacklistReadRes;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
@@ -38,13 +37,6 @@ public class PatientBlacklistController {
     @GetMapping("/read-by-id/{id}")
     public ResponseEntity<PatBlacklistReadRes> readById(@PathVariable Long id) {
         return ResponseEntity.ok(patientBlacklistService.readById(id));
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id,
-                                       @Valid @RequestBody PatBlacklistUpdateReq request) {
-        patientBlacklistService.update(id, request);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{id}")
