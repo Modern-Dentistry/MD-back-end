@@ -63,11 +63,11 @@ public class WarehouseRemovalProductService {
             // Məhsulu yeniləyirik
             updateWarehouseProductQuantity(matchedProduct, requestDetail);
 
-            // DTO yaradılıb cavab siyahısına əlavə olunur
-            dtos.add(prepareOutOfTheWarehouseDto(matchedProduct, warehouseRemoval, requestDetail));
-
             // Yeni WarehouseRemovalProduct əlavə edilir
-            addWarehouseRemovalProductEntity(warehouseRemoval, matchedProduct, requestDetail, request);
+            WarehouseRemovalProduct warehouseRemovalProduct = addWarehouseRemovalProductEntity(warehouseRemoval, matchedProduct, requestDetail, request);
+
+            // DTO yaradılıb cavab siyahısına əlavə olunur
+            dtos.add(prepareOutOfTheWarehouseDto(warehouseRemovalProduct));
         }
 
         return dtos;
@@ -92,27 +92,42 @@ public class WarehouseRemovalProductService {
         matchedProduct.setQuantity(remainingQuantity);
     }
 
-    private OutOfTheWarehouseDto prepareOutOfTheWarehouseDto(OrderFromWarehouseProduct matchedProduct, WarehouseRemoval warehouseRemoval, WarehouseRemovalProductCreateRequest requestDetail) {
+    private OutOfTheWarehouseDto prepareOutOfTheWarehouseDto(WarehouseRemovalProduct warehouseRemovalProduct) {
         return OutOfTheWarehouseDto.builder()
-                .categoryName(matchedProduct.getCategoryName())
-                .productName(matchedProduct.getProductName())
-                .productDescription(matchedProduct.getProductTitle())
-                .orderQuantity(warehouseRemoval.getOrderFromWarehouse().getSumQuantity())
-                .remainingQuantity(matchedProduct.getQuantity())
-                .sendQuantity(warehouseRemoval.getSendAmount())
-                .currentAmount(requestDetail.getCurrentExpenses())
+                .categoryName(warehouseRemovalProduct.getCategoryName())
+                .productName(warehouseRemovalProduct.getProductName())
+                .productDescription(warehouseRemovalProduct.getProductDescription())
+                .orderQuantity(warehouseRemovalProduct.getOrderAmount())
+                .remainingQuantity(warehouseRemovalProduct.getRemainingAmount())
+                .sendQuantity(warehouseRemovalProduct.getSendAmount())
+                .currentAmount(warehouseRemovalProduct.getCurrentAmount())
                 .build();
     }
 
-    private void addWarehouseRemovalProductEntity(WarehouseRemoval warehouseRemoval, OrderFromWarehouseProduct matchedProduct, WarehouseRemovalProductCreateRequest requestDetail, WarehouseRemovalCreateRequest request) {
+    private WarehouseRemovalProduct addWarehouseRemovalProductEntity(WarehouseRemoval warehouseRemoval, OrderFromWarehouseProduct matchedProduct, WarehouseRemovalProductCreateRequest requestDetail, WarehouseRemovalCreateRequest request) {
+        long sendAmount = 0L;
+
+        List<WarehouseRemovalProduct> existingWarehouseRemovalProducts = warehouseRemovalProductRepository.findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(
+                warehouseRemoval.getId(),
+                requestDetail.getOrderFromWarehouseProductId()
+        );
+
+        if (existingWarehouseRemovalProducts != null && !existingWarehouseRemovalProducts.isEmpty()) {
+            for (WarehouseRemovalProduct product : existingWarehouseRemovalProducts) {
+                sendAmount += product.getSendAmount();
+            }
+            sendAmount += requestDetail.getCurrentExpenses();
+        } else {
+            sendAmount = requestDetail.getCurrentExpenses();
+        }
 
         WarehouseRemovalProduct warehouseRemovalProduct = WarehouseRemovalProduct.builder()
                 .categoryId(matchedProduct.getCategoryId())
                 .productId(matchedProduct.getProductId())
                 .currentAmount(requestDetail.getCurrentExpenses())
-                .orderAmount(matchedProduct.getQuantity())
+                .orderAmount(matchedProduct.getInitialQuantity())
                 .remainingAmount(matchedProduct.getQuantity() - requestDetail.getCurrentExpenses())
-                .sendAmount(requestDetail.getCurrentExpenses())
+                .sendAmount(sendAmount)
                 .productName(matchedProduct.getProductName())
                 .categoryName(matchedProduct.getCategoryName())
                 .productDescription(request.getDescription() != null ? request.getDescription() : matchedProduct.getProductTitle())
@@ -132,6 +147,7 @@ public class WarehouseRemovalProductService {
         warehouseRemoval.setRemainingAmount(newRemainingAmount);
 
         warehouseRemovalProductRepository.save(warehouseRemovalProduct);
+        return warehouseRemovalProduct;
     }
 
     @Transactional
