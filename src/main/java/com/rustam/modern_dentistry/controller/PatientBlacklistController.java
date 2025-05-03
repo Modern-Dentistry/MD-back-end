@@ -7,7 +7,6 @@ import com.rustam.modern_dentistry.dto.request.update.PatBlacklistUpdateReq;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatBlacklistReadRes;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
-import com.rustam.modern_dentistry.dto.response.update.ReservationUpdateResponse;
 import com.rustam.modern_dentistry.service.PatientBlacklistService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +41,10 @@ public class PatientBlacklistController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ReservationUpdateResponse> update(@PathVariable Long id,
-                                                            @Valid @RequestBody PatBlacklistUpdateReq request) {
-        return ResponseEntity.ok(patientBlacklistService.update(id, request));
+    public ResponseEntity<Void> update(@PathVariable Long id,
+                                       @Valid @RequestBody PatBlacklistUpdateReq request) {
+        patientBlacklistService.update(id, request);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{id}")
@@ -61,7 +61,7 @@ public class PatientBlacklistController {
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Pasiyent_qara_siyahı.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Pasiyent_qara_siyahi.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(patientBlacklistService.exportReservationsToExcel());
     }

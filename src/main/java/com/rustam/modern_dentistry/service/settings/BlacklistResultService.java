@@ -9,6 +9,7 @@ import com.rustam.modern_dentistry.dto.request.read.BlacklistResultSearchReq;
 import com.rustam.modern_dentistry.dto.response.excel.BlacklistResultExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.BlacklistResultReadRes;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.BlackListResultMapper;
 import com.rustam.modern_dentistry.util.ExcelUtil;
@@ -33,6 +34,8 @@ public class BlacklistResultService {
     private final BlacklistResultRepository blacklistResultRepository;
 
     public void create(@Valid BlacklistResultCreateReq request) {
+        var existsByStatusName = blacklistResultRepository.existsByStatusNameIgnoreCase(request.getStatusName());
+        if (existsByStatusName) throw new ExistsException("Bu adda status artıq mövcuddur");
         var entity = blackListResultMapper.toEntity(request);
         blacklistResultRepository.save(entity);
     }
@@ -87,7 +90,7 @@ public class BlacklistResultService {
     }
 
 
-    protected BlacklistResult getBlackListById(Long id) {
+    public BlacklistResult getBlackListById(Long id) {
         return blacklistResultRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də qara siyahı tapımadı: " + id)
         );

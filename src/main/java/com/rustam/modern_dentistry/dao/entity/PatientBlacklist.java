@@ -1,12 +1,13 @@
 package com.rustam.modern_dentistry.dao.entity;
 
 import com.rustam.modern_dentistry.dao.entity.settings.BlacklistResult;
+import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -25,8 +26,10 @@ public class PatientBlacklist {
     @GeneratedValue(strategy = IDENTITY)
     Long id;
 
-    @OneToMany(fetch = LAZY)
-    List<BlacklistResult> blacklistResultList;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "blacklist_result_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    BlacklistResult blacklistResult;
 
     @ManyToOne(fetch = LAZY)
     Patient patient;
