@@ -45,7 +45,7 @@ public class OrderFromWarehouseService {
     WarehouseRemovalService warehouseRemovalService;
 
     public OrderFromWarehouse findById(Long id) {
-        return utilService.findById(id);
+        return utilService.findByOrderFromWarehouseId(id);
     }
 
     @Transactional

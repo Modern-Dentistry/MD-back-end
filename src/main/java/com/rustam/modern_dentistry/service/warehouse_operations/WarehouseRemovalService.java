@@ -36,100 +36,9 @@ public class WarehouseRemovalService {
         warehouseRemovalRepository.save(warehouseRemoval);
     }
 
-    @Transactional
-    public WarehouseRemovalCreateResponse create(WarehouseRemovalCreateRequest request) {
-        WarehouseRemoval warehouseRemoval = findById(request.getWarehouseRemovalId());
-
-        List<OutOfTheWarehouseDto> outOfTheWarehouseDtos = processWarehouseRemovalRequests(request, warehouseRemoval);
-
-        return WarehouseRemovalCreateResponse.builder()
-                .id(warehouseRemoval.getId())
-                .date(request.getDate())
-                .time(request.getTime())
-                .description(request.getDescription())
-                .outOfTheWarehouseDtos(outOfTheWarehouseDtos)
-                .status(PendingStatus.WAITING)
-                .build();
-    }
-
     public WarehouseRemoval findById(Long id) {
         return warehouseRemovalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No such warehouse removal found."));
-    }
-
-    private List<OutOfTheWarehouseDto> processWarehouseRemovalRequests(WarehouseRemovalCreateRequest request, WarehouseRemoval warehouseRemoval) {
-        List<OutOfTheWarehouseDto> dtos = new ArrayList<>();
-
-        for (WarehouseRemovalProductCreateRequest requestDetail : request.getRequests()) {
-            // Məhsulu tapırıq və xərcləri yoxlayırıq
-            var matchedProduct = findAndValidateProduct(warehouseRemoval, requestDetail);
-
-            // Məhsulu yeniləyirik
-            updateWarehouseProductQuantity(matchedProduct, requestDetail);
-
-            // DTO hazırlayırıq və siyahıya əlavə edirik
-            dtos.add(createOutOfTheWarehouseDto(matchedProduct, warehouseRemoval, requestDetail));
-
-            // WarehouseRemovalProduct hazırlayırıq və əlavə edirik
-            addWarehouseRemovalProduct(warehouseRemoval, matchedProduct, requestDetail);
-        }
-
-        return dtos;
-    }
-
-    private OrderFromWarehouseProduct findAndValidateProduct(WarehouseRemoval warehouseRemoval, WarehouseRemovalProductCreateRequest requestDetail) {
-        OrderFromWarehouse order = utilService.findById(warehouseRemoval.getOrderFromWarehouse().getId());
-
-        return order.getOrderFromWarehouseProducts().stream()
-                .filter(product -> product.getId().equals(requestDetail.getOrderFromWarehouseProductId()))
-                .findFirst()
-                .orElseThrow(() ->
-                        new NotFoundException("Product with ID: " + requestDetail.getOrderFromWarehouseProductId() + " not found."));
-    }
-
-    private void updateWarehouseProductQuantity(OrderFromWarehouseProduct matchedProduct, WarehouseRemovalProductCreateRequest requestDetail) {
-        if (matchedProduct.getQuantity() < requestDetail.getCurrentExpenses()) {
-            throw new AmountSendException("The amount sent is too much for product ID: " + requestDetail.getOrderFromWarehouseProductId());
-        }
-
-        long remainingQuantity = matchedProduct.getQuantity() - requestDetail.getCurrentExpenses();
-        matchedProduct.setQuantity(remainingQuantity);
-    }
-
-    private OutOfTheWarehouseDto createOutOfTheWarehouseDto(OrderFromWarehouseProduct matchedProduct, WarehouseRemoval warehouseRemoval, WarehouseRemovalProductCreateRequest requestDetail) {
-        return OutOfTheWarehouseDto.builder()
-                .categoryName(matchedProduct.getCategoryName())
-                .productName(matchedProduct.getProductName())
-                .productDescription(matchedProduct.getProductTitle())
-                .orderQuantity(warehouseRemoval.getOrderFromWarehouse().getSumQuantity())
-                .remainingQuantity(matchedProduct.getQuantity())
-                .currentQuantity(requestDetail.getCurrentExpenses())
-                .build();
-    }
-
-    private void addWarehouseRemovalProduct(WarehouseRemoval warehouseRemoval, OrderFromWarehouseProduct matchedProduct, WarehouseRemovalProductCreateRequest requestDetail) {
-        // WarehouseRemovalProduct obyektini hazırlayırıq
-        WarehouseRemovalProduct warehouseRemovalProduct = WarehouseRemovalProduct.builder()
-                .categoryId(matchedProduct.getCategoryId())
-                .productId(matchedProduct.getProductId())
-                .sendQuantity(requestDetail.getCurrentExpenses())
-                .productName(matchedProduct.getProductName())
-                .categoryName(matchedProduct.getCategoryName())
-                .productDescription(matchedProduct.getProductTitle())
-                .pendingStatus(PendingStatus.WAITING)
-                .warehouseRemoval(warehouseRemoval)
-                .build();
-
-        // WarehouseRemoval'a əlavə edirik
-        warehouseRemoval.getWarehouseRemovalProducts().add(warehouseRemovalProduct);
-
-        // WarehouseRemoval'ın sendAmount və remainingAmount sahələrini yeniləyirik
-        long newSendAmount = warehouseRemoval.getSendAmount() + requestDetail.getCurrentExpenses();
-        warehouseRemoval.setSendAmount(newSendAmount);
-
-        long newRemainingAmount = warehouseRemoval.getOrderFromWarehouse().getSumQuantity() - newSendAmount;
-        warehouseRemoval.setRemainingAmount(newRemainingAmount);
-        save(warehouseRemoval);
     }
 
     @Transactional
@@ -162,4 +71,5 @@ public class WarehouseRemovalService {
         // Əməliyyat bitdikdən sonra WarehouseRemoval obyektini silirik
         warehouseRemovalRepository.delete(warehouseRemoval);
     }
+
 }
