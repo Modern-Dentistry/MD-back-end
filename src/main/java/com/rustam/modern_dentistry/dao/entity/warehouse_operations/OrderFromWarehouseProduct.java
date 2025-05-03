@@ -28,6 +28,9 @@ public class OrderFromWarehouseProduct {
     @Column(name = "category_id")
     Long categoryId;
 
+    @Column(name = "initial_quantity")
+    Long initialQuantity;
+
     @Column(name = "category_name")
     String categoryName;
 
