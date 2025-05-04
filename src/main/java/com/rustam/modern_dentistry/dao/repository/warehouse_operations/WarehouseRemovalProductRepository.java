@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface WarehouseRemovalProductRepository extends JpaRepository<WarehouseRemovalProduct,Long> , JpaSpecificationExecutor<WarehouseRemovalProduct> {
     List<WarehouseRemovalProduct> findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(Long id, Long orderFromWarehouseProductId);
+
+    List<WarehouseRemovalProduct> findAllByGroupId(String groupId);
 }
