@@ -47,6 +47,11 @@ public class WarehouseRemovalProduct {
     @Enumerated(EnumType.STRING)
     PendingStatus pendingStatus;
 
+    Integer number;
+
+    @Column(name = "group_id")
+    String groupId;
+
     @Column(name = "order_from_warehouse_product_id")
     Long orderFromWarehouseProductId;
 

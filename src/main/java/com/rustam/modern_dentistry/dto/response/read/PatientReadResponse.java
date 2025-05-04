@@ -32,4 +32,5 @@ public class PatientReadResponse {
     String homeAddress;
     String workAddress;
     String email;
+    Boolean isBlocked;
 }

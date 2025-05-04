@@ -22,6 +22,8 @@ public class WarehouseRemovalCreateResponse {
 
     LocalTime time;
 
+    String groupId;
+
     List<OutOfTheWarehouseDto> outOfTheWarehouseDtos;
 
     String description;
