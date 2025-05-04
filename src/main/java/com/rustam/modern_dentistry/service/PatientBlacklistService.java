@@ -5,7 +5,6 @@ import com.rustam.modern_dentistry.dao.repository.PatientBlacklistRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatBlacklistCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.PatBlacklistSearchReq;
-import com.rustam.modern_dentistry.dto.request.update.PatBlacklistUpdateReq;
 import com.rustam.modern_dentistry.dto.response.excel.PatientBlacklistExcel;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatBlacklistReadRes;
@@ -57,19 +56,12 @@ public class PatientBlacklistService {
 
     }
 
-    public void update(Long id, PatBlacklistUpdateReq request) {
-        var patientBlacklistById = getPatientBlacklistById(id);
-        var blacklistResult = blResService.getBlackListById(request.getBlacklistId());
-        patientBlacklistMapper.update(patientBlacklistById, blacklistResult);
-        patientBlacklistRepository.save(patientBlacklistById);
-    }
-
     public void delete(Long id) {
         var entity = getPatientBlacklistById(id);
         patientBlacklistRepository.delete(entity);
     }
 
-    public PageResponse<ReservationReadResponse> search(PatBlacklistSearchReq request, PageCriteria pageCriteria) {
+    public PageResponse<PatBlacklistReadRes> search(PatBlacklistSearchReq request, PageCriteria pageCriteria) {
         return null;
     }
 
