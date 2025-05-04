@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -21,5 +22,6 @@ public interface PatientMapper {
 
     List<PatientReadResponse> toDtos(List<Patient> users);
 
+    @Mapping(target = "isBlocked", expression = "java(patient.getPatientBlacklist() != null)")
     PatientReadResponse toRead(Patient patient);
 }

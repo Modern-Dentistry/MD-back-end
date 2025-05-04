@@ -82,6 +82,11 @@ public class PatientService {
 
     public PatientReadResponse readById(Long id) {
         Patient patient = utilService.findByPatientId(id);
+        System.out.println("==============================");
+        System.out.println(patient.getPatientBlacklist());
+        System.out.println(patient.getPatientBlacklist() == null);
+        System.out.println(patient.getPatientBlacklist() != null);
+        System.out.println("==============================");
         return patientMapper.toRead(patient);
     }
 
