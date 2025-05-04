@@ -61,7 +61,7 @@ public class PatientBlacklistService {
         patientBlacklistRepository.delete(entity);
     }
 
-    public PageResponse<ReservationReadResponse> search(PatBlacklistSearchReq request, PageCriteria pageCriteria) {
+    public PageResponse<PatBlacklistReadRes> search(PatBlacklistSearchReq request, PageCriteria pageCriteria) {
         return null;
     }
 
