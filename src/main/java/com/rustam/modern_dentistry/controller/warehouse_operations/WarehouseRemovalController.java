@@ -16,10 +16,4 @@ public class WarehouseRemovalController {
 
     private final WarehouseRemovalService warehouseRemovalService;
 
-    @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        warehouseRemovalService.deleteWithReturn(id);
-        return ResponseEntity.ok().build();
-    }
-
 }
