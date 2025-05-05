@@ -5,7 +5,6 @@ import com.rustam.modern_dentistry.dao.entity.PatientBlacklist;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.read.PatBlacklistSearchReq;
 import io.micrometer.common.util.StringUtils;
-import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
@@ -24,14 +23,6 @@ public class PatientBlacklistSpecification {
             Join<PatientBlacklist, Patient> patientJoin = root.join("patient", JoinType.INNER);
 
             List<Predicate> predicates = new ArrayList<>();
-
-//            if (req.getFullName() != null && !req.getFullName().isBlank()) {
-//                Expression<String> fullNameExpression = cb.concat(
-//                        cb.concat(patientJoin.get("name"), " "),
-//                        patientJoin.get("surname")
-//                );
-//                predicates.add(cb.like(cb.lower(fullNameExpression), "%" + req.getFullName().toLowerCase() + "%"));
-//            }
 
             if (StringUtils.isNotBlank(req.getFullName())) {
                 String fullName = URLDecoder.decode(req.getFullName(), StandardCharsets.UTF_8)

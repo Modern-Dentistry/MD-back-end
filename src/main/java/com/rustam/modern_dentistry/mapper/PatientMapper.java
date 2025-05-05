@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.mapper;
 
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
+import com.rustam.modern_dentistry.dto.response.excel.PatientExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
 import org.mapstruct.InjectionStrategy;
@@ -22,6 +23,18 @@ public interface PatientMapper {
 
     List<PatientReadResponse> toDtos(List<Patient> users);
 
+    @Mapping(target = "doctorName", expression = "java(getDoctorName(user))")
+    @Mapping(target = "isBlocked", expression = "java(getBlacklist(user))")
+    PatientExcelResponse toExcelDto(Patient user);
+
     @Mapping(target = "isBlocked", expression = "java(patient.getPatientBlacklist() != null)")
     PatientReadResponse toRead(Patient patient);
+
+    default String getDoctorName(Patient patient) {
+        return patient.getDoctor().getName() + " " + patient.getDoctor().getSurname();
+    }
+
+    default Boolean getBlacklist(Patient patient) {
+        return patient.getPatientBlacklist() != null;
+    }
 }
