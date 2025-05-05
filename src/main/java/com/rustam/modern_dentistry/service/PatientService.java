@@ -8,6 +8,7 @@ import com.rustam.modern_dentistry.dto.request.create.PatientCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.PatientSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.PatientUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.PatientCreateResponse;
+import com.rustam.modern_dentistry.dto.response.excel.PatientExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
@@ -104,8 +105,8 @@ public class PatientService {
 
     public InputStreamResource exportReservationsToExcel() {
         List<Patient> patients = patientRepository.findAll();
-        List<PatientReadResponse> list = patientMapper.toDtos(patients);
-        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PatientReadResponse.class);
+        var list = patients.stream().map(patientMapper::toExcelDto).toList();
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, PatientExcelResponse.class);
         return new InputStreamResource(excelFile);
     }
 
