@@ -311,8 +311,6 @@ public class WarehouseRemovalProductService {
 
             long currentExpenses = Optional.ofNullable(req.getCurrentExpenses()).orElse(matchedProduct.getCurrentAmount());
 
-            updateWarehouseProductQuantity(orderFromWarehouseProduct, currentExpenses,matchedProduct);
-
             long updatedSendAmount = updateCalculateTotalSendAmount(warehouseRemoval.getId(),currentExpenses,req);
             long remainingAmount = matchedProduct.getOrderAmount() - updatedSendAmount;
 
@@ -322,6 +320,7 @@ public class WarehouseRemovalProductService {
 
             updatedDtos.add(prepareOutOfTheWarehouseDto(matchedProduct));
             warehouseRemovalProductRepository.save(matchedProduct);
+            updateWarehouseProductQuantity(orderFromWarehouseProduct, currentExpenses,matchedProduct);
         }
 
         long totalSendAmount = existingProducts.stream()
@@ -366,15 +365,8 @@ public class WarehouseRemovalProductService {
             throw new IllegalArgumentException("Göndərilən miqdar sifariş miqdarını keçə bilməz.");
         }
 
-        long quantity = matchedProduct.getQuantity();
-        long initialQuantity = matchedProduct.getInitialQuantity(); // yeni sahə olmalıdır!
-
-        matchedProduct.setQuantity(orderAmount - currentExpenses);
+        matchedProduct.setQuantity(product.getRemainingAmount());
         orderFromWarehouseProductService.saveOrderFromWarehouseProduct(matchedProduct);
-
-        product.setSendAmount(currentExpenses);
-        product.setCurrentAmount(currentExpenses);
-        product.setRemainingAmount(orderAmount - currentExpenses);
     }
 
 }
