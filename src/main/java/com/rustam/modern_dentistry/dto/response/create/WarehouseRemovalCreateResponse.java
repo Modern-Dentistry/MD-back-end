@@ -16,8 +16,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WarehouseRemovalCreateResponse {
 
-    Long id;
-
     LocalDate date;
 
     LocalTime time;
