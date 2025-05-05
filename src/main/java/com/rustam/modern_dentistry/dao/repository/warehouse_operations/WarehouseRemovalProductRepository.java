@@ -10,4 +10,6 @@ public interface WarehouseRemovalProductRepository extends JpaRepository<Warehou
     List<WarehouseRemovalProduct> findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(Long id, Long orderFromWarehouseProductId);
 
     List<WarehouseRemovalProduct> findAllByGroupId(String groupId);
+
+    List<WarehouseRemovalProduct> findAllByIdAndGroupIdAndOrderFromWarehouseProductId(Long id, String groupId, Long orderFromWarehouseProductId);
 }
