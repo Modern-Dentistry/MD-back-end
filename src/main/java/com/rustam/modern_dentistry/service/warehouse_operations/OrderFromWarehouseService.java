@@ -299,4 +299,8 @@ public class OrderFromWarehouseService {
     public List<OrderFromWarehouse> findByProductId(Long productId) {
         return orderFromWarehouseRepository.findAllById(Collections.singleton(productId));
     }
+
+    public void save(OrderFromWarehouse orderFromWarehouse) {
+        orderFromWarehouseRepository.save(orderFromWarehouse);
+    }
 }
