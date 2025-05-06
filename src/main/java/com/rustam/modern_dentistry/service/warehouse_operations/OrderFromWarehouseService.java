@@ -199,6 +199,7 @@ public class OrderFromWarehouseService {
                 utilService.updateFieldIfPresent(dto.getQuantity(), existing::setQuantity);
                 utilService.updateFieldIfPresent(dto.getWarehouseEntryProductId(), existing::setWarehouseEntryProductId);
                 utilService.updateFieldIfPresent(dto.getWarehouseEntryId(), existing::setWarehouseEntryId);
+                utilService.updateFieldIfPresent(dto.getQuantity(), existing::setInitialQuantity);
 
                 existing.setProductName(warehouseEntryProduct.getProductName());
                 existing.setCategoryName(warehouseEntryProduct.getCategoryName());
