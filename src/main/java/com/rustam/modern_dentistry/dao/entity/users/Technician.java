@@ -32,7 +32,6 @@ public class Technician {
     String phoneNumber2;
     String homePhoneNumber;
     String address;
-
     @Column(unique = true)
     String finCode;
     @Enumerated(EnumType.STRING)
