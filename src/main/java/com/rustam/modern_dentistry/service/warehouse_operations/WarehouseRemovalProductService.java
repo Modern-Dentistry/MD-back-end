@@ -37,6 +37,7 @@ public class WarehouseRemovalProductService {
     WarehouseRemovalService warehouseRemovalService;
     UtilService utilService;
     OrderFromWarehouseProductService orderFromWarehouseProductService;
+    OrderFromWarehouseService orderFromWarehouseService;
 
     @Transactional
     public WarehouseRemovalCreateResponse create(WarehouseRemovalCreateRequest request) {
@@ -120,12 +121,19 @@ public class WarehouseRemovalProductService {
         );
 
         updateWarehouseRemoval(warehouseRemoval, requestDetail.getCurrentExpenses());
-
+//        updateOrderFromWarehouseSumQuantity(matchedProduct, currentSendAmount);
         warehouseRemovalProductRepository.save(warehouseRemovalProduct);
         warehouseRemoval.getWarehouseRemovalProducts().add(warehouseRemovalProduct);
 
         return warehouseRemovalProduct;
     }
+
+//    private void updateOrderFromWarehouseSumQuantity(OrderFromWarehouseProduct matchedProduct, long currentSendAmount) {
+//        long sumQuantity = matchedProduct.getOrderFromWarehouse().getSumQuantity();
+//        long updatedQuantity = sumQuantity - currentSendAmount;
+//        matchedProduct.getOrderFromWarehouse().setSumQuantity(updatedQuantity);
+//        orderFromWarehouseService.save(matchedProduct.getOrderFromWarehouse());
+//    }
 
 //    private WarehouseRemovalProduct addWarehouseRemovalProductEntity(  lazim ola biler
 //            WarehouseRemoval warehouseRemoval,
@@ -203,7 +211,6 @@ public class WarehouseRemovalProductService {
 
         long updatedRemainingAmount = warehouseRemoval.getOrderFromWarehouse().getSumQuantity() - updatedSendAmount;
         warehouseRemoval.setRemainingAmount(updatedRemainingAmount);
-        warehouseRemovalService.save(warehouseRemoval);
     }
 
     @Transactional
@@ -241,6 +248,7 @@ public class WarehouseRemovalProductService {
 
         long restoredQuantity = orderFromWarehouseProduct.getQuantity() + warehouseRemovalProduct.getCurrentAmount();
         orderFromWarehouseProduct.setQuantity(restoredQuantity);
+        orderFromWarehouseProduct.getOrderFromWarehouse().setSumQuantity(restoredQuantity);
 
         orderFromWarehouseProductService.saveOrderFromWarehouseProduct(orderFromWarehouseProduct);
     }
