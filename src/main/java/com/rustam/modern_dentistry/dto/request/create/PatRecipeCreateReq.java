@@ -13,8 +13,8 @@ import static com.rustam.modern_dentistry.util.constants.ValidationErrorMessage.
 public class PatRecipeCreateReq {
     @NotNull(message = VALIDATION_RECIPE_REQUIRED)
     Long recipeId;
-    @NotNull(message = VALIDATION_PATIENT_ID_REQUIRED)
+    @NotNull(message = VALIDATION_PATIENT_ID)
     Long patientId;
-    @NotNull(message = VALIDATION_DATE_REQUIRED)
+    @NotNull(message = VALIDATION_DATE)
     LocalDate date;
 }
