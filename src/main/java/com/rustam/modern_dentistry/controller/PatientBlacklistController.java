@@ -45,10 +45,10 @@ public class PatientBlacklistController {
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
-//    @PostMapping("/search")
-//    public ResponseEntity<PageResponse<ReservationReadResponse>> search(PatBlacklistSearchReq request, PageCriteria pageCriteria) {
-//        return ResponseEntity.ok(patientBlacklistService.search(request, pageCriteria));
-//    }
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<PatBlacklistReadRes>> search(PatBlacklistSearchReq request, PageCriteria pageCriteria) {
+        return ResponseEntity.ok(patientBlacklistService.search(request, pageCriteria));
+    }
 
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {

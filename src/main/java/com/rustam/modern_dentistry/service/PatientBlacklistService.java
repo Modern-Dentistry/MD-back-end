@@ -15,9 +15,11 @@ import com.rustam.modern_dentistry.mapper.PatientBlacklistMapper;
 import com.rustam.modern_dentistry.service.settings.BlacklistResultService;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.UtilService;
+import com.rustam.modern_dentistry.util.specification.settings.PatientBlacklistSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -62,7 +64,14 @@ public class PatientBlacklistService {
     }
 
     public PageResponse<PatBlacklistReadRes> search(PatBlacklistSearchReq request, PageCriteria pageCriteria) {
-        return null;
+        var patientBlacklists = patientBlacklistRepository.findAll(
+                PatientBlacklistSpecification.search(request),
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+
+        return new PageResponse<>(
+                patientBlacklists.getTotalPages(),
+                patientBlacklists.getTotalElements(),
+                getContent(patientBlacklists.getContent()));
     }
 
     public InputStreamResource exportReservationsToExcel() {

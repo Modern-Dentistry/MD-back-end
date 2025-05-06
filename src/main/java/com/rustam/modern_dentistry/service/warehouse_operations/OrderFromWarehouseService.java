@@ -199,6 +199,7 @@ public class OrderFromWarehouseService {
                 utilService.updateFieldIfPresent(dto.getQuantity(), existing::setQuantity);
                 utilService.updateFieldIfPresent(dto.getWarehouseEntryProductId(), existing::setWarehouseEntryProductId);
                 utilService.updateFieldIfPresent(dto.getWarehouseEntryId(), existing::setWarehouseEntryId);
+                utilService.updateFieldIfPresent(dto.getQuantity(), existing::setInitialQuantity);
 
                 existing.setProductName(warehouseEntryProduct.getProductName());
                 existing.setCategoryName(warehouseEntryProduct.getCategoryName());
@@ -297,5 +298,9 @@ public class OrderFromWarehouseService {
 
     public List<OrderFromWarehouse> findByProductId(Long productId) {
         return orderFromWarehouseRepository.findAllById(Collections.singleton(productId));
+    }
+
+    public void save(OrderFromWarehouse orderFromWarehouse) {
+        orderFromWarehouseRepository.save(orderFromWarehouse);
     }
 }
