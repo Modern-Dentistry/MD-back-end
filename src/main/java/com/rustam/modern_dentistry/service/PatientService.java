@@ -39,7 +39,7 @@ public class PatientService {
     DoctorService doctorService;
 
     public PatientCreateResponse create(PatientCreateRequest patientCreateRequest) {
-        if (existsByEmailAndFinCode(patientCreateRequest.getEmail(),patientCreateRequest.getFinCode())){
+        if (existsByEmailAndFinCode(patientCreateRequest.getEmail(), patientCreateRequest.getFinCode())) {
             throw new ExistsException("bu email ve ya finkod movcutdur");
         }
         Doctor doctor = doctorService.findById(patientCreateRequest.getDoctor_id());
@@ -83,11 +83,6 @@ public class PatientService {
 
     public PatientReadResponse readById(Long id) {
         Patient patient = utilService.findByPatientId(id);
-        System.out.println("==============================");
-        System.out.println(patient.getPatientBlacklist());
-        System.out.println(patient.getPatientBlacklist() == null);
-        System.out.println(patient.getPatientBlacklist() != null);
-        System.out.println("==============================");
         return patientMapper.toRead(patient);
     }
 
@@ -110,7 +105,7 @@ public class PatientService {
         return new InputStreamResource(excelFile);
     }
 
-    public Boolean existsByEmailAndFinCode(String email,String finCode){
-        return patientRepository.existsByEmailOrFinCode(email,finCode);
+    public Boolean existsByEmailAndFinCode(String email, String finCode) {
+        return patientRepository.existsByEmailOrFinCode(email, finCode);
     }
 }

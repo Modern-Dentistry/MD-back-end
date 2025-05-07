@@ -1,0 +1,24 @@
+package com.rustam.modern_dentistry.dto.response.read;
+
+import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Getter
+@Setter
+public class TechnicianReadResponse {
+    String id;
+    String username;
+    String name;
+    String surname;
+    String patronymic;
+    LocalDate birthDate;
+    String phone;
+    String phone2;
+    String homePhone;
+    String address;
+    String finCode;
+    GenderStatus genderStatus;
+}
