@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.service;
 
+import com.rustam.modern_dentistry.dao.entity.users.Technician;
 import com.rustam.modern_dentistry.dao.repository.TechnicianRepository;
 import com.rustam.modern_dentistry.dto.request.create.TechnicianCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
@@ -13,8 +14,11 @@ import com.rustam.modern_dentistry.mapper.settings.TechnicianMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +30,16 @@ public class TechnicianService {
     public void create(TechnicianCreateRequest request) {
         checkIfUserAlreadyExist(request.getUsername());
         var entity = technicianMapper.toEntity(request);
+        entity.setUsername(request.getUsername().toLowerCase());
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
         technicianRepository.save(entity);
     }
 
     public PageResponse<TechnicianReadResponse> read(PageCriteria pageCriteria) {
-        return null;
+        var technicians = technicianRepository.findAll(
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        var technicianReadResponse = getContentResponse(technicians.getContent());
+        return new PageResponse<>(technicians.getTotalPages(), technicians.getTotalElements(), technicianReadResponse);
     }
 
     public TechnicianReadResponse readById(Long id) {
@@ -58,6 +66,11 @@ public class TechnicianService {
     private void checkIfUserAlreadyExist(String username) {
         var existsByUsername = technicianRepository.existsByUsername(username);
         if (existsByUsername)
-            throw new ExistsException("Bu adda istifadəçi adı mövciuddur" + username);
+            throw new ExistsException("Bu adda istifadəçi adı mövcuddur" + username);
+    }
+
+
+    private List<TechnicianReadResponse> getContentResponse(List<Technician> content) {
+        return content.stream().map((technicianMapper::toReadDto)).toList();
     }
 }

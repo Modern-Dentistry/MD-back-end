@@ -21,7 +21,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "base_users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "user_type",discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -40,7 +40,7 @@ public class BaseUser {
     String surname;
     String phone;
     String email;
-    @Column(name = "fin_code")
+    @Column(unique = true, name = "fin_code")
     String finCode;
     String username;
     String patronymic;
