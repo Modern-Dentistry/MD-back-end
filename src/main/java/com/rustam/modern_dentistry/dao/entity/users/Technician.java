@@ -21,6 +21,7 @@ public class Technician extends BaseUser {
     String phone2;
     String homePhone;
     String address;
+    @Enumerated(EnumType.STRING)
     Status status;
     //    List<Permission> permissions
 
