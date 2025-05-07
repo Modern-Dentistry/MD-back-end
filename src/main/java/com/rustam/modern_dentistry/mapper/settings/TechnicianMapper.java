@@ -15,8 +15,9 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface TechnicianMapper {
+    @Mapping(target = "username", ignore = true)
     @Mapping(target = "password", ignore = true)
     Technician toEntity(TechnicianCreateRequest technicianCreateRequest);
 
-    TechnicianReadResponse toResponse(Technician technician);
+    TechnicianReadResponse toReadDto(Technician technician);
 }

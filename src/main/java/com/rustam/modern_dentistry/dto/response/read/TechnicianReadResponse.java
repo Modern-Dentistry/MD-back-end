@@ -9,16 +9,16 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class TechnicianReadResponse {
-    Long id;
+    String id;
     String username;
     String name;
     String surname;
-    String fatherName;
+    String patronymic;
     LocalDate birthDate;
-    String phoneNumber1;
-    String phoneNumber2;
-    String homePhoneNumber;
+    String phone;
+    String phone2;
+    String homePhone;
     String address;
     String finCode;
-    GenderStatus gender;
+    GenderStatus genderStatus;
 }
