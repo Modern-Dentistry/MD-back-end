@@ -1,40 +1,27 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
-import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PRIVATE;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "technician")
-@FieldDefaults(level = PRIVATE)
-public class Technician {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    Long id;
-    String username;
-    String password;
-    String name;
-    String surname;
-    String fatherName;
-    LocalDate birthDate;
-    String phoneNumber1;
-    String phoneNumber2;
-    String homePhoneNumber;
+@DiscriminatorValue("TECHNICIAN")
+@EqualsAndHashCode(callSuper = true)
+@PrimaryKeyJoinColumn(name = "technician_id")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Technician extends BaseUser {
+    String phone2;
+    String homePhone;
     String address;
-    @Column(unique = true)
-    String finCode;
-    @Enumerated(EnumType.STRING)
-    GenderStatus gender;
     //    List<Permission> permissions
 }
