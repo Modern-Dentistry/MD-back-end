@@ -37,7 +37,6 @@ public class WarehouseRemovalProductService {
     WarehouseRemovalService warehouseRemovalService;
     UtilService utilService;
     OrderFromWarehouseProductService orderFromWarehouseProductService;
-    OrderFromWarehouseService orderFromWarehouseService;
 
     @Transactional
     public WarehouseRemovalCreateResponse create(WarehouseRemovalCreateRequest request) {
@@ -248,7 +247,6 @@ public class WarehouseRemovalProductService {
 
         long restoredQuantity = orderFromWarehouseProduct.getQuantity() + warehouseRemovalProduct.getCurrentAmount();
         orderFromWarehouseProduct.setQuantity(restoredQuantity);
-        orderFromWarehouseProduct.getOrderFromWarehouse().setSumQuantity(restoredQuantity);
 
         orderFromWarehouseProductService.saveOrderFromWarehouseProduct(orderFromWarehouseProduct);
     }
@@ -348,7 +346,7 @@ public class WarehouseRemovalProductService {
                     .orElse(matchedProduct.getCurrentAmount());
 
             long updatedSendAmount = updateCalculateTotalSendAmount(warehouseRemoval.getId(), currentExpenses, req);
-            long remainingAmount = orderFromWarehouseProduct.getQuantity() - updatedSendAmount;
+            long remainingAmount = orderFromWarehouseProduct.getInitialQuantity() - updatedSendAmount;
 
             matchedProduct.setCurrentAmount(currentExpenses);
             matchedProduct.setSendAmount(updatedSendAmount);
@@ -378,10 +376,13 @@ public class WarehouseRemovalProductService {
                                                         WarehouseRemovalProductRequest req,
                                                         String groupId) {
         return existingProducts.stream()
-                .filter(p -> p.getId().equals(req.getWarehouseRemovalProductId()) && p.getGroupId().equals(groupId))
+                .filter(p -> p.getId().equals(req.getWarehouseRemovalProductId()) && p.getGroupId().equals(groupId)
+                && p.getOrderFromWarehouseProductId().equals(req.getOrderFromWarehouseProductId())
+                )
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("ID və GroupId uyğun məhsul tapılmadı. ID: "
-                        + req.getWarehouseRemovalProductId() + ", GroupId: " + groupId));
+                .orElseThrow(() -> new NotFoundException("ID, OrderFromWarehouseProductId və GroupId uyğun məhsul tapılmadı. ID: "
+                        + req.getWarehouseRemovalProductId() + ", GroupId: " + groupId +
+                        ", OrderFromWarehouseProductId: " + req.getOrderFromWarehouseProductId()));
     }
 
     private void validateRequestConsistency(List<WarehouseRemovalProductRequest> requests) {
@@ -419,8 +420,8 @@ public class WarehouseRemovalProductService {
 
 
     private long updateCalculateTotalSendAmount(Long removalId, long currentExpenses, WarehouseRemovalProductRequest requestDetail) {
-        List<WarehouseRemovalProduct> all = warehouseRemovalProductRepository
-                .findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(removalId, requestDetail.getOrderFromWarehouseProductId());
+        List<WarehouseRemovalProduct> all = warehouseRemovalProductRepository.findAllByIdAndWarehouseRemovalIdAndOrderFromWarehouseProductId
+                (requestDetail.getWarehouseRemovalProductId() ,removalId, requestDetail.getOrderFromWarehouseProductId());
 
         long totalExceptCurrent = all.stream()
                 .filter(p -> !p.getId().equals(requestDetail.getWarehouseRemovalProductId()))
