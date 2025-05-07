@@ -43,7 +43,7 @@ public class TechnicianController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id,
+    public ResponseEntity<Void> update(@PathVariable UUID id,
                                        @Valid @RequestBody TechnicianUpdateRequest request) {
         technicianService.update(id, request);
         return ResponseEntity.ok().build();

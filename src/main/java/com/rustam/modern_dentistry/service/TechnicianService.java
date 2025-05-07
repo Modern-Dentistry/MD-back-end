@@ -52,7 +52,13 @@ public class TechnicianService {
         return technicianMapper.toReadDto(technician);
     }
 
-    public void update(Long id, TechnicianUpdateRequest request) {
+    public void update(UUID id, TechnicianUpdateRequest request) {
+        var technician = getTechnicianById(id);
+        technicianMapper.update(technician, request);
+        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+            technician.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        technicianRepository.save(technician);
     }
 
     public void updateStatus(UUID id) {
