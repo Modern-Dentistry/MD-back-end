@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
@@ -36,7 +38,7 @@ public class TechnicianController {
     }
 
     @GetMapping("/read-by-id/{id}")
-    public ResponseEntity<TechnicianReadResponse> readById(@PathVariable Long id) {
+    public ResponseEntity<TechnicianReadResponse> readById(@PathVariable UUID id) {
         return ResponseEntity.ok(technicianService.readById(id));
     }
 
@@ -48,13 +50,13 @@ public class TechnicianController {
     }
 
     @PatchMapping("/update/status/{id}")
-    public ResponseEntity<Void> updateStatus(@PathVariable Long id) {
+    public ResponseEntity<Void> updateStatus(@PathVariable UUID id) {
         technicianService.updateStatus(id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         technicianService.delete(id);
         return ResponseEntity.status(NO_CONTENT).build();
     }
