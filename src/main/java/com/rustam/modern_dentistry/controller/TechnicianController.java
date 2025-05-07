@@ -69,7 +69,7 @@ public class TechnicianController {
     @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reservations.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=texnikler.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(technicianService.exportReservationsToExcel());
     }

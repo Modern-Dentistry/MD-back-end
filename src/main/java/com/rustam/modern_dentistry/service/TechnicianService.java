@@ -6,18 +6,22 @@ import com.rustam.modern_dentistry.dto.request.create.TechnicianCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.TechnicianUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.excel.TechnicianExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.TechnicianReadResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.TechnicianMapper;
+import com.rustam.modern_dentistry.util.ExcelUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,7 +82,10 @@ public class TechnicianService {
     }
 
     public InputStreamResource exportReservationsToExcel() {
-        return null;
+        List<Technician> technicians = technicianRepository.findAll();
+        var list = technicians.stream().map(technicianMapper::toExcelDto).toList();
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, TechnicianExcelResponse.class);
+        return new InputStreamResource(excelFile);
     }
 
     private void checkIfUserAlreadyExist(String username) {
