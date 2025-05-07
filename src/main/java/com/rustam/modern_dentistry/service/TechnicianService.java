@@ -10,8 +10,8 @@ import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.TechnicianReadResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.TechnicianMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +19,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
+
+import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
+import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.PASSIVE;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,17 +47,24 @@ public class TechnicianService {
         return new PageResponse<>(technicians.getTotalPages(), technicians.getTotalElements(), technicianReadResponse);
     }
 
-    public TechnicianReadResponse readById(Long id) {
-        return null;
+    public TechnicianReadResponse readById(UUID id) {
+        var technician = getTechnicianById(id);
+        return technicianMapper.toReadDto(technician);
     }
 
-    public void update(Long id, @Valid TechnicianUpdateRequest request) {
+    public void update(Long id, TechnicianUpdateRequest request) {
     }
 
-    public void updateStatus(Long id) {
+    public void updateStatus(UUID id) {
+        var technician = getTechnicianById(id);
+        var status = technician.getStatus() == ACTIVE ? PASSIVE : ACTIVE;
+        technician.setStatus(status);
+        technicianRepository.save(technician);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
+        var technician = getTechnicianById(id);
+        technicianRepository.delete(technician);
     }
 
     public PageResponse<ReservationReadResponse> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
@@ -72,5 +84,11 @@ public class TechnicianService {
 
     private List<TechnicianReadResponse> getContentResponse(List<Technician> content) {
         return content.stream().map((technicianMapper::toReadDto)).toList();
+    }
+
+    private Technician getTechnicianById(UUID id) {
+        return technicianRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Bu ID-də texnik tapımadı: " + id)
+        );
     }
 }
