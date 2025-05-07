@@ -5,11 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WarehouseRemovalProductRepository extends JpaRepository<WarehouseRemovalProduct,Long> , JpaSpecificationExecutor<WarehouseRemovalProduct> {
-    List<WarehouseRemovalProduct> findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(Long id, Long orderFromWarehouseProductId);
+    List<WarehouseRemovalProduct> findAllByIdAndWarehouseRemovalIdAndOrderFromWarehouseProductId(Long id,Long warehouseRemovalId, Long orderFromWarehouseProductId);
 
     List<WarehouseRemovalProduct> findAllByGroupId(String groupId);
 
     List<WarehouseRemovalProduct> findAllByIdAndGroupIdAndOrderFromWarehouseProductId(Long id, String groupId, Long orderFromWarehouseProductId);
+
+    List<WarehouseRemovalProduct> findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(Long removalId, Long orderFromWarehouseProductId);
 }
