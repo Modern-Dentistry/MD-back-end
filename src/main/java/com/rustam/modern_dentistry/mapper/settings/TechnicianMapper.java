@@ -3,6 +3,7 @@ package com.rustam.modern_dentistry.mapper.settings;
 import com.rustam.modern_dentistry.dao.entity.users.Technician;
 import com.rustam.modern_dentistry.dto.request.create.TechnicianCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.TechnicianUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.excel.TechnicianExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.TechnicianReadResponse;
 import org.mapstruct.*;
 
@@ -21,4 +22,6 @@ public interface TechnicianMapper {
 
     @Mapping(target = "password", ignore = true)
     void update(@MappingTarget Technician technician, TechnicianUpdateRequest request);
+
+    TechnicianExcelResponse toExcelDto(Technician technician);
 }
