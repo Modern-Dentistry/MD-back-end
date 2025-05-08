@@ -1,11 +1,14 @@
 package com.rustam.modern_dentistry.service;
 
+import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.users.Technician;
 import com.rustam.modern_dentistry.dao.repository.TechnicianRepository;
 import com.rustam.modern_dentistry.dto.request.create.TechnicianCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
+import com.rustam.modern_dentistry.dto.request.read.TechnicianSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.TechnicianUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.excel.ReservationExcelResponse;
 import com.rustam.modern_dentistry.dto.response.excel.TechnicianExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
@@ -14,10 +17,12 @@ import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.TechnicianMapper;
 import com.rustam.modern_dentistry.util.ExcelUtil;
+import com.rustam.modern_dentistry.util.specification.ReservationSpecification;
+import com.rustam.modern_dentistry.util.specification.settings.TechnicianSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -77,8 +82,12 @@ public class TechnicianService {
         technicianRepository.delete(technician);
     }
 
-    public PageResponse<ReservationReadResponse> search(ReservationSearchRequest request, PageCriteria pageCriteria) {
-        return null;
+    public PageResponse<TechnicianReadResponse> search(TechnicianSearchRequest request, PageCriteria pageCriteria) {
+        Page<Technician> response = technicianRepository.findAll(
+                TechnicianSpecification.filterBy(request),
+                PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
+        var technicianReadResponses = getContentResponse(response.getContent());
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), technicianReadResponses);
     }
 
     public InputStreamResource exportReservationsToExcel() {
