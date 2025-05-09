@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +22,5 @@ public class TechnicianReadResponse {
     String address;
     String finCode;
     GenderStatus genderStatus;
+    Status status;
 }

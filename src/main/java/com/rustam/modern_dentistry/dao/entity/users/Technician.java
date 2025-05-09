@@ -1,9 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -23,5 +21,12 @@ public class Technician extends BaseUser {
     String phone2;
     String homePhone;
     String address;
+    @Enumerated(EnumType.STRING)
+    Status status;
     //    List<Permission> permissions
+
+    @PrePersist
+    private void prePersist() {
+        status = Status.ACTIVE;
+    }
 }
