@@ -2,11 +2,9 @@ package com.rustam.modern_dentistry.controller;
 
 import com.rustam.modern_dentistry.dto.request.create.TechnicianCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
-import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
 import com.rustam.modern_dentistry.dto.request.read.TechnicianSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.TechnicianUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
-import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.TechnicianReadResponse;
 import com.rustam.modern_dentistry.service.TechnicianService;
 import jakarta.validation.Valid;

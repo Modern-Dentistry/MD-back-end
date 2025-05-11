@@ -25,7 +25,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import static java.util.Map.entry;
 
 @Service
 @RequiredArgsConstructor
@@ -71,10 +77,34 @@ public class PatientService {
 
     public PatientUpdateResponse update(PatientUpdateRequest patientUpdateRequest) {
         Patient patient = utilService.findByPatientId(patientUpdateRequest.getPatientId());
-        modelMapper.map(patient, patient);
+        updatePatientFromRequest(patient, patientUpdateRequest);
         patientRepository.save(patient);
         return patientMapper.toUpdatePatient(patient);
     }
+
+    private void updatePatientFromRequest(Patient patient, PatientUpdateRequest request) {
+        utilService.updateFieldIfPresent(request.getName(), patient::setName);
+        utilService.updateFieldIfPresent(request.getSurname(), patient::setSurname);
+        utilService.updateFieldIfPresent(request.getPatronymic(), patient::setPatronymic);
+        utilService.updateFieldIfPresent(request.getFinCode(), patient::setFinCode);
+        utilService.updateFieldIfPresent(request.getGenderStatus(), patient::setGenderStatus);
+        utilService.updateFieldIfPresent(request.getDateOfBirth(), patient::setDateOfBirth);
+        utilService.updateFieldIfPresent(request.getPriceCategoryStatus(), patient::setPriceCategoryStatus);
+        utilService.updateFieldIfPresent(request.getSpecializationStatus(), patient::setSpecializationStatus);
+
+        if (request.getDoctor_id() != null) {
+            Doctor doctor = doctorService.findById(request.getDoctor_id());
+            patient.setDoctor(doctor);
+        }
+
+        utilService.updateFieldIfPresent(request.getPhone(), patient::setPhone);
+        utilService.updateFieldIfPresent(request.getWorkPhone(), patient::setWorkPhone);
+        utilService.updateFieldIfPresent(request.getHomePhone(), patient::setHomePhone);
+        utilService.updateFieldIfPresent(request.getHomeAddress(), patient::setHomeAddress);
+        utilService.updateFieldIfPresent(request.getWorkAddress(), patient::setWorkAddress);
+        utilService.updateFieldIfPresent(request.getEmail(), patient::setEmail);
+    }
+
 
     public List<PatientReadResponse> read() {
         List<Patient> users = patientRepository.findAll();
