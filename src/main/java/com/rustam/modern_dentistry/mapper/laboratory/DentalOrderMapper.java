@@ -16,5 +16,6 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 public interface DentalOrderMapper {
 
     @Mapping(target = "teethList", ignore = true)
+    @Mapping(target = "imagePaths", ignore = true)
     DentalOrder toEntity(DentalOrderCreateReq request);
 }

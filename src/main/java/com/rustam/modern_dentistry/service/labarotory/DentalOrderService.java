@@ -4,35 +4,67 @@ import com.rustam.modern_dentistry.dao.repository.laboratory.DentalOrderReposito
 import com.rustam.modern_dentistry.dto.request.DentalOrderCreateReq;
 import com.rustam.modern_dentistry.mapper.laboratory.DentalOrderMapper;
 import com.rustam.modern_dentistry.service.DoctorService;
-import com.rustam.modern_dentistry.service.PatientService;
+import com.rustam.modern_dentistry.service.FileService;
 import com.rustam.modern_dentistry.service.TechnicianService;
 import com.rustam.modern_dentistry.service.settings.teeth.TeethService;
 import com.rustam.modern_dentistry.util.UtilService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.rustam.modern_dentistry.util.constants.Directory.pathDentalOrder;
 
 @Service
 @RequiredArgsConstructor
 public class DentalOrderService {
-    private final TeethService teethService;
-    private final DentalOrderMapper dentalOrderMapper;
-    private final DentalOrderRepository dentalOrderRepository;
     private final UtilService utilService;
+    private final FileService fileService;
+    private final TeethService teethService;
     private final DoctorService doctorService;
     private final TechnicianService technicianService;
-    private final PatientService patientService;
+    private final DentalOrderMapper dentalOrderMapper;
+    private final DentalOrderRepository dentalOrderRepository;
 
-    public void create(DentalOrderCreateReq request) {
-        var entity = dentalOrderMapper.toEntity(request);
-        var teeth = teethService.findAllById(request.getTeethList());
-        var doctor = doctorService.findById(request.getDoctorId());
-        var technician = technicianService.getTechnicianById(request.getTechnicianId());
-        var patient = utilService.findByPatientId(request.getPatientId());
-        entity.setTeethList(teeth);
-        entity.setDoctor(doctor);
-        entity.setTechnician(technician);
-        entity.setPatient(patient);
+    @Transactional
+    public void create(DentalOrderCreateReq request, List<MultipartFile> files) {
+        List<String> imagePaths = new ArrayList<>();
+        try {
+            var entity = dentalOrderMapper.toEntity(request);
+            var teeth = teethService.findAllById(request.getTeethList());
+            var doctor = doctorService.findById(request.getDoctorId());
+            var technician = technicianService.getTechnicianById(request.getTechnicianId());
+            var patient = utilService.findByPatientId(request.getPatientId());
+            entity.setTeethList(teeth);
+            entity.setDoctor(doctor);
+            entity.setTechnician(technician);
+            entity.setPatient(patient);
+//        fileService.checkVideoFile(file);
+            files.forEach(file -> {
+                System.out.println("name: " + file.getOriginalFilename());
+                System.out.println("content/type: " + file.getContentType());
+                System.out.println("size: " + file.getSize());
+                System.out.println("\n");
+                var newFileName = fileService.getNewFileName(file,
+                        patient.getName() + "_"
+                        + patient.getSurname() + "_"
+                        + patient.getPatronymic() + "_"
+                        + "dental_order" + "_");
+                imagePaths.add(newFileName);
+                fileService.writeFile(file, pathDentalOrder, newFileName);
+            });
+            entity.setImagePaths(imagePaths);
+            dentalOrderRepository.save(entity);
+        } catch (Exception e) {
+            // if error happens remove files
+            imagePaths.forEach(path -> {
+                var fullPath = pathDentalOrder + "/" + path;
+                fileService.deleteFile(fullPath);
+            });
+        }
 
-        dentalOrderRepository.save(entity);
     }
 }
