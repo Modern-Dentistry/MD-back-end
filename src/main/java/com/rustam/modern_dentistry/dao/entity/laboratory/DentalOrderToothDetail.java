@@ -16,9 +16,9 @@ public class DentalOrderToothDetail {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     Long id;
-    String color;
-    String metal;
-    String ceramic;
+    Long color;
+    Long metal;
+    Long ceramic;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dental_order_id", referencedColumnName = "id")
