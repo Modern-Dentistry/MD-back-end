@@ -108,7 +108,7 @@ public class TechnicianService {
         return content.stream().map((technicianMapper::toReadDto)).toList();
     }
 
-    private Technician getTechnicianById(UUID id) {
+    public Technician getTechnicianById(UUID id) {
         return technicianRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Bu ID-də texnik tapımadı: " + id)
         );

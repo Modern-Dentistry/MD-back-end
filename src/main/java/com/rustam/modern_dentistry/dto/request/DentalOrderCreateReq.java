@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,8 +23,8 @@ public class DentalOrderCreateReq {
     List<Long> toothDetailIds;
     List<Long> teethList;
 
-    Long doctorId;
-    Long technicianId;
+    UUID doctorId;
+    UUID technicianId;
     Long patientId;
 
     List<String> imagePaths;
