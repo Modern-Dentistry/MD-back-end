@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dto.request;
 
+import com.rustam.modern_dentistry.dao.entity.laboratory.DentalOrderToothDetail;
 import com.rustam.modern_dentistry.dao.entity.laboratory.OrderDentureInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class DentalOrderCreateReq {
 
     OrderDentureInfo orderDentureInfo;
 
-    List<Long> toothDetailIds;
+    List<DentalOrderToothDetail> toothDetailIds;
     List<Long> teethList;
 
     UUID doctorId;

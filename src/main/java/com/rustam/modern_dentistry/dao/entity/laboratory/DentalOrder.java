@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -70,5 +69,5 @@ public class DentalOrder {
             joinColumns = @JoinColumn(name = "dental_order_id")
     )
     @Column(name = "image_path")
-    List<String> imagePaths = new ArrayList<>();
+    List<String> imagePaths;
 }

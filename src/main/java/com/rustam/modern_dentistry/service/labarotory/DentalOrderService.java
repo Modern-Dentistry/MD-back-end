@@ -1,5 +1,7 @@
 package com.rustam.modern_dentistry.service.labarotory;
 
+import com.rustam.modern_dentistry.dao.entity.laboratory.DentalOrder;
+import com.rustam.modern_dentistry.dao.entity.laboratory.DentalOrderToothDetail;
 import com.rustam.modern_dentistry.dao.repository.laboratory.DentalOrderRepository;
 import com.rustam.modern_dentistry.dto.request.DentalOrderCreateReq;
 import com.rustam.modern_dentistry.mapper.laboratory.DentalOrderMapper;
@@ -42,6 +44,8 @@ public class DentalOrderService {
             entity.setDoctor(doctor);
             entity.setTechnician(technician);
             entity.setPatient(patient);
+//            entity.setOrderDentureInfo(request.getOrderDentureInfo());
+            entity.setToothDetails(getToothDetails(request, entity));
 //        fileService.checkVideoFile(file);
             files.forEach(file -> {
                 System.out.println("name: " + file.getOriginalFilename());
@@ -67,4 +71,15 @@ public class DentalOrderService {
         }
 
     }
+
+    private List<DentalOrderToothDetail> getToothDetails(DentalOrderCreateReq request, DentalOrder dentalOrder) {
+        return request.getToothDetailIds().stream()
+                .map(toothDetail -> DentalOrderToothDetail.builder()
+                        .color(toothDetail.getColor())
+                        .metal(toothDetail.getMetal())
+                        .ceramic(toothDetail.getCeramic())
+                        .dentalOrder(dentalOrder)
+                        .build()).toList();
+    }
+
 }
