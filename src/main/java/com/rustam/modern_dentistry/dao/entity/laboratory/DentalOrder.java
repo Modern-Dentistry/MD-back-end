@@ -1,6 +1,11 @@
 package com.rustam.modern_dentistry.dao.entity.laboratory;
 
+import com.rustam.modern_dentistry.dao.entity.enums.DentalOrderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.DentalOrderType;
+import com.rustam.modern_dentistry.dao.entity.settings.teeth.Teeth;
+import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.users.Patient;
+import com.rustam.modern_dentistry.dao.entity.users.Technician;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -24,31 +30,44 @@ public class DentalOrder {
     LocalDate checkDate;
     LocalDate deliveryDate;
     String description;
-    String color;
-    String garniture;
 
-    @Enumerated(EnumType.STRING)
+    @Embedded
+    OrderDentureInfo orderDentureInfo;
+
+    @Enumerated(STRING)
     DentalOrderType orderType;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     DentalOrderStatus orderStatus;
 
     @OneToMany(mappedBy = "dentalOrder", cascade = ALL)
     List<DentalOrderToothDetail> toothDetails;
 
-    String doctor;
-    String technician;
-    String patient;
+    @ManyToMany
+    @JoinTable(
+            name = "dental_order_teeth",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "tooth_id")
+    )
+    List<Teeth> teethList;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "doctor_id")
-//    Doctor doctor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
+    Doctor doctor;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "technician_id")
-//    Technician technician;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "technician_id")
+    Technician technician;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "patient_id")
-//    Patient patient;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
+    Patient patient;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "dental_order_image_paths",
+            joinColumns = @JoinColumn(name = "dental_order_id")
+    )
+    @Column(name = "image_path")
+    List<String> imagePaths;
 }
