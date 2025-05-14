@@ -26,6 +26,4 @@ public class DentalOrderCreateReq {
     UUID doctorId;
     UUID technicianId;
     Long patientId;
-
-    List<String> imagePaths;
 }
