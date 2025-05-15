@@ -1,4 +1,4 @@
-package com.rustam.modern_dentistry.dao.entity.laboratory;
+package com.rustam.modern_dentistry.dao.entity.enums;
 
 public enum DentalOrderStatus {
     PENDING,

@@ -1,6 +1,8 @@
 package com.rustam.modern_dentistry.dao.entity.warehouse_operations;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.enums.status.PendingStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -58,4 +60,10 @@ public class WarehouseRemovalProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_removal_id")
     WarehouseRemoval warehouseRemoval;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_receipts_id")
+    WarehouseReceipts warehouseReceipts;
+
+
 }

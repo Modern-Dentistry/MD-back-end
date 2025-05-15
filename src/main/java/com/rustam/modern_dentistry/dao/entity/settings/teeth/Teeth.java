@@ -3,6 +3,7 @@ package com.rustam.modern_dentistry.dao.entity.settings.teeth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothLocation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ToothType;
+import com.rustam.modern_dentistry.dao.entity.laboratory.DentalOrder;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -34,4 +35,7 @@ public class Teeth {
     @OneToMany(mappedBy = "teeth", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<TeethExamination> toothExaminations = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "teethList")
+    List<DentalOrder> orders;
 }
