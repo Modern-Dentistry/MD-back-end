@@ -15,6 +15,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderFromWarehouseReadResponse {
 
+    Long id;
+
     LocalDate date;
 
     LocalTime time;
