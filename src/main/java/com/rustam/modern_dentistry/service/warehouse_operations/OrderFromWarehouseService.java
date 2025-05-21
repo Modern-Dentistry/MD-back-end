@@ -69,6 +69,7 @@ public class OrderFromWarehouseService {
                 .collect(Collectors.toList());
 
         return OrderFromWarehouseResponse.builder()
+                .id(orderFromWarehouse.getId())
                 .date(orderFromWarehouse.getDate())
                 .time(orderFromWarehouse.getTime())
                 .description(orderFromWarehouse.getDescription())
