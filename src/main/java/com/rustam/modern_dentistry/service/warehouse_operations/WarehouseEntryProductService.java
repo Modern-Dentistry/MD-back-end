@@ -62,4 +62,7 @@ public class WarehouseEntryProductService {
                 .orElseThrow(() -> new NotFoundException("No matching WarehouseEntryProduct found"));
     }
 
+    public void delete(WarehouseEntryProduct entryProduct) {
+        warehouseEntryProductRepository.delete(entryProduct);
+    }
 }
