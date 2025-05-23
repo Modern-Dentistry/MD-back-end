@@ -49,5 +49,8 @@ public class DeletionFromWarehouseProduct {
     Long quantity;
 
     BigDecimal price;
+
+    @Column(name = "used_quantity")
+    Long usedQuantity;
 }
 
