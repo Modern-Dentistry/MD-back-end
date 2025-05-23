@@ -2,12 +2,18 @@ package com.rustam.modern_dentistry.service.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.DeletionFromWarehouse;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.DeletionFromWarehouseProduct;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntry;
 import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseEntryProduct;
 import com.rustam.modern_dentistry.dao.repository.warehouse_operations.DeletionFromWarehouseRepository;
 import com.rustam.modern_dentistry.dto.request.create.DeletionFromWarehouseCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.DeletionFromWarehouseProductRequest;
+import com.rustam.modern_dentistry.dto.request.read.DeletionFromWarehouseSearchRequest;
+import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseProductResponse;
+import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.mapper.warehouse_operations.DeletionFromWarehouseMapper;
+import com.rustam.modern_dentistry.util.specification.warehouse_operations.DeletionFromWarehouseSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +30,8 @@ public class DeletionFromWarehouseService {
 
     DeletionFromWarehouseRepository deletionFromWarehouseRepository;
     WarehouseEntryProductService warehouseEntryProductService;
+    DeletionFromWarehouseMapper deletionFromWarehouseMapper;
+    WarehouseEntryService warehouseEntryService;
 
     @Transactional
     public DeletionFromWarehouseResponse create(DeletionFromWarehouseCreateRequest request) {
@@ -49,6 +57,8 @@ public class DeletionFromWarehouseService {
             }
 
             DeletionFromWarehouseProduct deletionProduct = DeletionFromWarehouseProduct.builder()
+                    .price(entryProduct.getPrice())
+                    .usedQuantity(entryProduct.getUsedQuantity())
                     .productId(productRequest.getProductId())
                     .categoryId(productRequest.getCategoryId())
                     .quantity(productRequest.getQuantity())
@@ -56,7 +66,6 @@ public class DeletionFromWarehouseService {
                     .warehouseEntryProductId(entryProduct.getId())
                     .categoryId(entryProduct.getCategoryId())
                     .productId(entryProduct.getProductId())
-                    .price(entryProduct.getPrice())
                     .productName(entryProduct.getProductName())
                     .categoryName(entryProduct.getCategoryName())
                     .productTitle(entryProduct.getProductTitle())
@@ -67,8 +76,7 @@ public class DeletionFromWarehouseService {
 
             if (entryProduct.getQuantity().equals(productRequest.getQuantity())) {
                 warehouseEntryProductService.delete(entryProduct);
-            }
-            else {
+            } else {
                 entryProduct.setQuantity(entryProduct.getQuantity() - productRequest.getQuantity());
             }
         }
@@ -77,12 +85,86 @@ public class DeletionFromWarehouseService {
         deletion.setNumber(deletionProducts.size());
         deletionFromWarehouseRepository.save(deletion);
 
-        return DeletionFromWarehouseResponse.builder()
-                .id(deletion.getId())
-                .date(deletion.getDate())
-                .time(deletion.getTime())
-                .number(deletionProducts.size())
+        return deletionFromWarehouseMapper.toDto(deletion);
+    }
+
+    @Transactional
+    public List<DeletionFromWarehouseResponse> read() {
+        return deletionFromWarehouseMapper.toDtos(deletionFromWarehouseRepository.findAll());
+    }
+
+    @Transactional
+    public List<DeletionFromWarehouseResponse> search(DeletionFromWarehouseSearchRequest deletionFromWarehouseSearchRequest) {
+        return deletionFromWarehouseMapper.toDtos(
+                deletionFromWarehouseRepository.findAll(DeletionFromWarehouseSpecification.filterBy(deletionFromWarehouseSearchRequest))
+        );
+    }
+
+    @Transactional
+    public DeletionFromWarehouseReadResponse info(Long id) {
+        DeletionFromWarehouse deletionFromWarehouse = findById(id);
+        List<DeletionFromWarehouseProductResponse> deletionFromWarehouseProductResponses =
+                buildDeletionFromWarehouseProductResponse(deletionFromWarehouse.getDeletionFromWarehouseProducts());
+        return DeletionFromWarehouseReadResponse.builder()
+                .date(deletionFromWarehouse.getDate())
+                .time(deletionFromWarehouse.getTime())
+                .deletionFromWarehouseProductResponses(deletionFromWarehouseProductResponses)
+                .number(deletionFromWarehouse.getNumber())
+                .description(deletionFromWarehouse.getDescription())
                 .build();
+    }
+
+    private List<DeletionFromWarehouseProductResponse> buildDeletionFromWarehouseProductResponse(List<DeletionFromWarehouseProduct> deletionFromWarehouseProducts) {
+        return deletionFromWarehouseProducts.stream()
+                .map(deletionFromWarehouseMapper::toResponse)
+                .toList();
+    }
+
+    private DeletionFromWarehouse findById(Long id) {
+        return deletionFromWarehouseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No such deletion from warehouse found."));
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        DeletionFromWarehouse deletion = findById(id);
+        restoreProductsToWarehouse(deletion.getDeletionFromWarehouseProducts());
+        deletionFromWarehouseRepository.delete(deletion);
+    }
+
+    private void restoreProductsToWarehouse(List<DeletionFromWarehouseProduct> deletedProducts) {
+        for (DeletionFromWarehouseProduct product : deletedProducts) {
+            WarehouseEntryProduct entryProduct = warehouseEntryProductService
+                    .findByIdOrNull(product.getWarehouseEntryProductId());
+
+            if (entryProduct != null) {
+                increaseQuantity(entryProduct, product.getQuantity());
+            } else {
+                createNewEntryProduct(product);
+            }
+        }
+    }
+
+    private void increaseQuantity(WarehouseEntryProduct entryProduct, Long quantity) {
+        entryProduct.setQuantity(entryProduct.getQuantity() + quantity);
+        warehouseEntryProductService.save(entryProduct);
+    }
+
+    private void createNewEntryProduct(DeletionFromWarehouseProduct product) {
+        WarehouseEntry warehouseEntry = warehouseEntryService.findById(product.getWarehouseEntryId());
+        WarehouseEntryProduct newEntry = WarehouseEntryProduct.builder()
+                .warehouseEntry(warehouseEntry)
+                .categoryId(product.getCategoryId())
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .categoryName(product.getCategoryName())
+                .productTitle(product.getProductTitle())
+                .quantity(product.getQuantity())
+                .usedQuantity(product.getUsedQuantity())
+                .price(product.getPrice())
+                .build();
+
+        warehouseEntryProductService.save(newEntry);
     }
 
 }
