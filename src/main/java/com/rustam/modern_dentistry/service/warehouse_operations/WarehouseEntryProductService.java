@@ -30,10 +30,15 @@ public class WarehouseEntryProductService {
         updateProductQuantities(warehouseEntryProduct, quantityToDecrease);
     }
 
-    private WarehouseEntryProduct findById(Long productId) {
+    public WarehouseEntryProduct findById(Long productId) {
         return warehouseEntryProductRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("such warehouse entry product not found"));
     }
+
+    public WarehouseEntryProduct findByIdOrNull(Long productId) {
+        return warehouseEntryProductRepository.findById(productId).orElse(null);
+    }
+
 
     private void updateProductQuantities(WarehouseEntryProduct product, long quantityToDecrease) {
         long currentQuantity = product.getQuantity();
@@ -64,5 +69,9 @@ public class WarehouseEntryProductService {
 
     public void delete(WarehouseEntryProduct entryProduct) {
         warehouseEntryProductRepository.delete(entryProduct);
+    }
+
+    public void save(WarehouseEntryProduct entryProduct) {
+        warehouseEntryProductRepository.save(entryProduct);
     }
 }
