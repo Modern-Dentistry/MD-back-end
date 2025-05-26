@@ -8,11 +8,13 @@ import com.rustam.modern_dentistry.dao.repository.warehouse_operations.DeletionF
 import com.rustam.modern_dentistry.dto.request.create.DeletionFromWarehouseCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.DeletionFromWarehouseProductRequest;
 import com.rustam.modern_dentistry.dto.request.read.DeletionFromWarehouseSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.DeletionFromWarehouseUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseProductResponse;
 import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.warehouse_operations.DeletionFromWarehouseMapper;
+import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.warehouse_operations.DeletionFromWarehouseSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +35,8 @@ public class DeletionFromWarehouseService {
     WarehouseEntryProductService warehouseEntryProductService;
     DeletionFromWarehouseMapper deletionFromWarehouseMapper;
     WarehouseEntryService warehouseEntryService;
+    UtilService utilService;
+    DeletionFromWarehouseProductService deletionFromWarehouseProductService;
 
     @Transactional
     public DeletionFromWarehouseResponse create(DeletionFromWarehouseCreateRequest request) {
@@ -167,4 +172,81 @@ public class DeletionFromWarehouseService {
         warehouseEntryProductService.save(newEntry);
     }
 
+    @Transactional
+    public DeletionFromWarehouseReadResponse update(DeletionFromWarehouseUpdateRequest request) {
+        DeletionFromWarehouse existing = findById(request.getDeletionFromWarehouseId());
+
+        restoreProductsToWarehouse(existing.getDeletionFromWarehouseProducts());
+
+        updateMainFields(request, existing);
+
+        List<DeletionFromWarehouseProduct> updatedProducts = request.getDeletionFromWarehouseProductRequests().stream()
+                .map(this::processProductUpdate)
+                .collect(Collectors.toList());
+
+        existing.setNumber(updatedProducts.size());
+        deletionFromWarehouseRepository.save(existing);
+
+        List<DeletionFromWarehouseProductResponse> productResponses =
+                buildDeletionFromWarehouseProductResponse(updatedProducts);
+
+        return DeletionFromWarehouseReadResponse.builder()
+                .date(existing.getDate())
+                .time(existing.getTime())
+                .description(existing.getDescription())
+                .number(existing.getNumber())
+                .deletionFromWarehouseProductResponses(productResponses)
+                .build();
+    }
+
+    private DeletionFromWarehouseProduct processProductUpdate(DeletionFromWarehouseProductRequest req) {
+        DeletionFromWarehouseProduct product = deletionFromWarehouseProductService
+                .findById(req.getDeletionFromWarehouseProductId());
+
+        WarehouseEntryProduct entry = warehouseEntryProductService
+                .findAllByIdAndWarehouseEntryIdAndCategoryIdAndProductId(
+                        req.getWarehouseEntryProductId(),
+                        req.getWarehouseEntryId(),
+                        req.getCategoryId(),
+                        req.getProductId()
+                );
+
+        if (entry.getQuantity() < req.getQuantity()) {
+            throw new NotFoundException("Not enough stock for product: " + entry.getProductName());
+        }
+
+        updateProductFields(req, product, entry);
+
+        if (entry.getQuantity().equals(req.getQuantity())) {
+            warehouseEntryProductService.delete(entry);
+        } else {
+            entry.setQuantity(entry.getQuantity() - req.getQuantity());
+        }
+
+        return product;
+    }
+
+
+
+    public void updateProductFields(DeletionFromWarehouseProductRequest req,
+                                    DeletionFromWarehouseProduct product,
+                                    WarehouseEntryProduct entry) {
+        utilService.updateFieldIfPresent(req.getQuantity(), product::setQuantity);
+        utilService.updateFieldIfPresent(req.getProductId(), product::setProductId);
+        utilService.updateFieldIfPresent(req.getCategoryId(), product::setCategoryId);
+        utilService.updateFieldIfPresent(req.getWarehouseEntryId(), product::setWarehouseEntryId);
+        utilService.updateFieldIfPresent(req.getWarehouseEntryProductId(), product::setWarehouseEntryProductId);
+
+        utilService.updateFieldIfPresent(entry.getProductName(), product::setProductName);
+        utilService.updateFieldIfPresent(entry.getCategoryName(), product::setCategoryName);
+        utilService.updateFieldIfPresent(entry.getProductTitle(), product::setProductTitle);
+        utilService.updateFieldIfPresent(entry.getPrice(), product::setPrice);
+        utilService.updateFieldIfPresent(entry.getUsedQuantity(), product::setUsedQuantity);
+    }
+
+    public void updateMainFields(DeletionFromWarehouseUpdateRequest req, DeletionFromWarehouse entity) {
+        utilService.updateFieldIfPresent(req.getDate(), entity::setDate);
+        utilService.updateFieldIfPresent(req.getTime(), entity::setTime);
+        utilService.updateFieldIfPresent(req.getDescription(), entity::setDescription);
+    }
 }
