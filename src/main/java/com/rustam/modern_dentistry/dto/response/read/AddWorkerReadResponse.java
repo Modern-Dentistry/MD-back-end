@@ -22,7 +22,7 @@ public class AddWorkerReadResponse {
     String patronymic;
     String finCode;
     String colorCode;
-    boolean enabled;
+    Boolean enabled;
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
     String degree;

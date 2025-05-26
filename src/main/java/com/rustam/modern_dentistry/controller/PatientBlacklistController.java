@@ -5,7 +5,6 @@ import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.PatBlacklistSearchReq;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.dto.response.read.PatBlacklistReadRes;
-import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.service.PatientBlacklistService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
