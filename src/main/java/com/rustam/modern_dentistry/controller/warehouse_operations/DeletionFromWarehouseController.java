@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.controller.warehouse_operations;
 
 import com.rustam.modern_dentistry.dto.request.create.DeletionFromWarehouseCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.DeletionFromWarehouseSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.DeletionFromWarehouseUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseProductResponse;
 import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.DeletionFromWarehouseResponse;
@@ -33,6 +34,11 @@ public class DeletionFromWarehouseController {
     @PostMapping(path = "/search")
     public ResponseEntity<List<DeletionFromWarehouseResponse>> search(@RequestBody DeletionFromWarehouseSearchRequest deletionFromWarehouseSearchRequest){
         return new ResponseEntity<>(deletionFromWarehouseService.search(deletionFromWarehouseSearchRequest),HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<DeletionFromWarehouseReadResponse> update(@RequestBody DeletionFromWarehouseUpdateRequest deletionFromWarehouseUpdateRequest){
+        return new ResponseEntity<>(deletionFromWarehouseService.update(deletionFromWarehouseUpdateRequest),HttpStatus.OK);
     }
 
     @GetMapping(path = "/info/{id}")
