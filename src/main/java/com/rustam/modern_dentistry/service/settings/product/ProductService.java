@@ -68,7 +68,7 @@ public class ProductService {
             product.setProductNo(productUpdateRequest.getProductNo());
         }
         if (productUpdateRequest.getProductTitle()!= null && !productUpdateRequest.getProductTitle().isBlank()){
-            product.setProductTitle(product.getProductTitle());
+            product.setProductTitle(productUpdateRequest.getProductTitle());
         }
 //        if (productUpdateRequest.getQuantity() != null && productUpdateRequest.getQuantity() != 0 ){
 //            quantitySum += productUpdateRequest.getQuantity();

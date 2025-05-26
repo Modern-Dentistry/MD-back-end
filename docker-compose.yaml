@@ -9,6 +9,8 @@ services:
       POSTGRES_PASSWORD: "012345"
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - modern-net
 
@@ -50,3 +52,6 @@ services:
 networks:
   modern-net:
     driver: bridge
+
+volumes:
+  postgres_data:

@@ -20,11 +20,6 @@ public interface PatientBlacklistMapper {
     @Mapping(target = "id", ignore = true)
     PatientBlacklist toEntity(BlacklistResult blacklistResult, Patient patient);
 
-
-    default void update(PatientBlacklist patientBlacklist, BlacklistResult blacklistResult) {
-        patientBlacklist.setBlacklistResult(blacklistResult);
-    }
-
     default PatBlacklistReadRes toReadDto(PatientBlacklist patientBlacklist) {
 
         return PatBlacklistReadRes.builder()

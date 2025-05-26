@@ -4,7 +4,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +17,9 @@ public class WarehouseEntryReadResponse {
 
     Long id;
 
-    LocalDateTime localDateTime;
+    LocalDate date;
+
+    LocalTime time;
 
     Integer number;
 

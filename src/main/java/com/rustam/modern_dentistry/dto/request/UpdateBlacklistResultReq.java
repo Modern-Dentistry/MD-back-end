@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import static com.rustam.modern_dentistry.util.constants.ValidationErrorMessage.VALIDATION_NAME_IS_REQUIRED;
+import static com.rustam.modern_dentistry.util.constants.ValidationErrorMessage.VALIDATION_NAME;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Setter
 @FieldDefaults(level = PRIVATE)
 public class UpdateBlacklistResultReq {
-    @NotBlank(message = VALIDATION_NAME_IS_REQUIRED)
+    @NotBlank(message = VALIDATION_NAME)
     String statusName;
 }

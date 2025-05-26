@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.controller.settings;
 
-
 import com.rustam.modern_dentistry.dto.request.UpdateBlacklistResultReq;
 import com.rustam.modern_dentistry.dto.request.create.BlacklistResultCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;

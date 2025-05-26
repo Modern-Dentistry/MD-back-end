@@ -99,4 +99,8 @@ public class UtilService {
                 .orElseThrow(() -> new NotFoundException("No such order from warehouse found."));
     }
 
+    public String generateGroupId(){
+        return UUID.randomUUID().toString();
+    }
+
 }

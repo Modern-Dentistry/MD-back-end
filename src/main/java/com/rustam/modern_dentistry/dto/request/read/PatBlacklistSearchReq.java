@@ -10,4 +10,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Setter
 @FieldDefaults(level = PRIVATE)
 public class PatBlacklistSearchReq {
+    String fullName;
+    String finCode;
+    String mobilePhone;
 }

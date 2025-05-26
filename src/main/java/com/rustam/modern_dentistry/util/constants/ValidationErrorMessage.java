@@ -1,13 +1,18 @@
 package com.rustam.modern_dentistry.util.constants;
 
 public interface ValidationErrorMessage {
-    // Common messages
-    String VALIDATION_DATE_REQUIRED = "Tarix daxil edin";
-    String VALIDATION_PATIENT_ID_REQUIRED = "Pasient ID boş ola bilməz.";
-    String VALIDATION_NAME_IS_REQUIRED = "Ad daxil edin";
+    // Common messages - users
+    String VALIDATION_USERNAME = "İstifadəçi adı daxil edin.";
+    String VALIDATION_PASSWORD = "İstifadəçi şifrəsi daxil edin.";
+    String VALIDATION_DATE = "Tarix daxil edin";
+    String VALIDATION_NAME = "Ad daxil edin";
+    String VALIDATION_SURNAME = "Soyad daxil edin";
+    String VALIDATION_MOBILE = "Telefon nömrəsi daxil edin.";
+    String VALIDATION_GENDER = "Cinsiyyəti seçin.";
+    String VALIDATION_FIN_CODE = "Fin Kod daxil edin.";
+    String VALIDATION_PATIENT_ID = "Pasient ID boş ola bilməz.";
 
     // Custom messages
     String VALIDATION_RECIPE_REQUIRED = "Resept seçin";
-    String VALIDATION_BLACKLIST_ID_REQUIRED = "Qara siyahı səbəbini seçin";
+    String VALIDATION_BLACKLIST_ID_REQUIRED = "Qara siyahı səbəbini seçin.";
 }
-

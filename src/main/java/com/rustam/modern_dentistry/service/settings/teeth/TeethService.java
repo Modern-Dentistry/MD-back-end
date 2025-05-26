@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TeethService {
 
     TeethRepository teethRepository;
@@ -33,7 +33,7 @@ public class TeethService {
 
     public void create(CreateTeethRequest createTeethRequest) {
         boolean existsTeethByToothNo = existsTeethByToothNo(createTeethRequest.getToothNo());
-        if (existsTeethByToothNo){
+        if (existsTeethByToothNo) {
             throw new ExistsException(("This tooth number is already available."));
         }
         Teeth teeth = Teeth.builder()
@@ -65,28 +65,28 @@ public class TeethService {
                 .collect(Collectors.toList());
     }
 
-    public Teeth findById(Long id){
+    public Teeth findById(Long id) {
         return teethRepository.findById(id)
                 .orElseThrow(() -> new NoTeethFoundException("no teeth found"));
     }
 
-    public boolean existsTeethByToothNo(Long toothNo){
+    public boolean existsTeethByToothNo(Long toothNo) {
         return teethRepository.existsTeethByToothNo(toothNo);
     }
 
     public TeethUpdateResponse update(UpdateTeethRequest updateTeethRequest) {
         Teeth teeth = findById(updateTeethRequest.getId());
         boolean existsTeethByToothNo = existsTeethByToothNo(updateTeethRequest.getToothNo());
-        if (existsTeethByToothNo){
+        if (existsTeethByToothNo) {
             throw new ExistsException(("This tooth number is already available."));
         }
-        if (updateTeethRequest.getToothNo() != null){
+        if (updateTeethRequest.getToothNo() != null) {
             teeth.setToothNo(updateTeethRequest.getToothNo());
         }
-        if (updateTeethRequest.getToothLocation() != null){
+        if (updateTeethRequest.getToothLocation() != null) {
             teeth.setToothLocation(updateTeethRequest.getToothLocation());
         }
-        if (updateTeethRequest.getToothType() != null){
+        if (updateTeethRequest.getToothType() != null) {
             teeth.setToothType(updateTeethRequest.getToothType());
         }
         teethRepository.save(teeth);
@@ -125,4 +125,7 @@ public class TeethService {
         return examinations;
     }
 
+    public List<Teeth> findAllById(List<Long> teethList) {
+        return teethRepository.findAllById(teethList);
+    }
 }

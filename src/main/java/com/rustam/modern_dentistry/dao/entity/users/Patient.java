@@ -3,6 +3,7 @@ package com.rustam.modern_dentistry.dao.entity.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
+import com.rustam.modern_dentistry.dao.entity.PatientBlacklist;
 import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
@@ -80,4 +81,7 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     List<PatientRecipe> recipes;
+
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    PatientBlacklist patientBlacklist;
 }

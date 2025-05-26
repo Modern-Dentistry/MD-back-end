@@ -1,15 +1,15 @@
 package com.rustam.modern_dentistry.service.warehouse_operations;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.PendingStatus;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouse;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.OrderFromWarehouseProduct;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseRemoval;
-import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseRemovalProduct;
+import com.rustam.modern_dentistry.dao.entity.warehouse_operations.*;
 import com.rustam.modern_dentistry.dao.repository.warehouse_operations.WarehouseRemovalProductRepository;
 import com.rustam.modern_dentistry.dto.OutOfTheWarehouseDto;
+import com.rustam.modern_dentistry.dto.record.ProcessedWarehouseRemoval;
 import com.rustam.modern_dentistry.dto.request.create.WarehouseRemovalCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.WarehouseRemovalProductCreateRequest;
 import com.rustam.modern_dentistry.dto.request.read.WarehouseRemovalProductSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.WarehouseRemovalProductRequest;
+import com.rustam.modern_dentistry.dto.request.update.WarehouseRemovalProductUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.WarehouseRemovalCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.WarehouseRemovalProductReadResponse;
 import com.rustam.modern_dentistry.exception.custom.AmountSendException;
@@ -22,8 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,42 +34,42 @@ public class WarehouseRemovalProductService {
     WarehouseRemovalService warehouseRemovalService;
     UtilService utilService;
     OrderFromWarehouseProductService orderFromWarehouseProductService;
+    WarehouseReceiptsService warehouseReceiptsService;
 
     @Transactional
     public WarehouseRemovalCreateResponse create(WarehouseRemovalCreateRequest request) {
         WarehouseRemoval warehouseRemoval = warehouseRemovalService.findById(request.getWarehouseRemovalId());
 
-        List<OutOfTheWarehouseDto> outOfTheWarehouseDtos = processWarehouseRemovalRequests(request, warehouseRemoval);
+        ProcessedWarehouseRemoval processed = processWarehouseRemovalRequests(request, warehouseRemoval);
 
         return WarehouseRemovalCreateResponse.builder()
-                .id(warehouseRemoval.getId())
+                .groupId(processed.groupId())
                 .date(request.getDate())
                 .time(request.getTime())
                 .description(request.getDescription())
-                .outOfTheWarehouseDtos(outOfTheWarehouseDtos)
-                .number(warehouseRemoval.getNumber())
+                .outOfTheWarehouseDtos(processed.dtos())
+                .number(processed.dtos().size())
                 .status(PendingStatus.WAITING)
                 .build();
     }
 
-    private List<OutOfTheWarehouseDto> processWarehouseRemovalRequests(WarehouseRemovalCreateRequest request, WarehouseRemoval warehouseRemoval) {
+    private ProcessedWarehouseRemoval processWarehouseRemovalRequests(WarehouseRemovalCreateRequest request, WarehouseRemoval warehouseRemoval) {
         List<OutOfTheWarehouseDto> dtos = new ArrayList<>();
+        String groupId = utilService.generateGroupId();
+        Integer number = request.getRequests().size();
 
         for (WarehouseRemovalProductCreateRequest requestDetail : request.getRequests()) {
-            // Məhsulu tapıb validasiya edirik
             var matchedProduct = findAndValidateProduct(warehouseRemoval, requestDetail);
+            warehouseProductQuantity(matchedProduct, requestDetail);
 
-            // Məhsulu yeniləyirik
-            updateWarehouseProductQuantity(matchedProduct, requestDetail);
+            WarehouseRemovalProduct warehouseRemovalProduct = addWarehouseRemovalProductEntity(
+                    warehouseRemoval, matchedProduct, requestDetail, request, groupId, number
+            );
 
-            // Yeni WarehouseRemovalProduct əlavə edilir
-            WarehouseRemovalProduct warehouseRemovalProduct = addWarehouseRemovalProductEntity(warehouseRemoval, matchedProduct, requestDetail, request);
-
-            // DTO yaradılıb cavab siyahısına əlavə olunur
             dtos.add(prepareOutOfTheWarehouseDto(warehouseRemovalProduct));
         }
 
-        return dtos;
+        return new ProcessedWarehouseRemoval(groupId, dtos);
     }
 
     private OrderFromWarehouseProduct findAndValidateProduct(WarehouseRemoval warehouseRemoval, WarehouseRemovalProductCreateRequest requestDetail) {
@@ -83,7 +82,7 @@ public class WarehouseRemovalProductService {
                         new NotFoundException("Product with ID: " + requestDetail.getOrderFromWarehouseProductId() + " not found."));
     }
 
-    private void updateWarehouseProductQuantity(OrderFromWarehouseProduct matchedProduct, WarehouseRemovalProductCreateRequest requestDetail) {
+    private void warehouseProductQuantity(OrderFromWarehouseProduct matchedProduct, WarehouseRemovalProductCreateRequest requestDetail) {
         if (matchedProduct.getQuantity() < requestDetail.getCurrentExpenses()) {
             throw new AmountSendException("The amount sent is too much for product ID: " + requestDetail.getOrderFromWarehouseProductId());
         }
@@ -104,75 +103,143 @@ public class WarehouseRemovalProductService {
                 .build();
     }
 
-    private WarehouseRemovalProduct addWarehouseRemovalProductEntity(WarehouseRemoval warehouseRemoval, OrderFromWarehouseProduct matchedProduct, WarehouseRemovalProductCreateRequest requestDetail, WarehouseRemovalCreateRequest request) {
-        long sendAmount = 0L;
+    private WarehouseRemovalProduct addWarehouseRemovalProductEntity(
+            WarehouseRemoval warehouseRemoval,
+            OrderFromWarehouseProduct matchedProduct,
+            WarehouseRemovalProductCreateRequest requestDetail,
+            WarehouseRemovalCreateRequest request,
+            String groupId,
+            Integer number
+    ) {
+        long currentSendAmount = calculateTotalSendAmount(warehouseRemoval.getId(), requestDetail);
+        long remainingAmount = matchedProduct.getInitialQuantity() - currentSendAmount;
 
-        List<WarehouseRemovalProduct> existingWarehouseRemovalProducts = warehouseRemovalProductRepository.findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(
-                warehouseRemoval.getId(),
-                requestDetail.getOrderFromWarehouseProductId()
+        Optional<WarehouseReceipts> optionalReceipts =
+                warehouseReceiptsService.findByGroupId(groupId);
+
+        WarehouseReceipts warehouseReceipts = optionalReceipts.orElseGet(() -> {
+            WarehouseReceipts newReceipts = createAndSaveWarehouseReceipts(
+                    warehouseRemoval, groupId, request
+            );
+            return warehouseReceiptsService.save(newReceipts);
+        });
+
+        WarehouseRemovalProduct warehouseRemovalProduct = buildWarehouseRemovalProduct(
+                warehouseRemoval,
+                matchedProduct,
+                requestDetail,
+                request,
+                currentSendAmount,
+                remainingAmount,
+                groupId,
+                number
         );
 
-        if (existingWarehouseRemovalProducts != null && !existingWarehouseRemovalProducts.isEmpty()) {
-            for (WarehouseRemovalProduct product : existingWarehouseRemovalProducts) {
-                sendAmount += product.getSendAmount();
-            }
-            sendAmount += requestDetail.getCurrentExpenses();
-        } else {
-            sendAmount = requestDetail.getCurrentExpenses();
-        }
+        warehouseRemovalProduct.setWarehouseReceipts(warehouseReceipts);
 
-        WarehouseRemovalProduct warehouseRemovalProduct = WarehouseRemovalProduct.builder()
+        warehouseRemovalProductRepository.save(warehouseRemovalProduct);
+
+        updateWarehouseRemoval(warehouseRemoval, requestDetail.getCurrentExpenses());
+
+        return warehouseRemovalProduct;
+    }
+
+
+    private WarehouseReceipts createAndSaveWarehouseReceipts(
+            WarehouseRemoval warehouseRemoval,
+            String groupId, WarehouseRemovalCreateRequest request) {
+
+        long totalSendQuantity = request.getRequests().stream()
+                .mapToLong(WarehouseRemovalProductCreateRequest::getCurrentExpenses).sum();
+
+        return WarehouseReceipts.builder()
+                .date(warehouseRemoval.getDate())
+                .time(warehouseRemoval.getTime())
+                .room(warehouseRemoval.getRoom())
+                .personWhoPlacedOrder(warehouseRemoval.getPersonWhoPlacedOrder())
+                .orderQuantity(warehouseRemoval.getOrderAmount())
+                .sendQuantity(totalSendQuantity)
+                .pendingStatus(PendingStatus.WAITING)
+                .groupId(groupId)
+                .warehouseRemovalProducts(new ArrayList<>())
+                .build();
+    }
+
+
+    private long calculateTotalSendAmount(Long removalId, WarehouseRemovalProductCreateRequest requestDetail) {
+        long previous = warehouseRemovalProductRepository
+                .findAllByWarehouseRemovalIdAndOrderFromWarehouseProductId(removalId, requestDetail.getOrderFromWarehouseProductId())
+                .stream()
+                .mapToLong(WarehouseRemovalProduct::getCurrentAmount)
+                .sum();
+
+        return previous + requestDetail.getCurrentExpenses();
+    }
+
+    private WarehouseRemovalProduct buildWarehouseRemovalProduct(
+            WarehouseRemoval warehouseRemoval,
+            OrderFromWarehouseProduct matchedProduct,
+            WarehouseRemovalProductCreateRequest requestDetail,
+            WarehouseRemovalCreateRequest request,
+            long currentSendAmount,
+            long remainingAmount, String groupId, Integer number) {
+
+        return WarehouseRemovalProduct.builder()
                 .categoryId(matchedProduct.getCategoryId())
                 .productId(matchedProduct.getProductId())
                 .currentAmount(requestDetail.getCurrentExpenses())
                 .orderAmount(matchedProduct.getInitialQuantity())
-                .remainingAmount(matchedProduct.getQuantity() - requestDetail.getCurrentExpenses())
-                .sendAmount(sendAmount)
+                .remainingAmount(remainingAmount)
+                .sendAmount(currentSendAmount)
+                .groupId(groupId)
+                .number(number)
                 .productName(matchedProduct.getProductName())
                 .categoryName(matchedProduct.getCategoryName())
-                .productDescription(request.getDescription() != null ? request.getDescription() : matchedProduct.getProductTitle())
+                .productDescription(Optional.ofNullable(request.getDescription()).orElse(matchedProduct.getProductTitle()))
                 .orderFromWarehouseProductId(requestDetail.getOrderFromWarehouseProductId())
-                .date(request.getDate() != null ? request.getDate() : warehouseRemoval.getDate())
-                .time(request.getTime() != null ? request.getTime() : warehouseRemoval.getTime())
+                .date(Optional.ofNullable(request.getDate()).orElse(warehouseRemoval.getDate()))
+                .time(Optional.ofNullable(request.getTime()).orElse(warehouseRemoval.getTime()))
                 .pendingStatus(PendingStatus.WAITING)
                 .warehouseRemoval(warehouseRemoval)
                 .build();
-
-        warehouseRemoval.getWarehouseRemovalProducts().add(warehouseRemovalProduct);
-
-        long newSendAmount = warehouseRemoval.getSendAmount() + requestDetail.getCurrentExpenses();
-        warehouseRemoval.setSendAmount(newSendAmount);
-
-        long newRemainingAmount = warehouseRemoval.getOrderFromWarehouse().getSumQuantity() - newSendAmount;
-        warehouseRemoval.setRemainingAmount(newRemainingAmount);
-
-        warehouseRemovalProductRepository.save(warehouseRemovalProduct);
-        return warehouseRemovalProduct;
     }
 
-    @Transactional
-    public void deleteWarehouseRemovalIdBasedOnWarehouseRemovalProduct(Long id, Long warehouseRemovalProductId) {
-        WarehouseRemoval warehouseRemoval = warehouseRemovalService.findById(id);
-
-        WarehouseRemovalProduct warehouseRemovalProduct = warehouseRemoval.getWarehouseRemovalProducts().stream()
-                .filter(product -> product.getId().equals(warehouseRemovalProductId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("WarehouseRemovalProduct with ID " + warehouseRemovalProductId + " not found in this WarehouseRemoval with ID " + id));
-
-        if (!PendingStatus.WAITING.equals(warehouseRemovalProduct.getPendingStatus())) {
-            throw new IllegalStateException("Cannot delete WarehouseRemovalProduct with ID " + warehouseRemovalProductId + " because it is already " + warehouseRemovalProduct.getPendingStatus());
-        }
-
-        restoreProductToWarehouseInventory(warehouseRemovalProduct);
-
-        long updatedSendAmount = warehouseRemoval.getSendAmount() - warehouseRemovalProduct.getCurrentAmount();
+    private void updateWarehouseRemoval(WarehouseRemoval warehouseRemoval, long currentExpense) {
+        long updatedSendAmount = warehouseRemoval.getSendAmount() + currentExpense;
         warehouseRemoval.setSendAmount(updatedSendAmount);
 
         long updatedRemainingAmount = warehouseRemoval.getOrderFromWarehouse().getSumQuantity() - updatedSendAmount;
         warehouseRemoval.setRemainingAmount(updatedRemainingAmount);
+    }
 
-        warehouseRemoval.getWarehouseRemovalProducts().remove(warehouseRemovalProduct);
-        warehouseRemovalProductRepository.delete(warehouseRemovalProduct);
+    @Transactional
+    public void deleteWarehouseRemovalIdBasedOnWarehouseRemovalProduct(String groupId) {
+        List<WarehouseRemovalProduct> productsToDelete = findAllByGroupId(groupId);
+
+        if (productsToDelete.isEmpty()) {
+            throw new NotFoundException("No WarehouseRemovalProduct found with groupId " + groupId);
+        }
+
+        for (WarehouseRemovalProduct product : productsToDelete) {
+            if (!PendingStatus.WAITING.equals(product.getPendingStatus())) {
+                throw new IllegalStateException("Cannot delete product with ID " + product.getId()
+                        + " because it is already " + product.getPendingStatus());
+            }
+
+            restoreProductToWarehouseInventory(product);
+
+            WarehouseRemoval warehouseRemoval = product.getWarehouseRemoval();
+
+            long updatedSendAmount = warehouseRemoval.getSendAmount() - product.getCurrentAmount();
+            warehouseRemoval.setSendAmount(updatedSendAmount);
+
+            long updatedRemainingAmount = warehouseRemoval.getOrderFromWarehouse().getSumQuantity() - updatedSendAmount;
+            warehouseRemoval.setRemainingAmount(updatedRemainingAmount);
+
+            warehouseRemoval.getWarehouseRemovalProducts().remove(product);
+
+            warehouseRemovalProductRepository.delete(product);
+        }
     }
 
     private void restoreProductToWarehouseInventory(WarehouseRemovalProduct warehouseRemovalProduct) {
@@ -194,14 +261,12 @@ public class WarehouseRemovalProductService {
     }
 
     private WarehouseRemovalProductReadResponse mapToReadResponse(WarehouseRemovalProduct warehouseRemovalProduct) {
-        Integer warehouseRemovalNumber = warehouseRemovalProduct.getWarehouseRemoval().getNumber();
-
         return WarehouseRemovalProductReadResponse.builder()
                 .date(warehouseRemovalProduct.getDate())
                 .time(warehouseRemovalProduct.getTime())
                 .Id(warehouseRemovalProduct.getId())
                 .pendingStatus(warehouseRemovalProduct.getPendingStatus())
-                .number(warehouseRemovalNumber)
+                .number(warehouseRemovalProduct.getNumber())
                 .build();
     }
 
@@ -214,42 +279,170 @@ public class WarehouseRemovalProductService {
     }
 
     @Transactional
-    public WarehouseRemovalCreateResponse info(Long id) {
-        // `WarehouseRemovalProduct` obyektini tapırıq
-        WarehouseRemovalProduct warehouseRemovalProduct = findById(id);
+    public WarehouseRemovalCreateResponse info(String groupId) {
+        List<WarehouseRemovalProduct> products = findAllByGroupId(groupId);
+        if (products.isEmpty()) {
+            throw new NotFoundException("No WarehouseRemovalProducts found for groupId: " + groupId);
+        }
 
-        // Üst obyekt `WarehouseRemoval`-u tapırıq (əgər lazımdırsa)
-        WarehouseRemoval warehouseRemoval = warehouseRemovalService.findById(
-                warehouseRemovalProduct.getWarehouseRemoval().getId()
-        );
+        WarehouseRemovalProduct sampleProduct = products.get(0);
 
-        // Məhsul detallarını doldururuq
-        List<OutOfTheWarehouseDto> outOfTheWarehouseDtos = warehouseRemoval.getWarehouseRemovalProducts().stream()
+        List<OutOfTheWarehouseDto> outOfTheWarehouseDtos = products.stream()
                 .map(product -> OutOfTheWarehouseDto.builder()
-                        .categoryName(product.getCategoryName()) // Kateqoriya adı
-                        .productName(product.getProductName()) // Məhsul adı
-                        .productDescription(product.getProductDescription()) // Məhsul təsviri
-                        .orderQuantity(product.getOrderAmount()) // Sifariş edilmiş miqdar
-                        .remainingQuantity(product.getRemainingAmount()) // Qalan miqdar
+                        .categoryName(product.getCategoryName())
+                        .productName(product.getProductName())
+                        .productDescription(product.getProductDescription())
+                        .orderQuantity(product.getOrderAmount())
+                        .remainingQuantity(product.getRemainingAmount())
                         .sendQuantity(product.getSendAmount())
-                        .currentAmount(product.getCurrentAmount()) // Cari miqdar
+                        .currentAmount(product.getCurrentAmount())
                         .build())
                 .collect(Collectors.toList());
 
-        // Final cavab obyektini quraşdırırıq
         return WarehouseRemovalCreateResponse.builder()
-                .id(warehouseRemovalProduct.getId()) // `WarehouseRemoval` ID
-                .date(warehouseRemovalProduct.getDate()) // Tarix
-                .time(warehouseRemovalProduct.getTime()) // Saat
-                .description(warehouseRemovalProduct.getProductDescription()) // Təsvir
-                .number(warehouseRemoval.getNumber()) // Nömrə
-                .status(warehouseRemovalProduct.getPendingStatus()) // Status
-                .outOfTheWarehouseDtos(outOfTheWarehouseDtos) // Məhsul detalları
+                .date(sampleProduct.getDate())
+                .time(sampleProduct.getTime())
+                .description(sampleProduct.getProductDescription())
+                .number(sampleProduct.getNumber())
+                .status(sampleProduct.getPendingStatus())
+                .outOfTheWarehouseDtos(outOfTheWarehouseDtos)
                 .build();
     }
+
 
     public WarehouseRemovalProduct findById(Long id) {
         return warehouseRemovalProductRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("WarehouseRemovalProduct with ID " + id + " not found."));
     }
+
+    public List<WarehouseRemovalProduct> findAllByGroupId(String groupId) {
+        return warehouseRemovalProductRepository.findAllByGroupId(groupId);
+    }
+
+    public List<WarehouseRemovalProduct> findAllByIdAndGroupIdAndOrderFromWarehouseProductId(Long id, String groupId, Long orderFromWarehouseProductId) {
+        return warehouseRemovalProductRepository.findAllByIdAndGroupIdAndOrderFromWarehouseProductId(id, groupId, orderFromWarehouseProductId);
+    }
+
+    @Transactional
+    public WarehouseRemovalCreateResponse update(WarehouseRemovalProductUpdateRequest request) {
+        List<WarehouseRemovalProduct> existingProducts = findAllByGroupId(request.getGroupId());
+
+        if (existingProducts.isEmpty()) {
+            throw new NotFoundException("GroupId-yə uyğun məhsul tapılmadı: " + request.getGroupId());
+        }
+
+        validateRequestConsistency(request.getRequests());
+
+        WarehouseRemoval warehouseRemoval = existingProducts.get(0).getWarehouseRemoval();
+        List<OutOfTheWarehouseDto> updatedDtos = new ArrayList<>();
+
+        for (WarehouseRemovalProductRequest req : request.getRequests()) {
+            WarehouseRemovalProduct matchedProduct = findMatchingProduct(existingProducts, req, request.getGroupId());
+
+            OrderFromWarehouseProduct orderFromWarehouseProduct =
+                    orderFromWarehouseProductService.findById(req.getOrderFromWarehouseProductId());
+
+            long currentExpenses = Optional.ofNullable(req.getCurrentExpenses())
+                    .orElse(matchedProduct.getCurrentAmount());
+
+            long updatedSendAmount = updateCalculateTotalSendAmount(warehouseRemoval.getId(), currentExpenses, req);
+            long remainingAmount = orderFromWarehouseProduct.getInitialQuantity() - updatedSendAmount;
+
+            matchedProduct.setCurrentAmount(currentExpenses);
+            matchedProduct.setSendAmount(updatedSendAmount);
+            matchedProduct.setRemainingAmount(remainingAmount);
+
+            updatedDtos.add(prepareOutOfTheWarehouseDto(matchedProduct));
+            warehouseRemovalProductRepository.save(matchedProduct);
+
+            updateWarehouseProductQuantity(orderFromWarehouseProduct, currentExpenses, matchedProduct);
+        }
+
+        updateWarehouseRemovalSummary(existingProducts, warehouseRemoval);
+
+        WarehouseRemovalProduct sample = existingProducts.get(0);
+        return WarehouseRemovalCreateResponse.builder()
+                .groupId(sample.getGroupId())
+                .date(sample.getDate())
+                .time(sample.getTime())
+                .description(request.getDescription())
+                .number(updatedDtos.size())
+                .status(sample.getPendingStatus())
+                .outOfTheWarehouseDtos(updatedDtos)
+                .build();
+    }
+
+    private WarehouseRemovalProduct findMatchingProduct(List<WarehouseRemovalProduct> existingProducts,
+                                                        WarehouseRemovalProductRequest req,
+                                                        String groupId) {
+        return existingProducts.stream()
+                .filter(p -> p.getId().equals(req.getWarehouseRemovalProductId()) && p.getGroupId().equals(groupId)
+                        && p.getOrderFromWarehouseProductId().equals(req.getOrderFromWarehouseProductId())
+                )
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("ID, OrderFromWarehouseProductId və GroupId uyğun məhsul tapılmadı. ID: "
+                        + req.getWarehouseRemovalProductId() + ", GroupId: " + groupId +
+                        ", OrderFromWarehouseProductId: " + req.getOrderFromWarehouseProductId()));
+    }
+
+    private void validateRequestConsistency(List<WarehouseRemovalProductRequest> requests) {
+        Map<Long, Long> productToOrderMap = new HashMap<>();
+
+        for (WarehouseRemovalProductRequest req : requests) {
+            Long productId = req.getWarehouseRemovalProductId();
+            Long orderId = req.getOrderFromWarehouseProductId();
+
+            if (productToOrderMap.containsKey(productId)) {
+                Long existingOrderId = productToOrderMap.get(productId);
+                if (!existingOrderId.equals(orderId)) {
+                    throw new IllegalArgumentException(
+                            "Məhsul ID " + productId + " eyni olduğu halda, OrderFromWarehouseProduct ID-ləri fərqlidir: "
+                                    + existingOrderId + " və " + orderId
+                    );
+                }
+            } else {
+                productToOrderMap.put(productId, orderId);
+            }
+        }
+    }
+
+    private void updateWarehouseRemovalSummary(List<WarehouseRemovalProduct> existingProducts,
+                                               WarehouseRemoval warehouseRemoval) {
+        long totalSendAmount = existingProducts.stream()
+                .mapToLong(WarehouseRemovalProduct::getSendAmount)
+                .sum();
+
+        warehouseRemoval.setSendAmount(totalSendAmount);
+
+        long totalRemainingAmount = warehouseRemoval.getOrderFromWarehouse().getSumQuantity() - totalSendAmount;
+        warehouseRemoval.setRemainingAmount(totalRemainingAmount);
+    }
+
+
+    private long updateCalculateTotalSendAmount(Long removalId, long currentExpenses, WarehouseRemovalProductRequest requestDetail) {
+        List<WarehouseRemovalProduct> all = warehouseRemovalProductRepository.findAllByIdAndWarehouseRemovalIdAndOrderFromWarehouseProductId
+                (requestDetail.getWarehouseRemovalProductId(), removalId, requestDetail.getOrderFromWarehouseProductId());
+
+        long totalExceptCurrent = all.stream()
+                .filter(p -> !p.getId().equals(requestDetail.getWarehouseRemovalProductId()))
+                .mapToLong(WarehouseRemovalProduct::getCurrentAmount)
+                .sum();
+
+        return totalExceptCurrent + currentExpenses;
+    }
+
+    private void updateWarehouseProductQuantity(OrderFromWarehouseProduct matchedProduct,
+                                                long currentExpenses,
+                                                WarehouseRemovalProduct product) {
+
+        long orderAmount = product.getOrderAmount();
+
+        if (currentExpenses > orderAmount) {
+            throw new IllegalArgumentException("Göndərilən miqdar sifariş miqdarını keçə bilməz.");
+        }
+
+        matchedProduct.setQuantity(product.getRemainingAmount());
+        orderFromWarehouseProductService.saveOrderFromWarehouseProduct(matchedProduct);
+    }
+
 }

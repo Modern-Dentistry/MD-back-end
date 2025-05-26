@@ -33,7 +33,7 @@ public class PatientBlacklist {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     BlacklistResult blacklistResult;
 
-    @ManyToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "patient_id")
     Patient patient;
 

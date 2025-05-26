@@ -9,10 +9,14 @@ import com.rustam.modern_dentistry.dao.repository.warehouse_operations.Warehouse
 import com.rustam.modern_dentistry.dto.OutOfTheWarehouseDto;
 import com.rustam.modern_dentistry.dto.request.create.WarehouseRemovalCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.WarehouseRemovalProductCreateRequest;
+import com.rustam.modern_dentistry.dto.request.read.WarehouseRemovalProductSearchRequest;
 import com.rustam.modern_dentistry.dto.response.create.WarehouseRemovalCreateResponse;
+import com.rustam.modern_dentistry.dto.response.read.WarehouseRemovalReadResponse;
 import com.rustam.modern_dentistry.exception.custom.AmountSendException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.mapper.warehouse_operations.WarehouseRemovalMapper;
 import com.rustam.modern_dentistry.util.UtilService;
+import com.rustam.modern_dentistry.util.specification.warehouse_operations.WarehouseRemovalSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +33,7 @@ import java.util.stream.Collectors;
 public class WarehouseRemovalService {
 
     WarehouseRemovalRepository warehouseRemovalRepository;
-    UtilService utilService;
-    OrderFromWarehouseProductService orderFromWarehouseProductService;
+    WarehouseRemovalMapper warehouseRemovalMapper;
 
     public void save(WarehouseRemoval warehouseRemoval) {
         warehouseRemovalRepository.save(warehouseRemoval);
@@ -42,34 +45,20 @@ public class WarehouseRemovalService {
     }
 
     @Transactional
-    public void deleteWithReturn(Long warehouseRemovalId) {
-        // WarehouseRemoval obyektini tapırıq
-        WarehouseRemoval warehouseRemoval = findById(warehouseRemovalId);
-
-        // WarehouseRemovalProduct-ları dövr edirik
-        for (WarehouseRemovalProduct removalProduct : warehouseRemoval.getWarehouseRemovalProducts()) {
-            // Yalnız status `WAITING` olan məhsulları geri qaytarmaq üçün yoxlayırıq
-            if (removalProduct.getPendingStatus() == PendingStatus.WAITING) {
-                // OrderFromWarehouseProduct obyektini tapırıq
-                OrderFromWarehouse orderFromWarehouse = warehouseRemoval.getOrderFromWarehouse();
-
-                var matchedProduct = orderFromWarehouse.getOrderFromWarehouseProducts().stream()
-                        .filter(product -> product.getProductId().equals(removalProduct.getProductId()))
-                        .findFirst()
-                        .orElseThrow(() ->
-                                new NotFoundException("Cannot find related OrderFromWarehouseProduct for product ID: " + removalProduct.getProductId()));
-
-                // Məhsul miqdarını geri qaytarırıq
-                long updatedQuantity = matchedProduct.getQuantity() + removalProduct.getCurrentAmount();
-                matchedProduct.setQuantity(updatedQuantity);
-
-                // Məhsulu yeniləyirik (Verilənlər bazasına yazılır)
-                orderFromWarehouseProductService.saveOrderFromWarehouseProduct(matchedProduct); // Məhsulu saxlayırıq
-            }
-        }
-
-        // Əməliyyat bitdikdən sonra WarehouseRemoval obyektini silirik
-        warehouseRemovalRepository.delete(warehouseRemoval);
+    public List<WarehouseRemovalReadResponse> read() {
+        List<WarehouseRemoval> warehouseRemovals = warehouseRemovalRepository.findAll();
+        return warehouseRemovalMapper.toDtos(warehouseRemovals);
     }
 
+    @Transactional
+    public List<WarehouseRemovalReadResponse> search(WarehouseRemovalProductSearchRequest warehouseRemovalSearchRequest) {
+        List<WarehouseRemoval> warehouseRemovals = warehouseRemovalRepository.findAll(WarehouseRemovalSpecification.filterBy(warehouseRemovalSearchRequest));
+        return warehouseRemovalMapper.toDtos(warehouseRemovals);
+    }
+
+    @Transactional
+    public WarehouseRemovalReadResponse info(Long id) {
+        WarehouseRemoval warehouseRemoval = findById(id);
+        return warehouseRemovalMapper.toDto(warehouseRemoval);
+    }
 }

@@ -25,11 +25,12 @@ public class PatientReadResponse {
     LocalDate dateOfBirth;
     PriceCategoryStatus priceCategoryStatus;
     SpecializationStatus specializationStatus;
-    UUID doctor_id;
+    String doctorId;
     String phone;
     String workPhone;
     String homePhone;
     String homeAddress;
     String workAddress;
     String email;
+    Boolean isBlocked;
 }
