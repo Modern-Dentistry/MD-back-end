@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
+import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
@@ -27,4 +28,9 @@ public class Ceramic {
 
     @Enumerated(STRING)
     Status status;
+
+    @PrePersist
+    void prePersist() {
+        status = ACTIVE;
+    }
 }

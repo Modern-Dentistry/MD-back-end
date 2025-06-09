@@ -1,23 +1,18 @@
 package com.rustam.modern_dentistry.service;
 
-import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.users.Technician;
 import com.rustam.modern_dentistry.dao.repository.TechnicianRepository;
 import com.rustam.modern_dentistry.dto.request.create.TechnicianCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
-import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
 import com.rustam.modern_dentistry.dto.request.read.TechnicianSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.TechnicianUpdateRequest;
-import com.rustam.modern_dentistry.dto.response.excel.ReservationExcelResponse;
 import com.rustam.modern_dentistry.dto.response.excel.TechnicianExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
-import com.rustam.modern_dentistry.dto.response.read.ReservationReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.TechnicianReadResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.TechnicianMapper;
 import com.rustam.modern_dentistry.util.ExcelUtil;
-import com.rustam.modern_dentistry.util.specification.ReservationSpecification;
 import com.rustam.modern_dentistry.util.specification.settings.TechnicianSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -33,7 +28,6 @@ import java.util.UUID;
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
 import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.PASSIVE;
 
-
 @Service
 @RequiredArgsConstructor
 public class TechnicianService {
@@ -46,6 +40,7 @@ public class TechnicianService {
         var entity = technicianMapper.toEntity(request);
         entity.setUsername(request.getUsername().toLowerCase());
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
+        entity.setEnabled(true);
         technicianRepository.save(entity);
     }
 
