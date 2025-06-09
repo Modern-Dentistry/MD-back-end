@@ -22,6 +22,14 @@ import java.util.Set;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(CustomError.class)
+    public ResponseEntity<ExceptionResponseMessages> handleUsernameNotFoundException(CustomError ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.NOT_FOUND) ,
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ExceptionResponseMessages> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         return new ResponseEntity<>(

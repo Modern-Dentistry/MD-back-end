@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.laboratory;
 
-import com.rustam.modern_dentistry.dao.entity.enums.DentalOrderStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.DentalOrderType;
+import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkStatus;
+import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkType;
 import com.rustam.modern_dentistry.dao.entity.settings.teeth.Teeth;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
@@ -9,6 +9,7 @@ import com.rustam.modern_dentistry.dao.entity.users.Technician;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -31,17 +32,18 @@ public class DentalOrder {
     LocalDate checkDate;
     LocalDate deliveryDate;
     String description;
+    BigDecimal price;
 
     @Embedded
     OrderDentureInfo orderDentureInfo;
 
     @Enumerated(STRING)
-    DentalOrderType orderType;
+    DentalWorkType dentalWorkType;
 
     @Enumerated(STRING)
-    DentalOrderStatus orderStatus;
+    DentalWorkStatus dentalWorkStatus;
 
-    @OneToMany(mappedBy = "dentalOrder", cascade = ALL)
+    @OneToMany(mappedBy = "dentalOrder", cascade = ALL, orphanRemoval = true)
     List<DentalOrderToothDetail> toothDetails;
 
     @ManyToMany

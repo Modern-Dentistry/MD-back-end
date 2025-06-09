@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dto.request.create;
 
+import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static com.rustam.modern_dentistry.util.constants.ValidationErrorMessage.*;
 
@@ -61,4 +63,7 @@ public class TechnicianCreateRequest {
     String phone2;
     String address;
     String homePhone;
+
+    @NotNull(message = VALIDATION_ROLE)
+    Set<Role> authorities;
 }
