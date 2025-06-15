@@ -1,13 +1,14 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
-import com.rustam.modern_dentistry.dao.entity.enums.DentalOrderStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.DentalOrderType;
+import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkStatus;
+import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkType;
 import com.rustam.modern_dentistry.dao.entity.laboratory.OrderDentureInfo;
 import jakarta.persistence.Embedded;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,12 +20,13 @@ public class TechnicianOrderResponse {
     LocalDate checkDate;
     LocalDate deliveryDate;
     String description;
+    BigDecimal price;
 
     @Embedded
     OrderDentureInfo orderDentureInfo;
 
-    DentalOrderType orderType;
-    DentalOrderStatus orderStatus;
+    DentalWorkType dentalWorkType;
+    DentalWorkStatus dentalWorkStatus;
 
     List<DentalOrderToothDetailResponse> toothDetails;
     List<DentalOrderTeethListResponse> teethList;

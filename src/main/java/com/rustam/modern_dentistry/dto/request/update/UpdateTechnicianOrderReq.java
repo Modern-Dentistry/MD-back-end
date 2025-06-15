@@ -23,7 +23,7 @@ public class UpdateTechnicianOrderReq {
     String description;
 
     String orderType;
-    String orderStatus;
+    // String orderStatus; Auto set PENDING in mapper
 
     OrderDentureInfo orderDentureInfo;
 

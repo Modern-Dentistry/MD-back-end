@@ -1,11 +1,9 @@
 package com.rustam.modern_dentistry.dto.request.update;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
-import jakarta.validation.constraints.NotBlank;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -51,5 +49,5 @@ public class AddWorkerUpdateRequest {
     String email;
     String address;
     Integer experience;
-    Set<Role> authorities;
+    Set<Permission> permissions;
 }

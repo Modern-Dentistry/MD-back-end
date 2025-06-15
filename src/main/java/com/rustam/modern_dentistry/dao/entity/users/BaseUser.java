@@ -1,13 +1,10 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
 import com.rustam.modern_dentistry.dao.entity.WorkersWorkSchedule;
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -26,6 +23,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"permissions", "workSchedules"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BaseUser {
 
@@ -54,11 +52,13 @@ public class BaseUser {
     @Column(name = "user_type", insertable = false, updatable = false)
     String userType;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "authorities", joinColumns = @JoinColumn(name = "base_user_id"))
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    Set<Role> authorities;
+    @ManyToMany(fetch = LAZY)
+    @JoinTable(
+            name = "authorities",
+            joinColumns = @JoinColumn(name = "base_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    Set<Permission> permissions;
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = LAZY)
     Set<WorkersWorkSchedule> workSchedules;

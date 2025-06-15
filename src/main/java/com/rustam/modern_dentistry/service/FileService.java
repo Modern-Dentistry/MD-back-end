@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -56,6 +57,12 @@ public class FileService {
 
     public void checkFileIfExist(MultipartFile file) {
         if (file == null || file.isEmpty()) {
+            throw new FileException("Fayl boşdur və ya null-dır.");
+        }
+    }
+
+    public void checkFileIfExist(List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
             throw new FileException("Fayl boşdur və ya null-dır.");
         }
     }

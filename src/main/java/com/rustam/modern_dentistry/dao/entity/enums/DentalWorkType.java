@@ -1,6 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.enums;
 
-public enum DentalOrderType {
+public enum DentalWorkType {
     PROTEZ,
     QAPAQ
 }

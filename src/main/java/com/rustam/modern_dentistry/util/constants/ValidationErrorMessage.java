@@ -10,9 +10,16 @@ public interface ValidationErrorMessage {
     String VALIDATION_MOBILE = "Telefon nömrəsi daxil edin.";
     String VALIDATION_GENDER = "Cinsiyyəti seçin.";
     String VALIDATION_FIN_CODE = "Fin Kod daxil edin.";
-    String VALIDATION_PATIENT_ID = "Pasient ID boş ola bilməz.";
+    String VALIDATION_PATIENT_ID = "Pasient boş ola bilməz.";
+    String VALIDATION_TECHNICIAN_ID = "Texnik boş ola bilməz.";
+    String VALIDATION_DOCTOR_ID = "Həkim boş ola bilməz.";
+    String VALIDATION_ROLE = "Istifadəçi rolunu seçin.";
 
     // Custom messages
     String VALIDATION_RECIPE_REQUIRED = "Resept seçin";
     String VALIDATION_BLACKLIST_ID_REQUIRED = "Qara siyahı səbəbini seçin.";
+    String VALIDATION_LAB_PAYMENT_PRICE = "Məbləğ daxil edin.";
+    String VALIDATION_LAB_DENTAL_WORK_STATUS = "Statusu daxil edin.";
+    String VALIDATION_LAB_DENTAL_WORK_TYPE = "İş növünü daxil edin.";
+
 }

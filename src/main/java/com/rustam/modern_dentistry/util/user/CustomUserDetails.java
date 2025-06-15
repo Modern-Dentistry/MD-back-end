@@ -1,26 +1,49 @@
 package com.rustam.modern_dentistry.util.user;
 
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public record CustomUserDetails(String id,String password, Collection<? extends GrantedAuthority> authorities) implements UserDetails {
+
+public record CustomUserDetails(BaseUser user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+
+        boolean isSuperAdmin = user.getPermissions().stream()
+                .anyMatch(p -> "SUPER_ADMIN".equals(p.getPermissionName()));
+
+        if (isSuperAdmin) {
+            authorities.add(new SimpleGrantedAuthority("SUPER_ADMIN"));
+            return authorities;
+        }
+
+        user.getPermissions().stream()
+                .flatMap(permission -> permission.getModulePermissions().stream())
+                .flatMap(module -> module.getActions().stream()
+                        .map(action -> new SimpleGrantedAuthority(module.getModuleUrl() + ":" + action.name()))
+                ).forEach(authorities::add);
+
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return id;
+        return user.getId();
     }
 
     @Override
@@ -42,4 +65,5 @@ public record CustomUserDetails(String id,String password, Collection<? extends 
     public boolean isEnabled() {
         return true;
     }
+
 }
