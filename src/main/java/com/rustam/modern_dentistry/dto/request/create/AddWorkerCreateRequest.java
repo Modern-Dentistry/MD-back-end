@@ -1,9 +1,7 @@
 package com.rustam.modern_dentistry.dto.request.create;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -13,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -61,5 +58,5 @@ public class AddWorkerCreateRequest {
     String email;
     String address;
     Integer experience;
-    Set<Role> authorities;
+    Set<String> permissions;
 }
