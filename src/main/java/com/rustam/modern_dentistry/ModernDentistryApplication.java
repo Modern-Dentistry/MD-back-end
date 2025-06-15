@@ -1,8 +1,10 @@
 package com.rustam.modern_dentistry;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.entity.users.Admin;
 import com.rustam.modern_dentistry.dao.repository.BaseUserRepository;
+import com.rustam.modern_dentistry.dao.repository.settings.PermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +20,7 @@ public class ModernDentistryApplication implements CommandLineRunner {
 
 	private final BaseUserRepository baseUserRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final PermissionRepository permissionRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ModernDentistryApplication.class, args);
@@ -25,21 +28,39 @@ public class ModernDentistryApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		boolean existsBaseUserByEmail = baseUserRepository.existsBaseUserByEmail("admin@example.com");
+		boolean existsBaseUserByEmail = baseUserRepository.existsBaseUserByEmail("superadmin@example.com");
 		if (!existsBaseUserByEmail) {
+
+			Permission superAdminPermission = createIfNotExists();
+
 			Admin admin = Admin.builder()
 					.id(UUID.randomUUID())
-					.name("Admin")
-					.surname("User")
-					.phone("+123456789")
-					.email("admin@example.com")
-					.username("admin_1")
-					.password(passwordEncoder.encode("admin123")) // Şifrəni encode et!
+					.name("Super")
+					.surname("Admin")
+					.phone("+994501112233")
+					.email("superadmin@example.com")
+					.username("super_admin")
+					.password(passwordEncoder.encode("super1234"))
 					.enabled(true)
-					.authorities(Set.of(Role.ADMIN))
+					.permissions(Set.of(superAdminPermission))
 					.build();
+
 			baseUserRepository.save(admin);
-			System.out.println("Default admin created: admin@example.com / admin123");
+
+			System.out.println("✅ Default SUPER_ADMIN created: superadmin@example.com / super1234");
 		}
+
 	}
+
+	private Permission createIfNotExists() {
+		return permissionRepository.findByPermissionName("SUPER_ADMIN")
+				.orElseGet(() -> {
+					Permission newPermission = Permission.builder()
+							.permissionName("SUPER_ADMIN")
+							.status(Status.ACTIVE)
+							.build();
+					return permissionRepository.save(newPermission);
+				});
+	}
+
 }
