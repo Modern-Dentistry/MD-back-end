@@ -1,21 +1,22 @@
 package com.rustam.modern_dentistry.util.factory;
 
-import com.rustam.modern_dentistry.dao.entity.users.Admin;
-import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.entity.users.Reception;
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.repository.ReceptionRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import com.rustam.modern_dentistry.service.settings.PermissionService;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class ReceptionFactory implements UserRoleFactory {
     private final ReceptionRepository receptionRepository;
     private final PasswordEncoder passwordEncoder;
     private final UtilService utilService;
+    private final PermissionService permissionService;
 
     @Override
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
@@ -33,6 +35,9 @@ public class ReceptionFactory implements UserRoleFactory {
         if (existsByUsernameAndEmailAndFinCodeAndColorCode){
             throw new ExistsException("bu fieldlar database-de movcuddur");
         }
+        Set<Permission> permissions = addWorkerCreateRequest.getPermissions().stream()
+                .map(permissionService::findByName)
+                .collect(Collectors.toSet());
         Reception reception = Reception.builder()
                 .username(addWorkerCreateRequest.getUsername())
                 .password(passwordEncoder.encode(addWorkerCreateRequest.getPassword()))
@@ -50,11 +55,17 @@ public class ReceptionFactory implements UserRoleFactory {
                 .email(addWorkerCreateRequest.getEmail())
                 .address(addWorkerCreateRequest.getAddress())
                 .experience(addWorkerCreateRequest.getExperience())
-                .authorities(addWorkerCreateRequest.getAuthorities())
+                .permissions(permissions)
                 .enabled(true)
                 .build();
         receptionRepository.save(reception);
     }
+
+    @Override
+    public String getPermissionName() {
+        return "RECEPTION";
+    }
+
     @Override
     public void updateUser(AddWorkerUpdateRequest request) {
         boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(request.getUsername(), request.getEmail(),
@@ -76,7 +87,7 @@ public class ReceptionFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getFinCode(), reception::setFinCode);
         FieldSetter.setIfNotBlank(request.getHomePhone(), reception::setHomePhone);
         FieldSetter.setIfNotNull(request.getGenderStatus(), reception::setGenderStatus);
-        FieldSetter.setIfNotEmpty(request.getAuthorities(), reception::setAuthorities);
+        FieldSetter.setIfNotEmpty(request.getPermissions(), reception::setPermissions);
         FieldSetter.setIfNotBlank(request.getEmail(), reception::setEmail);
         FieldSetter.setIfNotBlank(request.getDegree(), reception::setDegree);
         FieldSetter.setIfNotBlank(request.getPhone(), reception::setPhone);
@@ -93,8 +104,4 @@ public class ReceptionFactory implements UserRoleFactory {
         receptionRepository.deleteById(id);
     }
 
-    @Override
-    public Role getRole() {
-        return Role.RECEPTION;
-    }
 }
