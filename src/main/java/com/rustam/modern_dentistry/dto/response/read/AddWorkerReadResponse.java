@@ -1,13 +1,12 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -33,5 +32,5 @@ public class AddWorkerReadResponse {
     String email;
     String address;
     Integer experience;
-    Set<Role> authorities;
+    Set<Permission> permissions;
 }
