@@ -25,4 +25,13 @@ public interface BaseUserRepository extends JpaRepository<BaseUser, UUID>, JpaSp
       )
 """, nativeQuery = true)
     boolean existsUserFully(String username, String email, String finCode, String colorCode);
+
+    @Query("""
+    SELECT u FROM BaseUser u
+    LEFT JOIN FETCH u.permissions p
+    LEFT JOIN FETCH p.modulePermissions mp
+    WHERE u.id = :id
+""")
+    Optional<BaseUser> findUserWithAllPermissions(UUID id);
+
 }
