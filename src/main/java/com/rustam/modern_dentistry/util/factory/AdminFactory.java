@@ -1,21 +1,23 @@
 package com.rustam.modern_dentistry.util.factory;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.entity.users.Admin;
-import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.repository.AdminRepository;
-import com.rustam.modern_dentistry.dao.repository.DoctorRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import com.rustam.modern_dentistry.service.settings.PermissionService;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class AdminFactory implements UserRoleFactory {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final UtilService utilService;
+    private final PermissionService permissionService;
 
     @Override
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
@@ -33,6 +36,10 @@ public class AdminFactory implements UserRoleFactory {
         if (existsByUsernameAndEmailAndFinCodeAndColorCode){
             throw new ExistsException("bu fieldlar database-de movcuddur");
         }
+
+        Set<Permission> permissions = addWorkerCreateRequest.getPermissions().stream()
+                .map(permissionService::findByName)
+                .collect(Collectors.toSet());
         Admin admin = Admin.builder()
                 .username(addWorkerCreateRequest.getUsername())
                 .password(passwordEncoder.encode(addWorkerCreateRequest.getPassword()))
@@ -49,15 +56,15 @@ public class AdminFactory implements UserRoleFactory {
                 .email(addWorkerCreateRequest.getEmail())
                 .address(addWorkerCreateRequest.getAddress())
                 .experience(addWorkerCreateRequest.getExperience())
-                .authorities(addWorkerCreateRequest.getAuthorities())
+                .permissions(permissions)
                 .enabled(true)
                 .build();
         adminRepository.save(admin);
     }
 
     @Override
-    public Role getRole() {
-        return Role.ADMIN;
+    public String getPermissionName() {
+        return "ADMIN";
     }
 
     @Override
@@ -81,7 +88,7 @@ public class AdminFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getFinCode(), admin::setFinCode);
         FieldSetter.setIfNotBlank(request.getHomePhone(), admin::setHomePhone);
         FieldSetter.setIfNotNull(request.getGenderStatus(), admin::setGenderStatus);
-        FieldSetter.setIfNotEmpty(request.getAuthorities(), admin::setAuthorities);
+        FieldSetter.setIfNotEmpty(request.getPermissions(), admin::setPermissions);
         FieldSetter.setIfNotBlank(request.getEmail(), admin::setEmail);
         FieldSetter.setIfNotBlank(request.getDegree(), admin::setDegree);
         FieldSetter.setIfNotBlank(request.getPhone(), admin::setPhone);
