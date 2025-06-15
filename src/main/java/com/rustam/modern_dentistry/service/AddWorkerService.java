@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.entity.users.Admin;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
@@ -15,16 +16,14 @@ import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadStatusResponse
 import com.rustam.modern_dentistry.dto.response.update.AddWorkerUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
 import com.rustam.modern_dentistry.mapper.AddWorkerMapper;
+import com.rustam.modern_dentistry.service.settings.PermissionService;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.UserRoleFactory;
 import com.rustam.modern_dentistry.util.specification.UserSpecification;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AddWorkerService {
 
-    Map<Role, UserRoleFactory> roleFactories;
+    Map<String, UserRoleFactory> roleFactories;
     UtilService utilService;
     BaseUserRepository baseUserRepository;
     DoctorService doctorService;
@@ -44,8 +43,10 @@ public class AddWorkerService {
     AddWorkerMapper addWorkerMapper;
 
     @Autowired
-    public AddWorkerService(List<UserRoleFactory> factories, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService, AdminService adminService, AddWorkerMapper addWorkerMapper) {
-        this.roleFactories = factories.stream().collect(Collectors.toMap(UserRoleFactory::getRole, Function.identity()));
+    public AddWorkerService(List<UserRoleFactory> factories, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService, AdminService adminService, AddWorkerMapper addWorkerMapper, PermissionService permissionService) {
+        this.roleFactories = factories.stream()
+                .filter(factory -> factory.getPermissionName() != null)
+                .collect(Collectors.toMap(UserRoleFactory::getPermissionName, Function.identity()));
         this.utilService = utilService;
         this.baseUserRepository = baseUserRepository;
         this.doctorService = doctorService;
@@ -55,7 +56,7 @@ public class AddWorkerService {
     }
 
     public AddWorkerCreateResponse create(AddWorkerCreateRequest addWorkerCreateRequest) {
-        addWorkerCreateRequest.getAuthorities().stream()
+        addWorkerCreateRequest.getPermissions().stream()
                 .map(roleFactories::get)
                 .filter(Objects::nonNull)
                 .forEach(factory -> factory.createUser(addWorkerCreateRequest));
@@ -80,7 +81,7 @@ public class AddWorkerService {
                 .degree(addWorkerCreateRequest.getDegree())
                 .phone2(addWorkerCreateRequest.getPhone2())
                 .homePhone(addWorkerCreateRequest.getHomePhone())
-                .authorities(addWorkerCreateRequest.getAuthorities())
+                .permissions(addWorkerCreateRequest.getPermissions())
                 .enabled(true)
                 .build();
     }
@@ -89,15 +90,19 @@ public class AddWorkerService {
     public List<AddWorkerReadResponse> read() {
         String currentUserId = utilService.getCurrentUserId();
         BaseUser baseUser = utilService.findByBaseUserId(currentUserId);
-        Set<Role> roles = baseUser.getAuthorities();
+
+        Set<String> permissionNames = baseUser.getPermissions()
+                .stream()
+                .map(Permission::getPermissionName)
+                .collect(Collectors.toSet());
 
         List<? extends BaseUser> users = List.of();
 
-        if (roles.contains(Role.ADMIN)) {
+        if (permissionNames.contains("ADMIN")) {
             users = baseUserRepository.findAll();
-        } else if (roles.contains(Role.DOCTOR_FULL_PERMISSION)) {
+        } else if (permissionNames.contains("DOCTOR_FULL_PERMISSION")) {
             users = doctorService.readAll();
-        } else if (roles.contains(Role.RECEPTION)) {
+        } else if (permissionNames.contains("RECEPTION")) {
             users = receptionService.findAll();
         }
 
@@ -105,6 +110,7 @@ public class AddWorkerService {
                 .map(this::convertToDto)
                 .toList();
     }
+
 
     private AddWorkerReadResponse convertToDto(BaseUser user) {
         AddWorkerReadResponse dto = AddWorkerReadResponse.builder()
@@ -119,7 +125,7 @@ public class AddWorkerService {
                 .dateOfBirth(user.getDateOfBirth())
                 .phone(user.getPhone())
                 .enabled(user.getEnabled())
-                .authorities(user.getAuthorities())
+                .permissions(user.getPermissions())
                 .build();
 
         if (user instanceof Doctor doctor) {
@@ -149,7 +155,7 @@ public class AddWorkerService {
     public AddWorkerUpdateResponse update(AddWorkerUpdateRequest addWorkerUpdateRequest) {
         BaseUser baseUser = baseUserRepository.findById(addWorkerUpdateRequest.getId())
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
-        baseUser.getAuthorities().stream()
+        baseUser.getPermissions().stream()
                 .map(roleFactories::get)
                 .filter(Objects::nonNull)
                 .forEach(factory -> factory.updateUser(addWorkerUpdateRequest));
@@ -175,7 +181,7 @@ public class AddWorkerService {
                 .degree(addWorkerUpdateRequest.getDegree())
                 .phone2(addWorkerUpdateRequest.getPhone2())
                 .homePhone(addWorkerUpdateRequest.getHomePhone())
-                .authorities(addWorkerUpdateRequest.getAuthorities())
+                .permissions(addWorkerUpdateRequest.getPermissions())
                 .enabled(true)
                 .build();
     }
@@ -183,7 +189,7 @@ public class AddWorkerService {
     public String delete(UUID id) {
         BaseUser baseUser = baseUserRepository.findById(id)
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
-        baseUser.getAuthorities().stream()
+        baseUser.getPermissions().stream()
                 .map(roleFactories::get)
                 .filter(Objects::nonNull)
                 .forEach(factory -> factory.deleteUser(id));
