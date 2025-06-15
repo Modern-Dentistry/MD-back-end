@@ -8,6 +8,8 @@ import com.rustam.modern_dentistry.service.DoctorService;
 import com.rustam.modern_dentistry.util.UtilService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,13 +28,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        BaseUser baseUser = baseUserRepository.findById(utilService.convertToUUID(username))
+        BaseUser baseUser = baseUserRepository.findUserWithAllPermissions(utilService.convertToUUID(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
         String id = baseUser.getId();
         if (baseUser instanceof Doctor) {
             baseUser = doctorRepository.findById(UUID.fromString(id))
                     .orElseThrow(() -> new UsernameNotFoundException("Doctor not found with ID: " + id));
         }
-        return new CustomUserDetails(baseUser.getId(),baseUser.getPassword(),baseUser.getAuthorities());
+        return new CustomUserDetails(baseUser);
     }
 }
