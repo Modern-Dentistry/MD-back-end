@@ -1,21 +1,22 @@
 package com.rustam.modern_dentistry.util.factory;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
-import com.rustam.modern_dentistry.dao.entity.users.Admin;
-import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.repository.DoctorRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
+import com.rustam.modern_dentistry.service.settings.PermissionService;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class DoctorFactory implements UserRoleFactory {
     private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
     private final UtilService utilService;
+    private final PermissionService permissionService;
 
     @Override
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
@@ -50,10 +52,21 @@ public class DoctorFactory implements UserRoleFactory {
                 .email(addWorkerCreateRequest.getEmail())
                 .address(addWorkerCreateRequest.getAddress())
                 .experience(addWorkerCreateRequest.getExperience())
-                .authorities(addWorkerCreateRequest.getAuthorities())
+                .permissions(permissions(addWorkerCreateRequest))
                 .enabled(true)
                 .build();
         doctorRepository.save(doctor);
+    }
+
+    @Override
+    public String getPermissionName() {
+        return "DOCTOR";
+    }
+
+    private Set<Permission> permissions(AddWorkerCreateRequest addWorkerCreateRequest){
+        return addWorkerCreateRequest.getPermissions().stream()
+                .map(permissionService::findByName)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -77,7 +90,7 @@ public class DoctorFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getFinCode(), doctor::setFinCode);
         FieldSetter.setIfNotBlank(request.getHomePhone(), doctor::setHomePhone);
         FieldSetter.setIfNotNull(request.getGenderStatus(), doctor::setGenderStatus);
-        FieldSetter.setIfNotEmpty(request.getAuthorities(), doctor::setAuthorities);
+        FieldSetter.setIfNotEmpty(request.getPermissions(), doctor::setPermissions);
         FieldSetter.setIfNotBlank(request.getEmail(), doctor::setEmail);
         FieldSetter.setIfNotBlank(request.getDegree(), doctor::setDegree);
         FieldSetter.setIfNotBlank(request.getPhone(), doctor::setPhone);
@@ -94,8 +107,4 @@ public class DoctorFactory implements UserRoleFactory {
         doctorRepository.deleteById(id);
     }
 
-    @Override
-    public Role getRole() {
-        return Role.DOCTOR;
-    }
 }
