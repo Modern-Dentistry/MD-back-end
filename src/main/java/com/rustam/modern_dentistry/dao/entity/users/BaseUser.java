@@ -1,5 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rustam.modern_dentistry.dao.entity.WorkersWorkSchedule;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
@@ -58,6 +60,7 @@ public class BaseUser {
             joinColumns = @JoinColumn(name = "base_user_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
+    @JsonIgnore
     Set<Permission> permissions;
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = LAZY)
