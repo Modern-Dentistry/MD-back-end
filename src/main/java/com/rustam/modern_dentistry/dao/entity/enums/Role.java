@@ -15,7 +15,9 @@ public enum Role implements GrantedAuthority {
     USER("USER"),
     PATIENT("PATIENT"),
     ACCOUNTANT("ACCOUNTANT"),
-    TECHNICIAN("TECHNICIAN");
+    TECHNICIAN("TECHNICIAN"),
+
+    SUPER_ADMIN("SUPER_ADMIN");
 
     private final String value;
 
