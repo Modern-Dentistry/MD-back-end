@@ -1,5 +1,7 @@
 package com.rustam.modern_dentistry.util.user;
 
+import com.rustam.modern_dentistry.dao.entity.enums.PermissionAction;
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,9 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -22,10 +22,18 @@ public record CustomUserDetails(BaseUser user) implements UserDetails {
         boolean isSuperAdmin = user.getPermissions().stream()
                 .anyMatch(p -> "SUPER_ADMIN".equals(p.getPermissionName()));
 
-        if (isSuperAdmin) {
-            authorities.add(new SimpleGrantedAuthority("SUPER_ADMIN"));
-            return authorities;
-        }
+//        if (isSuperAdmin) {
+//            List<String> modules = List.of("patient", "doctor", "appointment","add-worker","general-calendar","patient-blacklist",
+//                    "reservation","technician","workers-work-schedule");
+//
+//            for (String module : modules) {
+//                String basePath = "/api/v1/" + module + "/**";
+//                for (PermissionAction action : PermissionAction.values()) {
+//                    authorities.add(new SimpleGrantedAuthority(basePath + ":" + action.name()));
+//                }
+//            }
+//            return authorities;
+//        }
 
         user.getPermissions().stream()
                 .flatMap(permission -> permission.getModulePermissions().stream())
@@ -35,6 +43,8 @@ public record CustomUserDetails(BaseUser user) implements UserDetails {
 
         return authorities;
     }
+
+
 
     @Override
     public String getPassword() {

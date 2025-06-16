@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.SearchByNameAndStatus;
 import com.rustam.modern_dentistry.dto.request.update.RecipeUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.RecipeReadResponse;
+import com.rustam.modern_dentistry.dto.response.read.MedicineReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.service.settings.recipes.RecipeService;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,8 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.readList());
     }
 
-    @GetMapping("/read-by-id/{id}")
-    public ResponseEntity<RecipeReadResponse> readById(@PathVariable Long id) {
+    @GetMapping("/read-by-id")
+    public ResponseEntity<RecipeReadResponse> readById(@RequestParam Long id) {
         return ResponseEntity.ok(recipeService.readById(id));
     }
 
@@ -66,7 +67,7 @@ public class RecipeController {
 
     @GetMapping("/search")
     public ResponseEntity<PageResponse<RecipeReadResponse>> search(PageCriteria pageCriteria,
-                                                                   SearchByNameAndStatus request) {
+                                                                     SearchByNameAndStatus request) {
         return ResponseEntity.ok(recipeService.search(pageCriteria, request));
     }
 
