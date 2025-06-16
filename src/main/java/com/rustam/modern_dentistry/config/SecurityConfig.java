@@ -37,9 +37,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(x -> {
                     x.requestMatchers(getPublicEndpoints()).permitAll();
                     registerModulePermissions(x);
-                    x.requestMatchers(getUserRoleEndpoints()).hasAuthority(Role.USER.getValue());
-                    x.requestMatchers(getAdminRoleEndpoints()).hasAuthority(Role.ADMIN.getValue());
-                    x.requestMatchers("/**").hasAuthority("SUPER_ADMIN");
                     x.anyRequest().authenticated();
                 })
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -54,7 +51,6 @@ public class SecurityConfig {
     private void registerModulePermissions(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry x) {
         List<String> modules = List.of("patient", "doctor", "appointment","add-worker","general-calendar","patient-blacklist",
                 "reservation","technician","workers-work-schedule"
-
         );
 
         for (String module : modules) {
@@ -76,7 +72,9 @@ public class SecurityConfig {
     }
 
     private String[] getUserRoleEndpoints() {
-        return new String[]{};
+        return new String[]{
+                "/**"
+        };
     }
 
     private String[] getAdminRoleEndpoints() {
