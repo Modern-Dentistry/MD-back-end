@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -32,5 +33,5 @@ public class AddWorkerReadResponse {
     String email;
     String address;
     Integer experience;
-    Set<Permission> permissions;
+    Set<String> permissions;
 }
