@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-import static com.rustam.modern_dentistry.dao.entity.enums.status.Status.ACTIVE;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -38,9 +37,4 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = ALL)
     List<PatientRecipe> recipes;
-
-    @PrePersist
-    void prePersist() {
-        status = ACTIVE;
-    }
 }

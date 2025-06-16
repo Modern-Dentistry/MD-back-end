@@ -35,8 +35,8 @@ public class MedicineController {
         return ResponseEntity.ok(medicineService.read(recipeId, pageCriteria));
     }
 
-    @GetMapping("/read-by-id/{id}")
-    public ResponseEntity<MedicineReadResponse> readById(@PathVariable Long id) {
+    @GetMapping("/read-by-id")
+    public ResponseEntity<MedicineReadResponse> readById(@RequestParam Long id) {
         return ResponseEntity.ok(medicineService.readById(id));
     }
 
