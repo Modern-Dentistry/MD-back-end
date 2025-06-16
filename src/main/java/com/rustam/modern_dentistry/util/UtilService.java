@@ -84,6 +84,11 @@ public class UtilService {
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
     }
 
+    public BaseUser findByBaseUserIdWithPermissions(String userId){
+        return baseUserRepository.findByBaseUserIdWithPermissions(UUID.fromString(userId))
+                .orElseThrow(() -> new UserNotFountException("No such user found."));
+    }
+
     public boolean existsByUsernameAndEmailAndFinCodeAndColorCode(String username, String email,String finCode,String colorCode) {
         return baseUserRepository.existsUserFully(username,email,finCode,colorCode);
     }
