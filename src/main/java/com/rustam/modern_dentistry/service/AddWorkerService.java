@@ -125,7 +125,11 @@ public class AddWorkerService {
                 .dateOfBirth(user.getDateOfBirth())
                 .phone(user.getPhone())
                 .enabled(user.getEnabled())
-                .permissions(user.getPermissions())
+                .permissions(
+                        user.getPermissions().stream()
+                                .map(Permission::getPermissionName)
+                                .collect(Collectors.toSet())
+                )
                 .build();
 
         if (user instanceof Doctor doctor) {
