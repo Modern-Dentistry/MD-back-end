@@ -43,7 +43,7 @@ public class AddWorkerService {
     AddWorkerMapper addWorkerMapper;
 
     @Autowired
-    public AddWorkerService(List<UserRoleFactory> factories, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService, AdminService adminService, AddWorkerMapper addWorkerMapper, PermissionService permissionService) {
+    public AddWorkerService(List<UserRoleFactory> factories, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService, AdminService adminService, AddWorkerMapper addWorkerMapper) {
         this.roleFactories = factories.stream()
                 .filter(factory -> factory.getPermissionName() != null)
                 .collect(Collectors.toMap(UserRoleFactory::getPermissionName, Function.identity()));
