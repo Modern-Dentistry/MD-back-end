@@ -34,4 +34,12 @@ public interface BaseUserRepository extends JpaRepository<BaseUser, UUID>, JpaSp
 """)
     Optional<BaseUser> findUserWithAllPermissions(UUID id);
 
+    @Query("""
+    SELECT DISTINCT u FROM BaseUser u
+    LEFT JOIN FETCH u.permissions p
+    LEFT JOIN FETCH p.modulePermissions mp
+    WHERE u.id = :id
+""")
+    Optional<BaseUser> findByBaseUserIdWithPermissions(UUID id);
+
 }
