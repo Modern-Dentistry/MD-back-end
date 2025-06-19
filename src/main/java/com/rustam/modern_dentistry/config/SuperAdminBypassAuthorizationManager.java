@@ -12,12 +12,14 @@ import java.util.function.Supplier;
 public class SuperAdminBypassAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier, RequestAuthorizationContext context) {
-        Authentication authentication = authenticationSupplier.get();
+    public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier,
+                                       RequestAuthorizationContext context) {
+        Authentication auth = authenticationSupplier.get();
 
-        if (authentication != null && authentication.isAuthenticated()) {
-            boolean isSuperAdmin = authentication.getAuthorities().stream()
+        if (auth != null && auth.isAuthenticated()) {
+            boolean isSuperAdmin = auth.getAuthorities().stream()
                     .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("SUPER_ADMIN"));
+            System.out.println("is super Admin? : " + isSuperAdmin);
             return new AuthorizationDecision(isSuperAdmin);
         }
 
