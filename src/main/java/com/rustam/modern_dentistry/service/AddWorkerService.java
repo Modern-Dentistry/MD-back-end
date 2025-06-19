@@ -98,7 +98,7 @@ public class AddWorkerService {
 
         List<? extends BaseUser> users = List.of();
 
-        if (permissionNames.contains("ADMIN")) {
+        if (permissionNames.contains("ADMIN") || permissionNames.contains("SUPER_ADMIN")) {
             users = baseUserRepository.findAll();
         } else if (permissionNames.contains("DOCTOR_FULL_PERMISSION")) {
             users = doctorService.readAll();
@@ -220,9 +220,9 @@ public class AddWorkerService {
         return addWorkerMapper.toResponses(users);
     }
 
-    public List<AddWorkerReadStatusResponse> readStatus() {
-        return Arrays.stream(Role.values())
-                .map(role -> new AddWorkerReadStatusResponse(role.getAuthority())) 
-                .collect(Collectors.toList());
-    }
+//    public List<AddWorkerReadStatusResponse> readStatus() {
+//        return Arrays.stream(Role.values())
+//                .map(role -> new AddWorkerReadStatusResponse(role.getAuthority()))
+//                .collect(Collectors.toList());
+//    }
 }

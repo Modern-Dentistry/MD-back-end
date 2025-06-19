@@ -32,7 +32,7 @@ public class ModernDentistryApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		boolean existsBaseUserByEmail = baseUserRepository.existsBaseUserByEmail("superadmin@example.com");
 		if (!existsBaseUserByEmail) {
-			Permission superAdminPermission = createSuperAdminPermission();
+			Permission superAdminPermission = createIfNotExists();
 
 			Admin admin = Admin.builder()
 					.id(UUID.randomUUID())
@@ -52,31 +52,16 @@ public class ModernDentistryApplication implements CommandLineRunner {
 		}
 	}
 
-	private Permission createSuperAdminPermission() {
-		return permissionRepository.findByPermissionName("SUPER_ADMIN")
-				.orElseGet(() -> {
-					Permission permission = new Permission();
-					permission.setPermissionName("SUPER_ADMIN");
-
-					List<String> modules = List.of(
-							"patient", "doctor", "appointment", "add-worker", "general-calendar",
-							"patient-blacklist", "reservation", "technician", "workers-work-schedule"
-					);
-
-					List<ModulePermissionEntity> modulePermissions = new ArrayList<>();
-					for (String module : modules) {
-						ModulePermissionEntity modulePermissionEntity = new ModulePermissionEntity();
-						modulePermissionEntity.setModuleUrl("/api/v1/" + module + "/**");
-						modulePermissionEntity.setPermission(permission);
-
-						modulePermissionEntity.setActions(EnumSet.allOf(PermissionAction.class));
-
-						modulePermissions.add(modulePermissionEntity);
-					}
-					permission.setModulePermissions(modulePermissions);
-
-					return permissionRepository.save(permission);
+	private Permission createIfNotExists() {
+			return permissionRepository.findByPermissionName("SUPER_ADMIN")
+					.orElseGet(() -> {
+						Permission newPermission = Permission.builder()
+								.permissionName("SUPER_ADMIN")
+								.status(Status.ACTIVE)
+								.build();
+						return permissionRepository.save(newPermission);
 				});
 	}
+
 
 }

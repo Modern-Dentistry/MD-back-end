@@ -22,27 +22,23 @@ public record CustomUserDetails(BaseUser user) implements UserDetails {
         boolean isSuperAdmin = user.getPermissions().stream()
                 .anyMatch(p -> "SUPER_ADMIN".equals(p.getPermissionName()));
 
-//        if (isSuperAdmin) {
-//            List<String> modules = List.of("patient", "doctor", "appointment","add-worker","general-calendar","patient-blacklist",
-//                    "reservation","technician","workers-work-schedule");
-//
-//            for (String module : modules) {
-//                String basePath = "/api/v1/" + module + "/**";
-//                for (PermissionAction action : PermissionAction.values()) {
-//                    authorities.add(new SimpleGrantedAuthority(basePath + ":" + action.name()));
-//                }
-//            }
-//            return authorities;
-//        }
+        if (isSuperAdmin) {
+            authorities.add(new SimpleGrantedAuthority("SUPER_ADMIN"));
+            return authorities;
+        }
 
-        user.getPermissions().stream()
-                .flatMap(permission -> permission.getModulePermissions().stream())
-                .flatMap(module -> module.getActions().stream()
-                        .map(action -> new SimpleGrantedAuthority(module.getModuleUrl() + ":" + action.name()))
-                ).forEach(authorities::add);
+        user.getPermissions().forEach(permission ->
+                permission.getModulePermissions().forEach(module ->
+                        module.getActions().forEach(action -> {
+                            String auth = module.getModuleUrl() + ":" + action.name();
+                            authorities.add(new SimpleGrantedAuthority(auth));
+                        })
+                )
+        );
 
         return authorities;
     }
+
 
 
 
