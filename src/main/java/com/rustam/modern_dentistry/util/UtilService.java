@@ -85,7 +85,7 @@ public class UtilService {
     }
 
     public BaseUser findByBaseUserIdWithPermissions(String userId){
-        return baseUserRepository.findByBaseUserIdWithPermissions(UUID.fromString(userId))
+        return baseUserRepository.findUserWithAllPermissions(UUID.fromString(userId))
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
     }
 
