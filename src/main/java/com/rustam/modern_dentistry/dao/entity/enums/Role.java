@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 
 @Getter
-public enum Role implements GrantedAuthority {
+public enum Role {
 
     ADMIN("ADMIN"),
     DOCTOR_FULL_PERMISSION("DOCTOR_FULL_PERMISSION"),
@@ -25,8 +25,4 @@ public enum Role implements GrantedAuthority {
         this.value = value;
     }
 
-    @Override
-    public String getAuthority() {
-        return name();
-    }
 }
