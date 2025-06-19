@@ -1,11 +1,11 @@
 package com.rustam.modern_dentistry.config;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.util.JwtAuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,11 +14,13 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -29,6 +31,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final JwtAuthUtil jwtAuthFilter;
+    private final SuperAdminBypassAuthorizationManager superAdminBypassAuthorizationManager;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(x -> {
                     x.requestMatchers(getPublicEndpoints()).permitAll();
                     registerModulePermissions(x);
-                    x.anyRequest().authenticated();
+                    x.anyRequest().access(superAdminBypassAuthorizationManager);
                 })
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -49,18 +52,41 @@ public class SecurityConfig {
     }
 
     private void registerModulePermissions(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry x) {
-        List<String> modules = List.of("patient", "doctor", "appointment","add-worker","general-calendar","patient-blacklist",
-                "reservation","technician","workers-work-schedule"
-        );
+        List<String> modules = List.of("patient", "appointment", "add-worker", "general-calendar", "patient-blacklist",
+                "reservation", "technician", "workers-work-schedule");
 
         for (String module : modules) {
             String basePath = "/api/v1/" + module + "/**";
-            x.requestMatchers(HttpMethod.GET, basePath).hasAuthority(basePath + ":READ");
-            x.requestMatchers(HttpMethod.POST, basePath).hasAuthority(basePath + ":CREATE");
-            x.requestMatchers(HttpMethod.PUT, basePath).hasAuthority(basePath + ":UPDATE");
-            x.requestMatchers(HttpMethod.DELETE, basePath).hasAuthority(basePath + ":DELETE");
+
+            x.requestMatchers(HttpMethod.GET, basePath).access((auth, ctx) -> decision(auth, basePath, "READ"));
+            x.requestMatchers(HttpMethod.POST, basePath).access((auth, ctx) -> decision(auth, basePath, "CREATE"));
+            x.requestMatchers(HttpMethod.PUT, basePath).access((auth, ctx) -> decision(auth, basePath, "UPDATE"));
+            x.requestMatchers(HttpMethod.DELETE, basePath).access((auth, ctx) -> decision(auth, basePath, "DELETE"));
         }
     }
+
+    private AuthorizationDecision decision(Supplier<Authentication> authSupplier, String path, String action) {
+        Authentication auth = authSupplier.get();
+
+        if (auth != null && auth.isAuthenticated()) {
+            boolean isSuperAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("SUPER_ADMIN"));
+
+            if (isSuperAdmin) {
+                return new AuthorizationDecision(true);
+            }
+
+            String requiredPermission = path + ":" + action;
+            boolean hasPermission = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals(requiredPermission));
+
+            return new AuthorizationDecision(hasPermission);
+        }
+
+        return new AuthorizationDecision(false);
+    }
+
+
 
     private String[] getPublicEndpoints() {
         return new String[]{
