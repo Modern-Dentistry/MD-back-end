@@ -24,7 +24,7 @@ public class ModulePermissionEntity {
     @Column(name = "module_url")
     String moduleUrl;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "module_permission_actions", joinColumns = @JoinColumn(name = "module_permission_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "action")
