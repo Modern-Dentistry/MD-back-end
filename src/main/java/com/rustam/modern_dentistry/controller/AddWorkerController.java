@@ -54,8 +54,8 @@ public class AddWorkerController {
         return new ResponseEntity<>(addWorkerService.search(addWorkerSearchRequest),HttpStatus.OK);
     }
 
-    @GetMapping(path = "/read-status")
-    public ResponseEntity<List<AddWorkerReadStatusResponse>> readStatus(){
-        return new ResponseEntity<>(addWorkerService.readStatus(),HttpStatus.OK);
-    }
+//    @GetMapping(path = "/read-status")
+//    public ResponseEntity<List<AddWorkerReadStatusResponse>> readStatus(){
+//        return new ResponseEntity<>(addWorkerService.readStatus(),HttpStatus.OK);
+//    }
 }
