@@ -6,20 +6,25 @@ import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.repository.settings.PermissionRepository;
 import com.rustam.modern_dentistry.dto.ModulePermission;
 import com.rustam.modern_dentistry.dto.request.create.PermissionCreateRequest;
+import com.rustam.modern_dentistry.dto.request.read.PermissionSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.ModulePermissionUpdateRequest;
+import com.rustam.modern_dentistry.dto.request.update.PermissionStatusUpdatedRequest;
+import com.rustam.modern_dentistry.dto.request.update.PermissionUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.create.PermissionCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.InfoPermissionResponse;
 import com.rustam.modern_dentistry.dto.response.read.PermissionResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.permission.PermissionMapper;
+import com.rustam.modern_dentistry.util.UtilService;
+import com.rustam.modern_dentistry.util.specification.settings.permission.PermissionSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +34,7 @@ public class PermissionService {
 
     PermissionRepository permissionRepository;
     PermissionMapper permissionMapper;
+    UtilService utilService;
 
     public PermissionResponse create(PermissionCreateRequest permissionCreateRequest) {
         Permission permission = new Permission();
@@ -87,8 +93,86 @@ public class PermissionService {
         return entities.stream()
                 .map(e -> new ModulePermission(e.getModuleUrl(), e.getActions()))
                 .collect(Collectors.collectingAndThen(
-                        Collectors.toCollection(LinkedHashSet::new), // sıranı qoruyur və təkrarı silir
+                        Collectors.toCollection(LinkedHashSet::new),
                         ArrayList::new
                 ));
     }
+
+    public List<PermissionResponse> search(PermissionSearchRequest permissionSearchRequest) {
+        List<Permission> permissions = permissionRepository.findAll(PermissionSpecification.filterBy(permissionSearchRequest));
+        return permissionMapper.toDtos(permissions);
+    }
+
+    public void delete(Long id) {
+        Permission permission = findById(id);
+        permissionRepository.delete(permission);
+    }
+
+    public PermissionResponse statusUpdated(PermissionStatusUpdatedRequest permissionStatusUpdatedRequest) {
+        Permission permission = findById(permissionStatusUpdatedRequest.getId());
+        permission.setStatus(permissionStatusUpdatedRequest.getStatus());
+        permissionRepository.save(permission);
+        return permissionMapper.toResponse(permission);
+    }
+
+    public PermissionCreateResponse update(PermissionUpdateRequest request) {
+        Permission permission = findById(request.getId());
+
+        utilService.updateFieldIfPresent(request.getPermissionName(), permission::setPermissionName);
+
+        if (request.getPermissions() != null && !request.getPermissions().isEmpty()) {
+
+            Map<Long, ModulePermissionEntity> existingModulesMap = permission.getModulePermissions().stream()
+                    .filter(mp -> mp.getId() != null)
+                    .collect(Collectors.toMap(
+                            ModulePermissionEntity::getId,
+                            Function.identity(),
+                            (existing, duplicate) -> {
+                                // Əgər istəyirsənsə, burada loq yaz
+                                return existing; // eyni id varsa, mövcudu saxla
+                            }
+                    ));
+
+            List<ModulePermissionEntity> updatedModules = new ArrayList<>();
+
+            for (ModulePermissionUpdateRequest dto : request.getPermissions()) {
+                ModulePermissionEntity modulePermission;
+
+                if (dto.getModulePermissionId() != null && existingModulesMap.containsKey(dto.getModulePermissionId())) {
+                    modulePermission = existingModulesMap.get(dto.getModulePermissionId());
+                    modulePermission.setModuleUrl(dto.getModuleUrl());
+                    modulePermission.setActions(dto.getActions());
+                } else {
+                    modulePermission = ModulePermissionEntity.builder()
+                            .moduleUrl(dto.getModuleUrl())
+                            .actions(dto.getActions())
+                            .permission(permission)
+                            .build();
+                }
+
+                updatedModules.add(modulePermission);
+            }
+
+            permission.getModulePermissions().clear();
+            permission.getModulePermissions().addAll(updatedModules);
+        }
+
+        Permission updated = permissionRepository.save(permission);
+
+        List<ModulePermissionUpdateRequest> modulePermissionDtos = updated.getModulePermissions().stream()
+                .map(mp -> ModulePermissionUpdateRequest.builder()
+                        .modulePermissionId(mp.getId())
+                        .moduleUrl(mp.getModuleUrl())
+                        .actions(mp.getActions())
+                        .build())
+                .toList();
+
+        return PermissionCreateResponse.builder()
+                .permissionName(updated.getPermissionName())
+                .modulePermissions(modulePermissionDtos)
+                .build();
+    }
+
+
+
 }
