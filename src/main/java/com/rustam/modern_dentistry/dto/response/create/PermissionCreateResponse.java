@@ -1,5 +1,6 @@
-package com.rustam.modern_dentistry.dto.request.create;
+package com.rustam.modern_dentistry.dto.response.create;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dto.ModulePermission;
 import com.rustam.modern_dentistry.dto.request.update.ModulePermissionUpdateRequest;
 import lombok.*;
@@ -12,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionCreateRequest {
+public class PermissionCreateResponse {
+
     String permissionName;
-    List<ModulePermission> permissions;
+    List<ModulePermissionUpdateRequest> modulePermissions;
 }

@@ -20,4 +20,6 @@ public interface PermissionMapper {
     List<PermissionResponse> toDtos(List<Permission> all);
 
     InfoPermissionResponse toDto(Permission permission);
+
+    PermissionResponse toResponse(Permission permission);
 }

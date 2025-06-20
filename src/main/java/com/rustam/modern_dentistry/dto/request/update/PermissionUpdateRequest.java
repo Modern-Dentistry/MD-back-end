@@ -1,7 +1,6 @@
-package com.rustam.modern_dentistry.dto.request.create;
+package com.rustam.modern_dentistry.dto.request.update;
 
 import com.rustam.modern_dentistry.dto.ModulePermission;
-import com.rustam.modern_dentistry.dto.request.update.ModulePermissionUpdateRequest;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,7 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionCreateRequest {
+public class PermissionUpdateRequest {
+
+    Long id;
+
     String permissionName;
-    List<ModulePermission> permissions;
+
+    List<ModulePermissionUpdateRequest> permissions;
 }

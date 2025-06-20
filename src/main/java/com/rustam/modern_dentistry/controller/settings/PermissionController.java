@@ -1,6 +1,11 @@
 package com.rustam.modern_dentistry.controller.settings;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dto.request.create.PermissionCreateRequest;
+import com.rustam.modern_dentistry.dto.request.read.PermissionSearchRequest;
+import com.rustam.modern_dentistry.dto.request.update.PermissionStatusUpdatedRequest;
+import com.rustam.modern_dentistry.dto.request.update.PermissionUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.create.PermissionCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.InfoPermissionResponse;
 import com.rustam.modern_dentistry.dto.response.read.PermissionResponse;
 import com.rustam.modern_dentistry.service.settings.PermissionService;
@@ -31,6 +36,27 @@ public class PermissionController {
     @GetMapping(path = "/info/{id}")
     public ResponseEntity<InfoPermissionResponse> info(@PathVariable Long id){
         return new ResponseEntity<>(permissionService.info(id),HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/search")
+    public ResponseEntity<List<PermissionResponse>> search(@RequestBody PermissionSearchRequest permissionSearchRequest){
+        return new ResponseEntity<>(permissionService.search(permissionSearchRequest),HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        permissionService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(path = "/status-updated")
+    public ResponseEntity<PermissionResponse> statusUpdated(@RequestBody PermissionStatusUpdatedRequest permissionStatusUpdatedRequest){
+        return new ResponseEntity<>(permissionService.statusUpdated(permissionStatusUpdatedRequest),HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<PermissionCreateResponse> update(@RequestBody PermissionUpdateRequest permissionUpdateRequest){
+        return new ResponseEntity<>(permissionService.update(permissionUpdateRequest),HttpStatus.OK);
     }
 
 }
