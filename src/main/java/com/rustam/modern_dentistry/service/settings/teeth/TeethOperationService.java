@@ -34,10 +34,16 @@ public class TeethOperationService {
     @Transactional
     public void create(CreateTeethOperationRequest createTeethOperationRequest) {
         Teeth teeth = teethService.findById(createTeethOperationRequest.getTeethId());
+
         for (OpTypeAndItemRequest opTypeAndItemRequest : createTeethOperationRequest.getOpTypeAndItemRequests()) {
-            OpType opType = operationTypeService.findByCategoryName(opTypeAndItemRequest.getOperationCategoryName());
+            String fullOperationName = opTypeAndItemRequest.getOperationName();
+            String[] parts = fullOperationName.split("-");
+            String categoryName = parts[0];
+            String operationName = parts[1];
+
+            OpType opType = operationTypeService.findByCategoryName(categoryName);
             OpTypeItem opTypeItem = opType.getOpTypeItems().stream()
-                    .filter(item -> item.getOperationName().equals(opTypeAndItemRequest.getOperationName()))
+                    .filter(item -> item.getOperationName().equals(operationName))
                     .findFirst()
                     .orElseThrow(() -> new NotFoundException("OpTypeItem tapılmadı!"));
 
@@ -62,21 +68,37 @@ public class TeethOperationService {
     @Transactional
     public TeethOperationResponse update(UpdateTeethOperationRequest updateTeethOperationRequest) {
         TeethOperation teethOperation = findById(updateTeethOperationRequest.getId());
-        if (updateTeethOperationRequest.getTeethId() != null){
+
+        if (updateTeethOperationRequest.getTeethId() != null) {
             Teeth teeth = teethService.findById(updateTeethOperationRequest.getTeethId());
             teethOperation.setTeeth(teeth);
         }
-        if (updateTeethOperationRequest.getOpTypeAndItemRequests() != null){
+
+        if (updateTeethOperationRequest.getOpTypeAndItemRequests() != null) {
             OpTypeAndItemRequest opTypeAndItemRequest = updateTeethOperationRequest.getOpTypeAndItemRequests().stream()
                     .findFirst()
                     .orElse(null);
-            OpType opType = operationTypeService.findByCategoryName(opTypeAndItemRequest.getOperationCategoryName());
-            OpTypeItem opTypeItem = opType.getOpTypeItems().stream()
-                    .filter(item -> item.getOperationName().equals(opTypeAndItemRequest.getOperationName()))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException("OpTypeItem tapılmadı!"));
-            teethOperation.setOpTypeItem(opTypeItem);
+
+            if (opTypeAndItemRequest != null) {
+                String fullOperationName = opTypeAndItemRequest.getOperationName();
+                String[] parts = fullOperationName.split("_");
+                if (parts.length != 2) {
+                    throw new IllegalArgumentException("Düzgün format deyil! Format: categoryName_operationName olmalıdır");
+                }
+
+                String categoryName = parts[0];
+                String operationName = parts[1];
+
+                OpType opType = operationTypeService.findByCategoryName(categoryName);
+                OpTypeItem opTypeItem = opType.getOpTypeItems().stream()
+                        .filter(item -> item.getOperationName().equals(operationName))
+                        .findFirst()
+                        .orElseThrow(() -> new NotFoundException("OpTypeItem tapılmadı!"));
+
+                teethOperation.setOpTypeItem(opTypeItem);
+            }
         }
+
         teethOperationRepository.save(teethOperation);
         return TeethOperationResponse.builder()
                 .Id(teethOperation.getId())
