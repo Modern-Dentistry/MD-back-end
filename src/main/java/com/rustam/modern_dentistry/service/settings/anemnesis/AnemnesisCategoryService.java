@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.AnemnesisCatSearchReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisCatReq;
+import com.rustam.modern_dentistry.dto.response.excel.AnamnesisExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.AnamnesisCatReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
@@ -76,8 +77,8 @@ public class AnemnesisCategoryService {
 
     public InputStreamResource exportReservationsToExcel() {
         List<AnamnesisCategory> reservations = repository.findAll();
-        var list = reservations.stream().map(ANAMNESIS_CAT_MAPPER::toReadDto).toList();
-        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnamnesisCatReadResponse.class);
+        var list = reservations.stream().map(ANAMNESIS_CAT_MAPPER::toExcelDto).toList();
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnamnesisExcelResponse.class);
         return new InputStreamResource(excelFile);
     }
 

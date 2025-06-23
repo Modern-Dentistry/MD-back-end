@@ -25,7 +25,6 @@ public class ReservationUpdateResponse {
     LocalDate endDate;
     LocalTime startTime;
     LocalTime endTime;
-    Set<WeekDay> weekDays;
     String doctorId;
     Long patientId;
 }
