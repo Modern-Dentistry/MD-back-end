@@ -19,6 +19,7 @@ public interface AnemnesisCategoryMapper {
     @Mapping(target = "status", defaultValue = "ACTIVE")
     AnamnesisCategory toEntity(AnemnesisCatCreateReq request);
 
+    @Mapping(target = "anemnesisListReadResponse", source = "anamnesisList")
     AnamnesisCatReadResponse toReadDto(AnamnesisCategory entity);
 
     void updateAnemnesisCategory(@MappingTarget AnamnesisCategory entity, UpdateAnemnesisCatReq request);
