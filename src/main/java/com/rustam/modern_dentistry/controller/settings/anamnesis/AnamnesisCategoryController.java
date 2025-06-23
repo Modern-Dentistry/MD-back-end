@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.controller.settings.anamnesis;
 
-import com.rustam.modern_dentistry.dao.entity.settings.anamnesis.AnamnesisCategory;
 import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.AnemnesisCatSearchReq;
@@ -67,8 +66,8 @@ public class AnamnesisCategoryController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<AnamnesisCategory>> search(AnemnesisCatSearchReq request,
-                                                                  PageCriteria pageCriteria) {
+    public ResponseEntity<PageResponse<AnamnesisCatReadResponse>> search(AnemnesisCatSearchReq request,
+                                                                         PageCriteria pageCriteria) {
         return ResponseEntity.ok(anemnesisCategoryService.search(request, pageCriteria));
     }
 

@@ -67,11 +67,11 @@ public class AnemnesisCategoryService {
         repository.delete(anamnesisCategory);
     }
 
-    public PageResponse<AnamnesisCategory> search(AnemnesisCatSearchReq request, PageCriteria pageCriteria) {
+    public PageResponse<AnamnesisCatReadResponse> search(AnemnesisCatSearchReq request, PageCriteria pageCriteria) {
         Page<AnamnesisCategory> response = repository.findAll(
                 AnemnesisCatSpecification.filterBy(request),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), getContent(response.getContent()));
     }
 
     public InputStreamResource exportReservationsToExcel() {

@@ -4,6 +4,8 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
@@ -15,4 +17,5 @@ public class AnamnesisCatReadResponse {
     Long id;
     String name;
     Status status;
+    List<AnemnesisListReadResponse> anemnesisListReadResponse;
 }
