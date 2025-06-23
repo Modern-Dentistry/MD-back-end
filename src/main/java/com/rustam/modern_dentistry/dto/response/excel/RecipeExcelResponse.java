@@ -16,6 +16,5 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class RecipeExcelResponse {
     String name;
-    int medicineCount;
     Status status;
 }

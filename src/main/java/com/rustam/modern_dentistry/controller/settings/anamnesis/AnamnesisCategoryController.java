@@ -71,7 +71,7 @@ public class AnamnesisCategoryController {
         return ResponseEntity.ok(anemnesisCategoryService.search(request, pageCriteria));
     }
 
-    @GetMapping("/export/excel")
+        @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> exportToExcel() {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Anamnez_kateqoriyalari.xlsx")
