@@ -2,10 +2,6 @@ package com.rustam.modern_dentistry.dto.request.create;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Appointment;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
-import com.rustam.modern_dentistry.dao.entity.users.Patient;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,7 +9,6 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -35,5 +30,5 @@ public class NewAppointmentRequest {
     LocalTime time;
 
     LocalTime period;
-    
+
 }

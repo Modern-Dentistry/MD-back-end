@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dto.request.create.AnemnesisCatCreateReq;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.AnemnesisCatSearchReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateAnemnesisCatReq;
+import com.rustam.modern_dentistry.dto.response.excel.AnamnesisExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.AnamnesisCatReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
@@ -67,17 +68,17 @@ public class AnemnesisCategoryService {
         repository.delete(anamnesisCategory);
     }
 
-    public PageResponse<AnamnesisCategory> search(AnemnesisCatSearchReq request, PageCriteria pageCriteria) {
+    public PageResponse<AnamnesisCatReadResponse> search(AnemnesisCatSearchReq request, PageCriteria pageCriteria) {
         Page<AnamnesisCategory> response = repository.findAll(
                 AnemnesisCatSpecification.filterBy(request),
                 PageRequest.of(pageCriteria.getPage(), pageCriteria.getCount()));
-        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), response.getContent());
+        return new PageResponse<>(response.getTotalPages(), response.getTotalElements(), getContent(response.getContent()));
     }
 
     public InputStreamResource exportReservationsToExcel() {
         List<AnamnesisCategory> reservations = repository.findAll();
-        var list = reservations.stream().map(ANAMNESIS_CAT_MAPPER::toReadDto).toList();
-        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnamnesisCatReadResponse.class);
+        var list = reservations.stream().map(ANAMNESIS_CAT_MAPPER::toExcelDto).toList();
+        ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, AnamnesisExcelResponse.class);
         return new InputStreamResource(excelFile);
     }
 
