@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface CabinetRepository extends JpaRepository<Cabinet,Long> , JpaSpecificationExecutor<Cabinet> {
     Optional<Cabinet> findByCabinetName(String cabinetName);
+
+    Optional<Object> existsCabinetByCabinetName(String cabinetName);
 }

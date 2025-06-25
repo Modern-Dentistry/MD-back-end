@@ -31,7 +31,7 @@ public class CabinetService {
     UtilService utilService;
 
     public CabinetResponse create(CabinetCreateRequest cabinetCreateRequest) {
-        findByCabinetName(cabinetCreateRequest.getCabinetName());
+        existsCabinetByCabinetName(cabinetCreateRequest.getCabinetName());
         Cabinet cabinet = cabinetRepository.save(
                 Cabinet.builder()
                         .cabinetName(cabinetCreateRequest.getCabinetName())
@@ -41,8 +41,8 @@ public class CabinetService {
         return cabinetMapper.toDto(cabinet);
     }
 
-    private void findByCabinetName(String cabinetName) {
-        cabinetRepository.findByCabinetName(cabinetName)
+    private void existsCabinetByCabinetName(String cabinetName) {
+        cabinetRepository.existsCabinetByCabinetName(cabinetName)
                 .orElseThrow(() -> new ExistsException("bu data db-de movcuddur"));
     }
 
