@@ -37,5 +37,6 @@ public class Teeth {
     List<TeethExamination> toothExaminations = new ArrayList<>();
 
     @ManyToMany(mappedBy = "teethList")
+    @JsonIgnore
     List<DentalOrder> orders;
 }
