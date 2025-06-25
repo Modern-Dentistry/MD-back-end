@@ -20,6 +20,7 @@ public class Cabinet {
 
     String cabinetName;
 
+    @Enumerated(EnumType.STRING)
     Status status;
 
 }
