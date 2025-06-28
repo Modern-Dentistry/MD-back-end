@@ -20,11 +20,12 @@ import com.rustam.modern_dentistry.service.settings.PermissionService;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.factory.UserRoleFactory;
 import com.rustam.modern_dentistry.util.specification.UserSpecification;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -156,13 +157,25 @@ public class AddWorkerService {
         return dto;
     }
 
+    @Transactional
     public AddWorkerUpdateResponse update(AddWorkerUpdateRequest addWorkerUpdateRequest) {
-        BaseUser baseUser = baseUserRepository.findById(addWorkerUpdateRequest.getId())
+        BaseUser baseUser = baseUserRepository.findByIdWithPermissions(addWorkerUpdateRequest.getId())
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
+
+        baseUser.getPermissions().forEach(p -> System.out.println("Permission: " + p.getPermissionName()));
+
         baseUser.getPermissions().stream()
-                .map(roleFactories::get)
+                .map(p -> {
+                    UserRoleFactory factory = roleFactories.get(p.getPermissionName());
+                    System.out.println("Factory for permission " + p.getPermissionName() + ": " + factory);
+                    return factory;
+                })
                 .filter(Objects::nonNull)
-                .forEach(factory -> factory.updateUser(addWorkerUpdateRequest));
+                .forEach(factory -> {
+                    System.out.println("Calling updateUser");
+                    factory.updateUser(addWorkerUpdateRequest);
+                });
+
         return addWorkerUpdateResponse(addWorkerUpdateRequest);
     }
 

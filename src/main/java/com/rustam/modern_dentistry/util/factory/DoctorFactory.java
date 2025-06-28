@@ -13,6 +13,7 @@ import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.UUID;
@@ -70,6 +71,7 @@ public class DoctorFactory implements UserRoleFactory {
     }
 
     @Override
+    @Transactional
     public void updateUser(AddWorkerUpdateRequest request) {
         boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(request.getUsername(), request.getEmail(),
                 request.getFinCode(), request.getColorCode()
@@ -90,7 +92,6 @@ public class DoctorFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getFinCode(), doctor::setFinCode);
         FieldSetter.setIfNotBlank(request.getHomePhone(), doctor::setHomePhone);
         FieldSetter.setIfNotNull(request.getGenderStatus(), doctor::setGenderStatus);
-        FieldSetter.setIfNotEmpty(request.getPermissions(), doctor::setPermissions);
         FieldSetter.setIfNotBlank(request.getEmail(), doctor::setEmail);
         FieldSetter.setIfNotBlank(request.getDegree(), doctor::setDegree);
         FieldSetter.setIfNotBlank(request.getPhone(), doctor::setPhone);
@@ -99,6 +100,15 @@ public class DoctorFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getPassword(),
                 pass -> doctor.setPassword(passwordEncoder.encode(pass)));
         doctor.setEnabled(true);
+        if (request.getPermissions() != null && !request.getPermissions().isEmpty()) {
+            Set<Permission> newPermissions = request.getPermissions().stream()
+                    .map(permissionService::findByName) // Convert String → Permission
+                    .collect(Collectors.toSet());
+
+            doctor.getPermissions().clear();
+            doctor.getPermissions().addAll(newPermissions);
+        }
+
         doctorRepository.save(doctor);
     }
 
