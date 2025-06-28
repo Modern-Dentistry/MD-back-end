@@ -31,5 +31,5 @@ public class AddWorkerUpdateResponse {
     String email;
     String address;
     Integer experience;
-    Set<Permission> permissions;
+    Set<String> permissions;
 }
