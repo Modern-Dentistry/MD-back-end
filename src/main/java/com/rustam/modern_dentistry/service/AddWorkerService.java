@@ -156,6 +156,7 @@ public class AddWorkerService {
         return dto;
     }
 
+    @Transactional
     public AddWorkerUpdateResponse update(AddWorkerUpdateRequest addWorkerUpdateRequest) {
         BaseUser baseUser = baseUserRepository.findById(addWorkerUpdateRequest.getId())
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
