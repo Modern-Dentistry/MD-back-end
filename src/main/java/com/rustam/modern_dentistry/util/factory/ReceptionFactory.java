@@ -87,7 +87,6 @@ public class ReceptionFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getFinCode(), reception::setFinCode);
         FieldSetter.setIfNotBlank(request.getHomePhone(), reception::setHomePhone);
         FieldSetter.setIfNotNull(request.getGenderStatus(), reception::setGenderStatus);
-        FieldSetter.setIfNotEmpty(request.getPermissions(), reception::setPermissions);
         FieldSetter.setIfNotBlank(request.getEmail(), reception::setEmail);
         FieldSetter.setIfNotBlank(request.getDegree(), reception::setDegree);
         FieldSetter.setIfNotBlank(request.getPhone(), reception::setPhone);
@@ -96,6 +95,15 @@ public class ReceptionFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getPassword(),
                 pass -> reception.setPassword(passwordEncoder.encode(pass)));
         reception.setEnabled(true);
+        if (request.getPermissions() != null && !request.getPermissions().isEmpty()) {
+            Set<Permission> newPermissions = request.getPermissions().stream()
+                    .map(permissionService::findByName) // Convert String → Permission
+                    .collect(Collectors.toSet());
+
+            reception.getPermissions().clear();
+            reception.getPermissions().addAll(newPermissions);
+        }
+
         receptionRepository.save(reception);
     }
 
