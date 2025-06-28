@@ -68,9 +68,10 @@ public class DoctorFullPermissionFactory implements UserRoleFactory {
 
 
     @Override
+
     public void updateUser(AddWorkerUpdateRequest request) {
         boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(request.getUsername(), request.getEmail(),
-                request.getFinCode(), null
+                request.getFinCode(), request.getColorCode()
         );
         if (existsByUsernameAndEmailAndFinCodeAndColorCode){
             throw new ExistsException("bu fieldlar database-de movcuddur");
@@ -88,7 +89,6 @@ public class DoctorFullPermissionFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getFinCode(), doctor::setFinCode);
         FieldSetter.setIfNotBlank(request.getHomePhone(), doctor::setHomePhone);
         FieldSetter.setIfNotNull(request.getGenderStatus(), doctor::setGenderStatus);
-        FieldSetter.setIfNotEmpty(request.getPermissions(), doctor::setPermissions);
         FieldSetter.setIfNotBlank(request.getEmail(), doctor::setEmail);
         FieldSetter.setIfNotBlank(request.getDegree(), doctor::setDegree);
         FieldSetter.setIfNotBlank(request.getPhone(), doctor::setPhone);
@@ -97,6 +97,15 @@ public class DoctorFullPermissionFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getPassword(),
                 pass -> doctor.setPassword(passwordEncoder.encode(pass)));
         doctor.setEnabled(true);
+        if (request.getPermissions() != null && !request.getPermissions().isEmpty()) {
+            Set<Permission> newPermissions = request.getPermissions().stream()
+                    .map(permissionService::findByName) // Convert String → Permission
+                    .collect(Collectors.toSet());
+
+            doctor.getPermissions().clear();
+            doctor.getPermissions().addAll(newPermissions);
+        }
+
         doctorRepository.save(doctor);
     }
 
