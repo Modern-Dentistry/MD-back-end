@@ -49,5 +49,5 @@ public class AddWorkerUpdateRequest {
     String email;
     String address;
     Integer experience;
-    Set<Permission> permissions;
+    Set<String> permissions;
 }
