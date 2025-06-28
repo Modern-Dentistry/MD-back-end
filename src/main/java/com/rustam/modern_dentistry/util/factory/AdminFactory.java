@@ -88,7 +88,6 @@ public class AdminFactory implements UserRoleFactory {
         FieldSetter.setIfNotBlank(request.getFinCode(), admin::setFinCode);
         FieldSetter.setIfNotBlank(request.getHomePhone(), admin::setHomePhone);
         FieldSetter.setIfNotNull(request.getGenderStatus(), admin::setGenderStatus);
-        FieldSetter.setIfNotEmpty(request.getPermissions(), admin::setPermissions);
         FieldSetter.setIfNotBlank(request.getEmail(), admin::setEmail);
         FieldSetter.setIfNotBlank(request.getDegree(), admin::setDegree);
         FieldSetter.setIfNotBlank(request.getPhone(), admin::setPhone);
@@ -98,6 +97,15 @@ public class AdminFactory implements UserRoleFactory {
                 pass -> admin.setPassword(passwordEncoder.encode(pass)));
 
         admin.setEnabled(true);
+        if (request.getPermissions() != null && !request.getPermissions().isEmpty()) {
+            Set<Permission> newPermissions = request.getPermissions().stream()
+                    .map(permissionService::findByName) // Convert String → Permission
+                    .collect(Collectors.toSet());
+
+            admin.getPermissions().clear();
+            admin.getPermissions().addAll(newPermissions);
+        }
+
         adminRepository.save(admin);
     }
 
