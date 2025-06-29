@@ -67,8 +67,8 @@ public class UserSpecification {
             if (request.getPhone() != null && !request.getPhone().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("phone")), "%" + request.getPhone().toLowerCase() + "%"));
             }
-            if (request.getStatus() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
+            if (request.getEnabled() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("enabled"), request.getEnabled()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
