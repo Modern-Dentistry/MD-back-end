@@ -239,6 +239,7 @@ public class AddWorkerService {
         };
     }
 
+    @Transactional
     public List<AddWorkerReadResponse> search(AddWorkerSearchRequest addWorkerSearchRequest) {
         List<BaseUser> users = baseUserRepository.findAll(UserSpecification.filterByWorker(addWorkerSearchRequest));
         return addWorkerMapper.toResponses(users);
