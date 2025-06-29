@@ -16,5 +16,4 @@ public class AddWorkerSearchRequest {
     String surname;
     String patronymic;
     String phone;
-    Status status;
 }

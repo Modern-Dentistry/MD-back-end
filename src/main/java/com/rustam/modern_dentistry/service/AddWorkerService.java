@@ -203,13 +203,24 @@ public class AddWorkerService {
                 .build();
     }
 
+    @Transactional
     public String delete(UUID id) {
         BaseUser baseUser = baseUserRepository.findById(id)
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
+        System.out.println("Permissions: " + baseUser.getPermissions());
+        System.out.println("Factory keys: " + roleFactories.keySet());
+
         baseUser.getPermissions().stream()
-                .map(roleFactories::get)
+                .map(p -> {
+                    System.out.println("Permission: " + p.getPermissionName());
+                    return roleFactories.get(p.getPermissionName());
+                })
                 .filter(Objects::nonNull)
-                .forEach(factory -> factory.deleteUser(id));
+                .forEach(factory -> {
+                    System.out.println("Factory tapıldı, silinir...");
+                    factory.deleteUser(id);
+                });
+
         return "Silindi";
     }
 
@@ -228,6 +239,7 @@ public class AddWorkerService {
         };
     }
 
+    @Transactional
     public List<AddWorkerReadResponse> search(AddWorkerSearchRequest addWorkerSearchRequest) {
         List<BaseUser> users = baseUserRepository.findAll(UserSpecification.filterByWorker(addWorkerSearchRequest));
         return addWorkerMapper.toResponses(users);
