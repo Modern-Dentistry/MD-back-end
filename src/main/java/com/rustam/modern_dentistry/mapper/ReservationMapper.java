@@ -90,17 +90,14 @@ public class ReservationMapper {
 
         if (request == null) return reservation;
 
-        return new Reservation(
-                null,
-                request.getStartDate() == null ? reservation.getStartDate() : request.getStartDate(),
-                request.getEndDate() == null ? reservation.getEndDate() : request.getEndDate(),
-                request.getStartTime() == null ? reservation.getStartTime() : request.getStartTime(),
-                request.getEndTime() == null ? reservation.getEndTime() : request.getEndTime(),
-                request.getWeekDays() == null ? reservation.getWeekDays() : request.getWeekDays(),
-                request.getDoctorId() == null ? reservation.getDoctor() : doctor,
-                request.getPatientId() == null ? reservation.getPatient() : patient,
-                reservation.getStatus()
-        );
-    }
+        reservation.setStartDate(request.getStartDate() != null ? request.getStartDate() : reservation.getStartDate());
+        reservation.setEndDate(request.getEndDate() != null ? request.getEndDate() : reservation.getEndDate());
+        reservation.setStartTime(request.getStartTime() != null ? request.getStartTime() : reservation.getStartTime());
+        reservation.setEndTime(request.getEndTime() != null ? request.getEndTime() : reservation.getEndTime());
+        reservation.setWeekDays(request.getWeekDays() != null ? request.getWeekDays() : reservation.getWeekDays());
+        reservation.setDoctor(request.getDoctorId() != null ? doctor : reservation.getDoctor());
+        reservation.setPatient(request.getPatientId() != null ? patient : reservation.getPatient());
 
+        return reservation;
+    }
 }
