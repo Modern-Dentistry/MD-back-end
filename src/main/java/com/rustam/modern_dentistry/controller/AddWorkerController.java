@@ -34,6 +34,11 @@ public class AddWorkerController {
         return new ResponseEntity<>(addWorkerService.read(),HttpStatus.OK);
     }
 
+    @PostMapping(path = "/read-permission/{permission}")
+    public ResponseEntity<List<AddWorkerReadStatusResponse>> readPermission(@RequestBody String permission){
+        return new ResponseEntity<>(addWorkerService.readPermission(permission),HttpStatus.OK);
+    }
+
     @PutMapping(path = "/update")
     public ResponseEntity<AddWorkerUpdateResponse> update(@Valid @RequestBody AddWorkerUpdateRequest addWorkerUpdateRequest){
         return new ResponseEntity<>(addWorkerService.update(addWorkerUpdateRequest),HttpStatus.OK);
