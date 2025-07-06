@@ -1,6 +1,5 @@
 package com.rustam.modern_dentistry.dto.response.update;
 
-import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +8,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Set;
-import java.util.UUID;
 
 import static lombok.AccessLevel.PRIVATE;
 

@@ -245,6 +245,14 @@ public class AddWorkerService {
         return addWorkerMapper.toResponses(users);
     }
 
+    public List<AddWorkerReadStatusResponse> readPermission(String permission) {
+        return addWorkerMapper.toPermissionResponses(
+                baseUserRepository.findAll(
+                        UserSpecification.filterByPermission(permission)
+                )
+        );
+    }
+
 //    public List<AddWorkerReadStatusResponse> readStatus() {
 //        return Arrays.stream(Role.values())
 //                .map(role -> new AddWorkerReadStatusResponse(role.getAuthority()))

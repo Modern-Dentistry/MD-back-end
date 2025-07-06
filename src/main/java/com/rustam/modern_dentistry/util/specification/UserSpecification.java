@@ -74,4 +74,18 @@ public class UserSpecification {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public static Specification<BaseUser> filterByPermission(String permission) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+        
+            if (!permission.isBlank()) {
+                // Join with authorities/roles table and check permissions
+                var authorities = root.join("authorities");
+                predicates.add(criteriaBuilder.equal(authorities.get("authority"), permission));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
 }
