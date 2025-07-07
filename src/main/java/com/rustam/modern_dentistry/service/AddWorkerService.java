@@ -42,9 +42,10 @@ public class AddWorkerService {
     ReceptionService receptionService;
     AdminService adminService;
     AddWorkerMapper addWorkerMapper;
+    PermissionService permissionService;
 
     @Autowired
-    public AddWorkerService(List<UserRoleFactory> factories, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService, AdminService adminService, AddWorkerMapper addWorkerMapper) {
+    public AddWorkerService(List<UserRoleFactory> factories, UtilService utilService, BaseUserRepository baseUserRepository, DoctorService doctorService, ReceptionService receptionService, AdminService adminService, AddWorkerMapper addWorkerMapper, PermissionService permissionService) {
         this.roleFactories = factories.stream()
                 .filter(factory -> factory.getPermissionName() != null)
                 .collect(Collectors.toMap(UserRoleFactory::getPermissionName, Function.identity()));
@@ -54,6 +55,7 @@ public class AddWorkerService {
         this.receptionService = receptionService;
         this.adminService = adminService;
         this.addWorkerMapper = addWorkerMapper;
+        this.permissionService = permissionService;
     }
 
     public AddWorkerCreateResponse create(AddWorkerCreateRequest addWorkerCreateRequest) {
@@ -87,7 +89,7 @@ public class AddWorkerService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<AddWorkerReadResponse> read() {
         String currentUserId = utilService.getCurrentUserId();
         BaseUser baseUser = utilService.findByBaseUserId(currentUserId);
@@ -224,7 +226,7 @@ public class AddWorkerService {
         return "Silindi";
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public AddWorkerReadResponse info(UUID id) {
         BaseUser baseUser = baseUserRepository.findById(id)
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
@@ -239,23 +241,28 @@ public class AddWorkerService {
         };
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<AddWorkerReadResponse> search(AddWorkerSearchRequest addWorkerSearchRequest) {
         List<BaseUser> users = baseUserRepository.findAll(UserSpecification.filterByWorker(addWorkerSearchRequest));
-        return addWorkerMapper.toResponses(users);
+        return users.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public List<AddWorkerReadStatusResponse> readPermission(String permission) {
-        return addWorkerMapper.toPermissionResponses(
-                baseUserRepository.findAll(
-                        UserSpecification.filterByPermission(permission)
-                )
-        );
+    @Transactional(readOnly = true)
+    public List<AddWorkerReadResponse> readPermission(String permission) {
+        List<BaseUser> users = baseUserRepository.findAll(UserSpecification.filterByPermission(permission));
+        return users.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-//    public List<AddWorkerReadStatusResponse> readStatus() {
-//        return Arrays.stream(Role.values())
-//                .map(role -> new AddWorkerReadStatusResponse(role.getAuthority()))
-//                .collect(Collectors.toList());
-//    }
+
+    @Transactional(readOnly = true)
+    public List<AddWorkerReadStatusResponse> readStatus() {
+        return permissionService.read().stream()
+                .map(p -> new AddWorkerReadStatusResponse(p.getPermissionName()))
+                .collect(Collectors.toList());
+    }
+
 }
