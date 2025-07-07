@@ -1,9 +1,12 @@
 package com.rustam.modern_dentistry.util.specification;
 
+import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.read.AddWorkerSearchRequest;
 import com.rustam.modern_dentistry.dto.request.read.PatientSearchRequest;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
@@ -77,15 +80,17 @@ public class UserSpecification {
 
     public static Specification<BaseUser> filterByPermission(String permission) {
         return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-        
-            if (!permission.isBlank()) {
-                // Join with authorities/roles table and check permissions
-                var authorities = root.join("authorities");
-                predicates.add(criteriaBuilder.equal(authorities.get("authority"), permission));
+            root.fetch("permissions", JoinType.LEFT); // Eager fetch
+            query.distinct(true); // Dublikatların qarşısını almaq üçün
+
+            if (permission == null || permission.isBlank()) {
+                return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            Join<BaseUser, Permission> permissions = root.join("permissions", JoinType.LEFT);
+            return criteriaBuilder.equal(permissions.get("permissionName"), permission);
         };
     }
+
+
 }
