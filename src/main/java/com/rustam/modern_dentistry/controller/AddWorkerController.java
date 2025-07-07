@@ -35,7 +35,7 @@ public class AddWorkerController {
     }
 
     @PostMapping(path = "/read-permission/{permission}")
-    public ResponseEntity<List<AddWorkerReadStatusResponse>> readPermission(@RequestBody String permission){
+    public ResponseEntity<List<AddWorkerReadResponse>> readPermission(@PathVariable String permission){
         return new ResponseEntity<>(addWorkerService.readPermission(permission),HttpStatus.OK);
     }
 
@@ -59,8 +59,8 @@ public class AddWorkerController {
         return new ResponseEntity<>(addWorkerService.search(addWorkerSearchRequest),HttpStatus.OK);
     }
 
-//    @GetMapping(path = "/read-status")
-//    public ResponseEntity<List<AddWorkerReadStatusResponse>> readStatus(){
-//        return new ResponseEntity<>(addWorkerService.readStatus(),HttpStatus.OK);
-//    }
+    @GetMapping(path = "/read-roles")
+    public ResponseEntity<List<AddWorkerReadStatusResponse>> readStatus(){
+        return new ResponseEntity<>(addWorkerService.readStatus(),HttpStatus.OK);
+    }
 }
