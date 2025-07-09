@@ -68,7 +68,7 @@ public class ImplantService {
         return implantMapper.toDto(implant);
     }
 
-    private Implant findById(Long implantId) {
+    public Implant findById(Long implantId) {
         return implantRepository.findById(implantId)
                 .orElseThrow(() -> new NotFoundException("bele bir implant tapilmadi"));
     }

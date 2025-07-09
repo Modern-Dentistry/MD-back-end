@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,4 +13,5 @@ public class PatRecipeReadRes {
     Long patientId;
     String recipeName;
     LocalDate date;
+    List<MedicineReadResponse> medicines;
 }
