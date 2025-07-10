@@ -39,6 +39,11 @@ public class PatientRecipeService {
                 .toList();
     }
 
+    public PatRecipeReadRes readById(Long id) {
+        var entity = getPatientRecipeById(id);
+        return patientRecipeMapper.toDto(entity);
+    }
+
     public void update(Long id, @Valid PatRecipeUpdateReq request) {
         var patientRecipe = getPatientRecipeById(id);
         var recipe = recipeService.getRecipeById(request.getRecipeId());
