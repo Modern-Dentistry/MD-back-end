@@ -26,7 +26,7 @@ public class Recipe {
     @GeneratedValue(strategy = IDENTITY)
     Long id;
 
-    @Column(nullable = false,  unique = true)
+    @Column(nullable = false, unique = true)
     String name;
 
     @Enumerated(STRING)
@@ -37,4 +37,9 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = ALL)
     List<PatientRecipe> recipes;
+
+    @PrePersist
+    void prePersist() {
+        status = Status.ACTIVE;
+    }
 }
