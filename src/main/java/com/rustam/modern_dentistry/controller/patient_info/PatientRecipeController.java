@@ -31,6 +31,11 @@ public class PatientRecipeController {
         return ResponseEntity.ok(patientRecipeService.readAllById(patientId));
     }
 
+    @GetMapping("/read-by-id/{id}")
+    public ResponseEntity<PatRecipeReadRes> readById(@PathVariable Long id) {
+        return ResponseEntity.ok(patientRecipeService.readById(id));
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id,
                                        @Valid @RequestBody PatRecipeUpdateReq request) {

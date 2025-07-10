@@ -19,6 +19,7 @@ public interface PatientRecipeMapper {
 
     @Mapping(target = "patientId", source = "patient.id")
     @Mapping(target = "recipeId", source = "recipe.id")
+    @Mapping(target = "recipeName", source = "recipe.name")
     @Mapping(target = "medicines", source = "recipe.medicines")
     PatRecipeReadRes toDto(PatientRecipe patientRecipe);
 

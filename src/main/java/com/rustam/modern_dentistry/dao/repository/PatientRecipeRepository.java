@@ -5,10 +5,13 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PatientRecipeRepository extends JpaRepository<PatientRecipe, Long> {
-//    List<PatientRecipe> findByPatient_Id(Long patientId);
 
     @EntityGraph(attributePaths = {"recipe", "recipe.medicines"})
     List<PatientRecipe> findByPatient_Id(Long patientId);
+
+    @EntityGraph(attributePaths = {"recipe", "recipe.medicines"})
+    Optional<PatientRecipe> findById(Long id);
 }

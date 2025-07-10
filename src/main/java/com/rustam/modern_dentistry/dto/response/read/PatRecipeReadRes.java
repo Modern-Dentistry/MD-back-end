@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class PatRecipeReadRes {
+    Long id;
     Long recipeId;
     Long patientId;
     String recipeName;

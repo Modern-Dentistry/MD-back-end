@@ -22,12 +22,12 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class PatientPhotosController {
     private final PatientPhotosService patientPhotosService;
 
-    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> create(@RequestPart("data") @Valid PatPhotosCreateReq request,
-                                       @RequestPart("file") MultipartFile file) {
-        patientPhotosService.create(request, file);
-        return ResponseEntity.status(CREATED).build();
-    }
+        @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<Void> create(@RequestPart("data") @Valid PatPhotosCreateReq request,
+                                           @RequestPart("file") MultipartFile file) {
+            patientPhotosService.create(request, file);
+            return ResponseEntity.status(CREATED).build();
+        }
 
     @GetMapping("/read")
     public ResponseEntity<List<PatPhotosReadRes>> read(@RequestParam Long patientId) {
