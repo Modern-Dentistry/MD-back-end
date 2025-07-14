@@ -84,7 +84,7 @@ public class PatientExaminationsService {
 
         List<PatientExaminations> patientExaminationsList = request.getToothNumber().stream()
                 .map(toothNumber -> PatientExaminations.builder()
-                        .patientId(request.getPatientId())
+                        .patient(utilService.findByPatientId(request.getPatientId()))
                         .toothNumber(toothNumber)
                         .diagnosis(examination.getTypeName())
                         .doctorId(UUID.fromString(currentUserId))
@@ -118,7 +118,7 @@ public class PatientExaminationsService {
         }
         List<Long> teethNo = new ArrayList<>();
         patientExaminationsUpdateRequest.getToothNumber().forEach(toothNumber -> {
-            patientExaminations.setPatientId(patientExaminationsUpdateRequest.getPatientId());
+            patientExaminations.setPatient(patient);
             patientExaminations.setToothNumber(toothNumber);
             patientExaminations.setDiagnosis(examination.getTypeName());
             patientExaminationsRepository.save(patientExaminations);
