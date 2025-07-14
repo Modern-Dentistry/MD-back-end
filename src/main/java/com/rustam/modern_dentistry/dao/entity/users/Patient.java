@@ -62,7 +62,6 @@ public class Patient {
     @Column(name = "work_address")
     String workAddress;
     LocalDate registration_date;
-    String role;
 
     @OneToMany(mappedBy = "patient", cascade = ALL, fetch = LAZY)
     List<Reservation> reservations;
@@ -70,7 +69,7 @@ public class Patient {
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<GeneralCalendar> generalCalendars;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     List<PatientExaminations> examinations;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)

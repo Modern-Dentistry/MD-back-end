@@ -63,7 +63,7 @@ public class BaseUser {
     @JsonIgnore
     Set<Permission> permissions;
 
-    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = LAZY)
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL,orphanRemoval = true ,fetch = LAZY)
     Set<WorkersWorkSchedule> workSchedules;
 
     public String getId() {

@@ -67,7 +67,6 @@ public class PatientService {
                 .priceCategoryStatus(patientCreateRequest.getPriceCategoryStatus())
                 .specializationStatus(patientCreateRequest.getSpecializationStatus())
                 .registration_date(LocalDate.now())
-                .role(Role.PATIENT.getValue())
                 .build();
         patientRepository.save(patient);
         PatientCreateResponse patientCreateResponse = new PatientCreateResponse();
