@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.patient_info;
 
+import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -25,8 +26,9 @@ public class PatientExaminations {
     @Column(name = "tooth_number")
     Long toothNumber;
 
-    @Column(name = "patient_id")
-    Long patientId;
+    @ManyToOne
+    @JoinColumn(name = "patient_id", insertable = false, updatable = false)
+    Patient patient;
 
     @Column(name = "doctor_id")
     UUID doctorId;
