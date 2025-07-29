@@ -1,9 +1,7 @@
 package com.rustam.modern_dentistry.dto.request.create;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -38,7 +36,7 @@ public class PatientCreateRequest {
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
     @NotNull(message = "zəhmət olmasa qiymət kategoriyasını daxil edin")
-    PriceCategoryStatus priceCategoryStatus;
+    String  priceCategoryStatus;
     SpecializationStatus specializationStatus;
     @NotNull(message = "zəhmət olmasa Həkimi seçin daxil edin")
     UUID doctor_id; //doctor_id -sine gore gedib tapacaq

@@ -1,7 +1,6 @@
 package com.rustam.modern_dentistry.dto.request.update;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +21,7 @@ public class PatientUpdateRequest {
     String finCode;
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
-    PriceCategoryStatus priceCategoryStatus;
+    String priceCategoryStatus;
     SpecializationStatus specializationStatus;
     UUID doctor_id;
     String phone;

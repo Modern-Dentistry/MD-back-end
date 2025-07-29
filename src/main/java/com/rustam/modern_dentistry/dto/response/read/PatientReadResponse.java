@@ -1,7 +1,6 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +22,7 @@ public class PatientReadResponse {
     String finCode;
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
-    PriceCategoryStatus priceCategoryStatus;
+    String priceCategoryStatus;
     SpecializationStatus specializationStatus;
     String doctorId;
     String phone;

@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.dto.request.create;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Appointment;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
+import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,7 +18,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewAppointmentRequest {
     @NotNull
-    Room room;
+    Cabinet cabinet;
     @NotNull(message = "patient bos ola bilmez")
     Long patientId;
 
