@@ -70,7 +70,7 @@ public class GeneralCalendarService {
                 .doctor(patient.getDoctor())
                 .patient(patient)
                 .appointment(newAppointmentRequest.getAppointment())
-                .room(newAppointmentRequest.getRoom())
+                .cabinet(newAppointmentRequest.getCabinet())
                 .date(newAppointmentRequest.getDate())
                 .time(newAppointmentRequest.getTime())
                 .appointmentTypes(appointmentTypes)
@@ -89,7 +89,7 @@ public class GeneralCalendarService {
 
         return new NewAppointmentResponse(
                 patient.getDoctor().getName(),
-                generalCalendar.getRoom(),
+                generalCalendar.getCabinet().getCabinetName(),
                 patient.getName(),
                 generalCalendar.getAppointment(),
                 generalCalendar.getDate(),
@@ -139,8 +139,8 @@ public class GeneralCalendarService {
             Patient patient = utilService.findByPatientId(updateAppointmentRequest.getPatientId());
             generalCalendar.setPatient(patient);
         }
-        if (updateAppointmentRequest.getRoom() != null) {
-            generalCalendar.setRoom(updateAppointmentRequest.getRoom());
+        if (updateAppointmentRequest.getCabinet() != null) {
+            generalCalendar.setCabinet(updateAppointmentRequest.getCabinet());
         }
         if (updateAppointmentRequest.getAppointment() != null) {
             generalCalendar.setAppointment(updateAppointmentRequest.getAppointment());
@@ -159,7 +159,7 @@ public class GeneralCalendarService {
         return NewAppointmentResponse.builder()
                 .doctorName(generalCalendar.getDoctor().getName())
                 .patientName(generalCalendar.getPatient().getName())
-                .room(generalCalendar.getRoom())
+                .cabinetName(generalCalendar.getCabinet().getCabinetName())
                 .appointment(generalCalendar.getAppointment())
                 .date(generalCalendar.getDate())
                 .time(generalCalendar.getTime())
