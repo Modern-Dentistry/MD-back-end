@@ -1,9 +1,12 @@
 package com.rustam.modern_dentistry.dao.entity.settings;
 
+import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Entity
 @Table(name = "cabinets")
@@ -20,7 +23,9 @@ public class Cabinet {
 
     String cabinetName;
 
-    @Enumerated(EnumType.STRING)
     Status status;
 
+    @OneToMany(mappedBy = "cabinet", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<GeneralCalendar> generalCalendars;
 }
+
