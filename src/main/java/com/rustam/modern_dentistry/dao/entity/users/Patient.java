@@ -6,7 +6,6 @@ import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.PatientBlacklist;
 import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
-import com.rustam.modern_dentistry.dao.entity.enums.status.PriceCategoryStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
@@ -47,7 +46,7 @@ public class Patient {
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     Doctor doctor;
     @Column(name = "price_category_status")
-    PriceCategoryStatus priceCategoryStatus;
+    String priceCategoryStatus;
     @Column(name = "specialication_status")
     SpecializationStatus specializationStatus;
     String phone;
