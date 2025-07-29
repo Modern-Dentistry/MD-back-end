@@ -20,7 +20,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewAppointmentResponse {
     String doctorName;
-    Room room;
+    String cabinetName;
 
     String patientName;
 
