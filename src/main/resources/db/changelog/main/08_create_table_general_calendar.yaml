@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 07
+      id: 08
       author: rustem_huseynov
       changes:
         - createTable:
@@ -21,8 +21,10 @@ databaseChangeLog:
                     nullable: true
 
               - column:
-                  name: room
-                  type: VARCHAR(255)
+                  name: cabinet_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
 
               - column:
                   name: patient_id
@@ -48,16 +50,24 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: general_calendar
-            baseColumnNames: patient_id
-            referencedTableName: patients
-            referencedColumnNames: id
-            constraintName: fk_generalcalendar_patient
-            onDelete: CASCADE
-
-        - addForeignKeyConstraint:
-            baseTableName: general_calendar
             baseColumnNames: doctor_id
             referencedTableName: doctors
             referencedColumnNames: doctor_id
             constraintName: fk_generalcalendar_doctor
             onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            baseTableName: general_calendar
+            baseColumnNames: cabinet_id
+            referencedTableName: cabinets
+            referencedColumnNames: id
+            constraintName: fk_generalcalendar_cabinet
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            baseTableName: general_calendar
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            constraintName: fk_generalcalendar_patient
+            onDelete: CASCADE

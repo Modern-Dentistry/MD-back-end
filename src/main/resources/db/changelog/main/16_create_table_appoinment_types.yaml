@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 18
+      id: 16
       author: rustem_huseynov
       changes:
         - createTable:
-            tableName: recipes
+            tableName: appointment_types
             columns:
               - column:
                   name: id
@@ -15,11 +15,12 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: name
+                  name: appointment_type_name
                   type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-                    unique: true
+
+              - column:
+                  name: time
+                  type: TIME
 
               - column:
                   name: status

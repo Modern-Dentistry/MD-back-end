@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 15
+      id: 30
       author: rustem_huseynov
       changes:
         - createTable:
-            tableName: appointment_types
+            tableName: deletion_from_warehouse
             columns:
               - column:
                   name: id
@@ -15,13 +15,17 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: appointment_type_name
-                  type: VARCHAR(255)
+                  name: date
+                  type: DATE
 
               - column:
                   name: time
                   type: TIME
 
               - column:
-                  name: status
+                  name: description
                   type: VARCHAR(255)
+
+              - column:
+                  name: number
+                  type: INT

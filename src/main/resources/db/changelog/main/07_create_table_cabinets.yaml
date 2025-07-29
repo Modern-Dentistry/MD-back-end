@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07
+      author: rustem-huseynov
+      changes:
+        - createTable:
+            tableName: cabinets
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cabinet_name
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(50)

@@ -1,25 +1,19 @@
 databaseChangeLog:
   - changeSet:
-      id: 08
+      id: 11
       author: rustem_huseynov
       changes:
         - createTable:
-            tableName: admins
+            tableName: technician
             columns:
               - column:
-                  name: admin_id
+                  name: technician_id
                   type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: degree
-                  type: VARCHAR(255)
-              - column:
-                  name: phone_2
-                  type: VARCHAR(255)
-              - column:
-                  name: phone_3
+                  name: phone2
                   type: VARCHAR(255)
               - column:
                   name: home_phone
@@ -28,14 +22,16 @@ databaseChangeLog:
                   name: address
                   type: VARCHAR(255)
               - column:
-                  name: experience
-                  type: INTEGER
+                  name: status
+                  type: VARCHAR(255)
+                  defaultValue: 'ACTIVE'
+                  constraints:
+                    nullable: false
 
         - addForeignKeyConstraint:
-            baseTableName: admins
-            baseColumnNames: admin_id
+            baseTableName: technician
+            baseColumnNames: technician_id
             referencedTableName: base_users
             referencedColumnNames: id
-            constraintName: fk_admins_baseuser
+            constraintName: fk_technician_baseuser
             onDelete: CASCADE
-

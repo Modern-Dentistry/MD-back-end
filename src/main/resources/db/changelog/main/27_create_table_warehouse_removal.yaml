@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 26
+      id: 27
       author: rustem_huseynov
       changes:
         - createTable:

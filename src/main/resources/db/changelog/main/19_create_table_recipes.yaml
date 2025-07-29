@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 29
+      id: 19
       author: rustem_huseynov
       changes:
         - createTable:
-            tableName: deletion_from_warehouse
+            tableName: recipes
             columns:
               - column:
                   name: id
@@ -15,17 +15,12 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: date
-                  type: DATE
-
-              - column:
-                  name: time
-                  type: TIME
-
-              - column:
-                  name: description
+                  name: name
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
 
               - column:
-                  name: number
-                  type: INT
+                  name: status
+                  type: VARCHAR(255)

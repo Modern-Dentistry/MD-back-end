@@ -18,6 +18,6 @@ public class SelectingPatientToReadResponse {
     String patientName;
     LocalTime time;
     LocalDate date;
-    Room room;
+    String cabinetName;
     Appointment appointment;
 }

@@ -112,8 +112,8 @@ public class GeneralCalendarService {
                 .orElseThrow(() -> new NoSuchPatientWasFound("bele bir pasient tapilmadi"));
     }
 
-    public List<SelectingDoctorViewingPatientResponse> selectingRoomViewingPatient(Room room) {
-        List<SelectingDoctorViewingPatientResponse> allRoom = generalCalendarRepository.findAllRoom(room);
+    public List<SelectingDoctorViewingPatientResponse> selectingRoomViewingPatient(String cabinetName) {
+        List<SelectingDoctorViewingPatientResponse> allRoom = generalCalendarRepository.findAllCabinetName(cabinetName);
         if (allRoom.isEmpty()){
             throw new DoctorIsPatientsWereNotFound("pasientler tapilmadi");
         }

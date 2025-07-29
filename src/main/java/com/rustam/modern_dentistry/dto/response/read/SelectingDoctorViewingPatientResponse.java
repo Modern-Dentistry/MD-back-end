@@ -27,6 +27,6 @@ public class SelectingDoctorViewingPatientResponse {
 
     LocalTime period;
 
-    Room room;
+    String cabinetName;
 
 }

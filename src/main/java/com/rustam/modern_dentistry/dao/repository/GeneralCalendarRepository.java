@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse;
 import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
+import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar,Long> {
     @Query("""
     SELECT new com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse(
-        g.patient.name, g.appointment, g.date, g.time, g.period, g.room
+        g.patient.name, g.appointment, g.date, g.time, g.period, g.cabinet.cabinetName
     )
     FROM GeneralCalendar g
     JOIN g.patient p
@@ -27,7 +28,7 @@ public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar
     List<SelectingDoctorViewingPatientResponse> findAllByDoctorId(UUID doctorId);
 
     @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse(" +
-            "d.name, p.name, g.time, g.date ,g.room, g.appointment) " +
+            "d.name, p.name, g.time, g.date ,g.cabinet.cabinetName, g.appointment) " +
             "FROM GeneralCalendar g " +
             "JOIN g.doctor d " +
             "JOIN g.patient p " +
@@ -47,13 +48,13 @@ public interface GeneralCalendarRepository extends JpaRepository<GeneralCalendar
 
     @Query("""
     SELECT new com.rustam.modern_dentistry.dto.response.read.SelectingDoctorViewingPatientResponse(
-        g.patient.name, g.appointment, g.date, g.time, g.period, g.room
+        g.patient.name, g.appointment, g.date, g.time, g.period, g.cabinet.cabinetName
     )
     FROM GeneralCalendar g
     JOIN g.patient p
-    WHERE g.room = :room
+    WHERE g.cabinet.cabinetName = :cabinetName
 """)
-    List<SelectingDoctorViewingPatientResponse> findAllRoom(Room room);
+    List<SelectingDoctorViewingPatientResponse> findAllCabinetName(String cabinetName);
 
     @Transactional
     @Modifying

@@ -1,37 +1,41 @@
 databaseChangeLog:
   - changeSet:
-      id: 10
+      id: 18
       author: rustem_huseynov
       changes:
         - createTable:
-            tableName: technician
+            tableName: patient_photos
             columns:
               - column:
-                  name: technician_id
-                  type: UUID
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
+
               - column:
-                  name: phone2
-                  type: VARCHAR(255)
+                  name: date
+                  type: DATE
+
               - column:
-                  name: home_phone
+                  name: description
                   type: VARCHAR(255)
+
               - column:
-                  name: address
+                  name: file_name
                   type: VARCHAR(255)
+
               - column:
-                  name: status
-                  type: VARCHAR(255)
-                  defaultValue: 'ACTIVE'
+                  name: patient_id
+                  type: BIGINT
                   constraints:
                     nullable: false
 
         - addForeignKeyConstraint:
-            baseTableName: technician
-            baseColumnNames: technician_id
-            referencedTableName: base_users
+            baseTableName: patient_photos
+            baseColumnNames: patient_id
+            referencedTableName: patients
             referencedColumnNames: id
-            constraintName: fk_technician_baseuser
+            constraintName: fk_patient_photos_patient
             onDelete: CASCADE

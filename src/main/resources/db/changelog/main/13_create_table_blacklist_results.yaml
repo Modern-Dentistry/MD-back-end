@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 20
+      id: 13
       author: rustem_huseynov
       changes:
         - createTable:
-            tableName: warehouse_entry
+            tableName: blacklist_results
             columns:
               - column:
                   name: id
@@ -15,21 +15,11 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: date
-                  type: DATE
-
-              - column:
-                  name: time
-                  type: TIME
-
-              - column:
-                  name: description
+                  name: status_name
                   type: VARCHAR(255)
 
               - column:
-                  name: number
-                  type: INTEGER
-
-              - column:
-                  name: sum_price
-                  type: NUMERIC(19, 2)
+                  name: status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true

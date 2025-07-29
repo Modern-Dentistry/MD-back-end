@@ -40,9 +40,9 @@ public class GeneralCalendarController {
         return new ResponseEntity<>(generalCalendarService.selectingDoctorViewingPatient(doctorId), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/selecting-room-viewing-patient/{room}")
-    public ResponseEntity<List<SelectingDoctorViewingPatientResponse>> selectingRoomViewingPatient(@PathVariable Room room) {
-        return new ResponseEntity<>(generalCalendarService.selectingRoomViewingPatient(room), HttpStatus.OK);
+    @GetMapping(path = "/selecting-room-viewing-patient/{cabinetName}")
+    public ResponseEntity<List<SelectingDoctorViewingPatientResponse>> selectingRoomViewingPatient(@PathVariable String cabinetName) {
+        return new ResponseEntity<>(generalCalendarService.selectingRoomViewingPatient(cabinetName), HttpStatus.OK);
     }
 
     @GetMapping(path = "/selecting-patient-to-read/{patientId}")
