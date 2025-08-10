@@ -9,6 +9,7 @@ import com.rustam.modern_dentistry.dto.response.read.PriceCategoryReadResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.specification.settings.PriceCategorySpecification;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -76,5 +77,11 @@ public class PriceCategoryService {
         return priceCategoryRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Price Category with id %s not found", id))
         );
+    }
+
+    public PriceCategory findByName(String priceCategoryName) {
+        return priceCategoryRepository.findByName(priceCategoryName)
+                .orElseThrow(
+                        () -> new NotFoundException("Price Category with name %s not found"));
     }
 }
