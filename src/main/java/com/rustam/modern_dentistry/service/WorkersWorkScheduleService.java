@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.WorkersWorkSchedule;
+import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.repository.WorkersWorkScheduleRepository;
 import com.rustam.modern_dentistry.dto.request.create.WorkersWorkScheduleRequest;
@@ -9,6 +10,7 @@ import com.rustam.modern_dentistry.dto.response.read.WorkersWorkScheduleResponse
 import com.rustam.modern_dentistry.dto.response.update.WorkersWorkScheduleUpdateDTO;
 import com.rustam.modern_dentistry.exception.custom.WorkersWorkScheduleNotFoundException;
 import com.rustam.modern_dentistry.mapper.WorkersWorkScheduleMapper;
+import com.rustam.modern_dentistry.service.settings.CabinetService;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.WorkersWorkScheduleSpecification;
 import lombok.AccessLevel;
@@ -26,12 +28,13 @@ public class WorkersWorkScheduleService {
     WorkersWorkScheduleRepository workersWorkScheduleRepository;
     UtilService utilService;
     WorkersWorkScheduleMapper workersWorkScheduleMapper;
+    CabinetService cabinetService;
 
     public void create(WorkersWorkScheduleRequest workersWorkScheduleRequest) {
         BaseUser baseUser = utilService.findByBaseUserId(workersWorkScheduleRequest.getUserId());
         WorkersWorkSchedule workersWorkSchedule = WorkersWorkSchedule.builder()
                 .weekDay(workersWorkScheduleRequest.getWeekDay())
-                .room(workersWorkScheduleRequest.getRoom())
+                .cabinet(cabinetService.findByCabinetName(workersWorkScheduleRequest.getCabinetName()))
                 .worker(baseUser)
                 .startTime(workersWorkScheduleRequest.getStartTime())
                 .finishTime(workersWorkScheduleRequest.getFinishTime())
@@ -50,18 +53,12 @@ public class WorkersWorkScheduleService {
 
     public WorkersWorkScheduleUpdateDTO update(WorkersWorkScheduleUpdateDTO workersWorkScheduleUpdateDTO) {
         WorkersWorkSchedule workersWorkSchedule = findById(workersWorkScheduleUpdateDTO.getId());
-        if (workersWorkScheduleUpdateDTO.getWeekDay() != null){
-            workersWorkSchedule.setWeekDay(workersWorkScheduleUpdateDTO.getWeekDay());
+        if (workersWorkScheduleUpdateDTO.getCabinetName() != null){
+            workersWorkSchedule.setCabinet(cabinetService.findByCabinetName(workersWorkScheduleUpdateDTO.getCabinetName()));
         }
-        if (workersWorkScheduleUpdateDTO.getRoom() != null){
-            workersWorkSchedule.setRoom(workersWorkScheduleUpdateDTO.getRoom());
-        }
-        if (workersWorkScheduleUpdateDTO.getStartTime() != null){
-            workersWorkSchedule.setStartTime(workersWorkScheduleUpdateDTO.getStartTime());
-        }
-        if (workersWorkScheduleUpdateDTO.getFinishTime() != null){
-            workersWorkSchedule.setFinishTime(workersWorkScheduleUpdateDTO.getFinishTime());
-        }
+        utilService.updateFieldIfPresent(workersWorkScheduleUpdateDTO.getWeekDay(),workersWorkSchedule::setWeekDay);
+        utilService.updateFieldIfPresent(workersWorkScheduleUpdateDTO.getStartTime(),workersWorkSchedule::setStartTime);
+        utilService.updateFieldIfPresent(workersWorkScheduleUpdateDTO.getFinishTime(),workersWorkSchedule::setFinishTime);
         workersWorkScheduleRepository.save(workersWorkSchedule);
         return workersWorkScheduleMapper.toDto(workersWorkSchedule);
     }
