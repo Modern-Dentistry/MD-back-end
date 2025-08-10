@@ -4,6 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.warehouse_operations.WarehouseRece
 import com.rustam.modern_dentistry.dto.response.read.WarehouseReceiptsResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -16,7 +17,9 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface WarehouseReceiptsMapper {
+    @Mapping(target = "cabinetName", source = "cabinet.cabinetName")
     List<WarehouseReceiptsResponse> toDtos(List<WarehouseReceipts> warehouseReceipts);
 
+    @Mapping(target = "cabinetName", source = "cabinet.cabinetName")
     WarehouseReceiptsResponse toDto(WarehouseReceipts warehouseReceipts);
 }

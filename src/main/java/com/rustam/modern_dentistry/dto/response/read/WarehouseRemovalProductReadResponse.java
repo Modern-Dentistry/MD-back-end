@@ -14,7 +14,8 @@ import java.time.LocalTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WarehouseRemovalProductReadResponse {
 
-    Long Id;
+    Long warehouseRemovalId;
+    Long id;
     LocalDate date;
     LocalTime time;
     Integer number;

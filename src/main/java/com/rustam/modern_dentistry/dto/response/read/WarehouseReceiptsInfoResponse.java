@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.dto.response.read;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.PendingStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
+import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
 import com.rustam.modern_dentistry.dto.OutOfTheWarehouseDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,7 @@ public class WarehouseReceiptsInfoResponse {
     Long id;
     LocalDate date;
     LocalTime time;
-    Room room;
+    String cabinetName;
     String personWhoPlacedOrder;
     List<OutOfTheWarehouseDto> outOfTheWarehouseDtos;
     Long orderQuantity;

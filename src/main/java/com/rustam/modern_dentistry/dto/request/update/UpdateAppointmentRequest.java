@@ -19,7 +19,7 @@ import java.util.UUID;
 public class UpdateAppointmentRequest {
     Long id;
     UUID doctorId;
-    Cabinet cabinet;
+    String cabinetName;
     Long patientId;
 
     Appointment appointment;

@@ -23,7 +23,7 @@ public class OrderFromWarehouseUpdateRequest {
 
     LocalTime time;
 
-    Room room;
+    String cabinetName;
 
     List<OrderFromWarehouseProductUpdateRequest> orderFromWarehouseProductUpdateRequests;
 

@@ -18,8 +18,8 @@ public class RoomStockSpecification {
 
             Predicate predicate = cb.conjunction();
 
-            if (request.getRoomName() != null) {
-                predicate = cb.and(predicate, cb.equal(orderJoin.get("room"), request.getRoomName()));
+            if (request.getCabinetName() != null) {
+                predicate = cb.and(predicate, cb.equal(orderJoin.get("cabinetName"), request.getCabinetName()));
             }
 
             if (request.getCategoryName() != null && !request.getCategoryName().isBlank()) {

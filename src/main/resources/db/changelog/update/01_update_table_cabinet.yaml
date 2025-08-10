@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01
+      author: rustem-huseynov
+      changes:
+        - addAutoIncrement:
+            tableName: cabinets
+            columnName: id
+            columnDataType: BIGINT

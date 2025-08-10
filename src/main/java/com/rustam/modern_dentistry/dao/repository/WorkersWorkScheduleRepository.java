@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface WorkersWorkScheduleRepository extends JpaRepository<WorkersWorkSchedule,Long>, JpaSpecificationExecutor<WorkersWorkSchedule> {
 
-    @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.WorkersWorkScheduleResponse(w.id, w.weekDay, w.room, b.id, b.name, b.surname, w.startTime, w.finishTime) " +
+    @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.WorkersWorkScheduleResponse(w.id, w.weekDay, w.cabinet.cabinetName, b.id, b.name, b.surname, w.startTime, w.finishTime) " +
             "FROM WorkersWorkSchedule w JOIN w.worker b")
     List<WorkersWorkScheduleResponse> findAllWorkersWorkSchedule();
 }

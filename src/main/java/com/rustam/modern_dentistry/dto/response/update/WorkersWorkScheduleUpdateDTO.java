@@ -19,7 +19,7 @@ public class WorkersWorkScheduleUpdateDTO {
 
     WeekDay weekDay;
 
-    Room room;
+    String cabinetName;
 
     LocalTime startTime;
 

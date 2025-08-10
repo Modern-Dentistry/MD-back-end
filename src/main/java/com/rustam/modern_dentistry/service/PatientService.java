@@ -1,6 +1,8 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
+import com.rustam.modern_dentistry.dao.entity.settings.PriceCategory;
+import com.rustam.modern_dentistry.dao.entity.settings.SpecializationCategory;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.repository.PatientRepository;
@@ -13,6 +15,8 @@ import com.rustam.modern_dentistry.dto.response.read.PatientReadResponse;
 import com.rustam.modern_dentistry.dto.response.update.PatientUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.mapper.PatientMapper;
+import com.rustam.modern_dentistry.service.settings.PriceCategoryService;
+import com.rustam.modern_dentistry.service.settings.SpecializationCategoryService;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.UserSpecification;
@@ -43,6 +47,8 @@ public class PatientService {
     PatientMapper patientMapper;
     ModelMapper modelMapper;
     DoctorService doctorService;
+    PriceCategoryService priceCategoryService;
+    SpecializationCategoryService specializationCategoryService;
 
     public PatientCreateResponse create(PatientCreateRequest patientCreateRequest) {
         if (existsByEmailAndFinCode(patientCreateRequest.getEmail(), patientCreateRequest.getFinCode())) {
@@ -64,8 +70,8 @@ public class PatientService {
                 .workAddress(patientCreateRequest.getWorkAddress())
                 .homeAddress(patientCreateRequest.getHomeAddress())
                 .genderStatus(patientCreateRequest.getGenderStatus())
-                .priceCategoryStatus(patientCreateRequest.getPriceCategoryStatus())
-                .specializationStatus(patientCreateRequest.getSpecializationStatus())
+                .priceCategory(priceCategoryService.findByName(patientCreateRequest.getPriceCategoryName()))
+                .specializationCategory(specializationCategoryService.findByName(patientCreateRequest.getSpecializationName()))
                 .registration_date(LocalDate.now())
                 .build();
         patientRepository.save(patient);
@@ -88,8 +94,10 @@ public class PatientService {
         utilService.updateFieldIfPresent(request.getFinCode(), patient::setFinCode);
         utilService.updateFieldIfPresent(request.getGenderStatus(), patient::setGenderStatus);
         utilService.updateFieldIfPresent(request.getDateOfBirth(), patient::setDateOfBirth);
-        utilService.updateFieldIfPresent(request.getPriceCategoryStatus(), patient::setPriceCategoryStatus);
-        utilService.updateFieldIfPresent(request.getSpecializationStatus(), patient::setSpecializationStatus);
+        PriceCategory priceCategory = priceCategoryService.findByName(request.getPriceCategoryName());
+        SpecializationCategory specializationCategory = specializationCategoryService.findByName(request.getSpecializationName());
+        utilService.updateFieldIfPresent(priceCategory, patient::setPriceCategory);
+        utilService.updateFieldIfPresent(specializationCategory, patient::setSpecializationCategory);
 
         if (request.getDoctor_id() != null) {
             Doctor doctor = doctorService.findById(request.getDoctor_id());

@@ -18,7 +18,7 @@ public class WarehouseReceiptsResponse {
     Long id;
     LocalDate date;
     LocalTime time;
-    Room room;
+    String cabinetName;
     String personWhoPlacedOrder;
     Long orderQuantity;
     Long sendQuantity;

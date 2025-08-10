@@ -11,12 +11,14 @@ import com.rustam.modern_dentistry.dto.response.OrderProductStockProjection;
 import com.rustam.modern_dentistry.dto.response.read.*;
 import com.rustam.modern_dentistry.exception.custom.ProductDoesnotQuantityThatMuchException;
 import com.rustam.modern_dentistry.mapper.warehouse_operations.OrderFromWarehouseMapper;
+import com.rustam.modern_dentistry.service.settings.CabinetService;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.warehouse_operations.OrderFromWarehouseSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@Slf4j
 public class OrderFromWarehouseService {
 
     OrderFromWarehouseRepository orderFromWarehouseRepository;
@@ -33,6 +36,7 @@ public class OrderFromWarehouseService {
     WarehouseEntryProductService warehouseEntryProductService;
     OrderFromWarehouseMapper orderFromWarehouseMapper;
     WarehouseRemovalService warehouseRemovalService;
+    CabinetService cabinetService;
 
     public OrderFromWarehouse findById(Long id) {
         return utilService.findByOrderFromWarehouseId(id);
@@ -45,7 +49,7 @@ public class OrderFromWarehouseService {
                 .date(request.getDate())
                 .time(request.getTime())
                 .description(request.getDescription())
-                .room(request.getRoom())
+                .cabinet(cabinetService.findByCabinetName(request.getCabinetName()))
                 .personWhoPlacedOrder(personWhoPlacedOrder)
                 .build();
 
@@ -54,7 +58,7 @@ public class OrderFromWarehouseService {
         orderFromWarehouse.setOrderFromWarehouseProducts(orderFromWarehouseProducts);
         orderFromWarehouse.setSumQuantity(calculateSumQuantity(orderFromWarehouseProducts));
         orderFromWarehouseRepository.save(orderFromWarehouse);
-        buildWarehouseExit(orderFromWarehouse); //burda anbardan mexarice elave edirik
+        buildWarehouseExit(orderFromWarehouse);
         return buildWarehouseEntryResponse(orderFromWarehouse, orderFromWarehouseProducts);
     }
 
@@ -74,7 +78,7 @@ public class OrderFromWarehouseService {
                 .time(orderFromWarehouse.getTime())
                 .description(orderFromWarehouse.getDescription())
                 .orderFromWarehouseProductResponses(productResponses)
-                .room(orderFromWarehouse.getRoom())
+                .cabinetName(orderFromWarehouse.getCabinet().getCabinetName())
                 .personWhoPlacedOrder(orderFromWarehouse.getPersonWhoPlacedOrder())
                 .number(orderFromWarehouse.getNumber())
                 .quantity(orderFromWarehouse.getSumQuantity())
@@ -112,7 +116,7 @@ public class OrderFromWarehouseService {
         WarehouseRemoval warehouseRemoval = WarehouseRemoval.builder()
                 .date(orderFromWarehouse.getDate())
                 .time(orderFromWarehouse.getTime())
-                .room(orderFromWarehouse.getRoom())
+                .cabinet(orderFromWarehouse.getCabinet())
                 .personWhoPlacedOrder(orderFromWarehouse.getPersonWhoPlacedOrder())
                 .orderFromWarehouse(orderFromWarehouse)
                 .number(orderFromWarehouse.getNumber())
@@ -124,9 +128,30 @@ public class OrderFromWarehouseService {
     }
 
     public List<OrderFromWarehouseReadResponse> read() {
-        List<OrderFromWarehouse> entries = orderFromWarehouseRepository.findAll();
-        return orderFromWarehouseMapper.toDtos(entries);
+        List<OrderFromWarehouse> entries = orderFromWarehouseRepository.findAllWithCabinets();
+        return toDtos(entries);
     }
+
+    public List<OrderFromWarehouseReadResponse> toDtos(List<OrderFromWarehouse> entries) {
+        return entries.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public OrderFromWarehouseReadResponse toDto(OrderFromWarehouse entry) {
+        return OrderFromWarehouseReadResponse.builder()
+                .id(entry.getId())
+                .date(entry.getDate())
+                .time(entry.getTime())
+                .cabinetName(entry.getCabinet() != null ? entry.getCabinet().getCabinetName() : null)
+                .description(entry.getDescription())
+                .personWhoPlacedOrder(entry.getPersonWhoPlacedOrder())
+                .number(entry.getNumber())
+                .sumQuantity(entry.getSumQuantity())
+                .build();
+    }
+
+
 
     @Transactional
     public OrderFromWarehouseResponse info(Long id) {
@@ -151,7 +176,7 @@ public class OrderFromWarehouseService {
         utilService.updateFieldIfPresent(orderFromWarehouseUpdateRequest.getDate(), orderFromWarehouse::setDate);
         utilService.updateFieldIfPresent(orderFromWarehouseUpdateRequest.getTime(), orderFromWarehouse::setTime);
         utilService.updateFieldIfPresent(orderFromWarehouseUpdateRequest.getDescription(), orderFromWarehouse::setDescription);
-        utilService.updateFieldIfPresent(orderFromWarehouseUpdateRequest.getRoom(), orderFromWarehouse::setRoom);
+        utilService.updateFieldIfPresent(cabinetService.findByCabinetName(orderFromWarehouseUpdateRequest.getCabinetName()), orderFromWarehouse::setCabinet);
         if (hasProducts(orderFromWarehouseUpdateRequest)){
             List<OrderFromWarehouseProduct> entryProducts = buildWarehouseEntryUpdateProducts(orderFromWarehouseUpdateRequest, orderFromWarehouse);
             orderFromWarehouse.getOrderFromWarehouseProducts().clear();
@@ -170,7 +195,7 @@ public class OrderFromWarehouseService {
         warehouseRemoval.setRemainingAmount(orderFromWarehouse.getSumQuantity());
         warehouseRemoval.setDate(orderFromWarehouse.getDate());
         warehouseRemoval.setTime(orderFromWarehouse.getTime());
-        warehouseRemoval.setRoom(orderFromWarehouse.getRoom());
+        warehouseRemoval.setCabinet(orderFromWarehouse.getCabinet());
         warehouseRemoval.setSendAmount(0L);
         warehouseRemoval.setOrderFromWarehouse(orderFromWarehouse);
         warehouseRemoval.setNumber(orderFromWarehouse.getOrderFromWarehouseProducts().size());
@@ -281,7 +306,7 @@ public class OrderFromWarehouseService {
     @Transactional
     public List<RoomStockResponse> search(RoomStockRequest request){
         List<OrderProductStockProjection> products = orderFromWarehouseRepository.searchOrderRoomStockProducts(
-                request.getRoomName().name(),request.getCategoryName(),
+                request.getCabinetName(),request.getCategoryName(),
                 request.getProductName(),request.getProductNo()
         );
 

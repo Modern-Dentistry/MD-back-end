@@ -25,7 +25,7 @@ public class WarehouseRemovalReadResponse {
 
     LocalTime time;
 
-    Room room;
+    String cabinetName;
 
     String personWhoPlacedOrder;
 

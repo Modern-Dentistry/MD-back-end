@@ -5,7 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PriceCategoryRepository extends JpaRepository<PriceCategory, Long>, JpaSpecificationExecutor<PriceCategory> {
     List<PriceCategory> findByIdIn(List<Long> ids);
+
+    Optional<PriceCategory> findByName(String priceCategoryName);
 }

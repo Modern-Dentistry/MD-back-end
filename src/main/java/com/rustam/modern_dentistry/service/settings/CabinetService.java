@@ -14,6 +14,7 @@ import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.CabinetMapper;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.settings.CabinetSpecification;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -84,5 +85,14 @@ public class CabinetService {
     public void delete(Long id) {
         Cabinet cabinet = findById(id);
         cabinetRepository.delete(cabinet);
+    }
+
+    public Cabinet findByCabinetName(@NotNull String cabinetName) {
+        return cabinetRepository.findByCabinetName(cabinetName)
+                .orElseThrow(() -> new NotFoundException("bele bir otaq tapilmadi"));
+    }
+
+    public List<Cabinet> findAllByCabinetName() {
+        return cabinetRepository.findAll();
     }
 }

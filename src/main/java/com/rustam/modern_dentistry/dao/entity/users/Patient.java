@@ -10,6 +10,8 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientRecipe;
+import com.rustam.modern_dentistry.dao.entity.settings.PriceCategory;
+import com.rustam.modern_dentistry.dao.entity.settings.SpecializationCategory;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -45,10 +47,12 @@ public class Patient {
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     Doctor doctor;
-    @Column(name = "price_category_status")
-    String priceCategoryStatus;
-    @Column(name = "specialication_status")
-    SpecializationStatus specializationStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "price_category_id")
+    PriceCategory priceCategory;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "specialization_category_id")
+    SpecializationCategory specializationCategory;
     String phone;
     String email;
     Boolean enabled;

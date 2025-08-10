@@ -22,8 +22,8 @@ public class PatientReadResponse {
     String finCode;
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
-    String priceCategoryStatus;
-    SpecializationStatus specializationStatus;
+    String priceCategoryName;
+    String specializationCategoryName;
     String doctorId;
     String phone;
     String workPhone;

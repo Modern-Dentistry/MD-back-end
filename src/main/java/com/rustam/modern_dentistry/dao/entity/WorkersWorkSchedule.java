@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.dao.entity;
 
 import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
+import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
 import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,8 +30,9 @@ public class WorkersWorkSchedule {
     @JoinColumn(name = "worker_id", nullable = false)
     BaseUser worker;
 
-    @Enumerated(EnumType.STRING)
-    Room room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cabinet_id")
+    Cabinet cabinet;
 
     LocalTime startTime;
 

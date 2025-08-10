@@ -33,15 +33,17 @@ public interface OrderFromWarehouseRepository extends JpaRepository<OrderFromWar
         JOIN 
             warehouse_entry_product we ON we.product_id = p.id
         WHERE 
-            (:roomName IS NULL OR ofw.room = :roomName)
+            (:cabinetName IS NULL OR ofw.cabinet.cabinet_name = :cabinetName)
             AND (:categoryName IS NULL OR LOWER(c.category_name) LIKE LOWER(CONCAT('%', :categoryName, '%')))
             AND (:productName IS NULL OR LOWER(p.product_name) LIKE LOWER(CONCAT('%', :productName, '%')))
             AND (:productNo IS NULL OR p.product_no = :productNo)
     """, nativeQuery = true)
-    List<OrderProductStockProjection> searchOrderRoomStockProducts(@Param("roomName") String roomName,
+    List<OrderProductStockProjection> searchOrderRoomStockProducts(@Param("cabinetName") String cabinetName,
                                                                    @Param("categoryName") String categoryName,
                                                                    @Param("productName") String productName,
                                                                    @Param("productNo") Long productNo);
-}
+
+    @Query("SELECT DISTINCT o FROM OrderFromWarehouse o LEFT JOIN FETCH o.cabinet")
+    List<OrderFromWarehouse> findAllWithCabinets();}
 
 
