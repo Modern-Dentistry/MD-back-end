@@ -21,7 +21,7 @@ public class OrderFromWarehouseResponse {
 
     LocalTime time;
 
-    Room room;
+    String cabinetName;
 
     List<OrderFromWarehouseProductResponse> orderFromWarehouseProductResponses;
 
