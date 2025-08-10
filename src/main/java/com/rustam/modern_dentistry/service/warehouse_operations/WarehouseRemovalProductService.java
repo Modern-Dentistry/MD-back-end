@@ -155,7 +155,7 @@ public class WarehouseRemovalProductService {
         return WarehouseReceipts.builder()
                 .date(warehouseRemoval.getDate())
                 .time(warehouseRemoval.getTime())
-                .room(warehouseRemoval.getRoom())
+                .cabinet(warehouseRemoval.getCabinet())
                 .personWhoPlacedOrder(warehouseRemoval.getPersonWhoPlacedOrder())
                 .orderQuantity(warehouseRemoval.getOrderAmount())
                 .sendQuantity(totalSendQuantity)
@@ -262,9 +262,10 @@ public class WarehouseRemovalProductService {
 
     private WarehouseRemovalProductReadResponse mapToReadResponse(WarehouseRemovalProduct warehouseRemovalProduct) {
         return WarehouseRemovalProductReadResponse.builder()
+                .warehouseRemovalId(warehouseRemovalProduct.getWarehouseRemoval().getId())
                 .date(warehouseRemovalProduct.getDate())
                 .time(warehouseRemovalProduct.getTime())
-                .Id(warehouseRemovalProduct.getId())
+                .id(warehouseRemovalProduct.getId())
                 .pendingStatus(warehouseRemovalProduct.getPendingStatus())
                 .number(warehouseRemovalProduct.getNumber())
                 .build();
