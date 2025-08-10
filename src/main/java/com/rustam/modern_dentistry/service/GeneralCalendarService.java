@@ -4,6 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
 import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dao.entity.settings.AppointmentType;
+import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
 import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.repository.GeneralCalendarRepository;
@@ -16,7 +17,9 @@ import com.rustam.modern_dentistry.exception.custom.DoctorIsPatientsWereNotFound
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NoSuchPatientWasFound;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.mapper.GeneralCalendarMapper;
 import com.rustam.modern_dentistry.service.settings.AppointmentTypeService;
+import com.rustam.modern_dentistry.service.settings.CabinetService;
 import com.rustam.modern_dentistry.util.UtilService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -39,7 +42,9 @@ public class GeneralCalendarService {
     DoctorService doctorService;
     UtilService utilService;
     AppointmentTypeService appointmentTypeService;
+    CabinetService cabinetService;
     PatientService patientService;
+    GeneralCalendarMapper generalCalendarMapper;
 
     public List<GeneralCalendarResponse> readDoctors() {
         List<Doctor> doctors = doctorService.readAll();
@@ -57,6 +62,7 @@ public class GeneralCalendarService {
     public NewAppointmentResponse newAppointment(NewAppointmentRequest newAppointmentRequest) {
         Patient patient = utilService.findByPatientId(newAppointmentRequest.getPatientId());
         boolean existsByPatientId = generalCalendarRepository.existsActivePatientById(patient.getId());
+        Cabinet cabinet = cabinetService.findByCabinetName(newAppointmentRequest.getCabinetName());
         if (!existsByPatientId) {
             throw new ExistsException("Bu patient artiq randevu goturub");
         }
@@ -70,7 +76,7 @@ public class GeneralCalendarService {
                 .doctor(patient.getDoctor())
                 .patient(patient)
                 .appointment(newAppointmentRequest.getAppointment())
-                .cabinet(newAppointmentRequest.getCabinet())
+                .cabinet(cabinet)
                 .date(newAppointmentRequest.getDate())
                 .time(newAppointmentRequest.getTime())
                 .appointmentTypes(appointmentTypes)
@@ -132,28 +138,18 @@ public class GeneralCalendarService {
     public NewAppointmentResponse update(UpdateAppointmentRequest updateAppointmentRequest) {
         GeneralCalendar generalCalendar = findById(updateAppointmentRequest.getId());
         if (updateAppointmentRequest.getDoctorId() != null) {
-            Doctor doctor = doctorService.findById(updateAppointmentRequest.getDoctorId());
-            generalCalendar.setDoctor(doctor);
+            generalCalendar.setDoctor(doctorService.findById(updateAppointmentRequest.getDoctorId()));
         }
         if (updateAppointmentRequest.getPatientId() != null) {
-            Patient patient = utilService.findByPatientId(updateAppointmentRequest.getPatientId());
-            generalCalendar.setPatient(patient);
+            generalCalendar.setPatient(utilService.findByPatientId(updateAppointmentRequest.getPatientId()));
         }
-        if (updateAppointmentRequest.getCabinet() != null) {
-            generalCalendar.setCabinet(updateAppointmentRequest.getCabinet());
+        if (updateAppointmentRequest.getCabinetName() != null) {
+            generalCalendar.setCabinet(cabinetService.findByCabinetName(updateAppointmentRequest.getCabinetName()));
         }
-        if (updateAppointmentRequest.getAppointment() != null) {
-            generalCalendar.setAppointment(updateAppointmentRequest.getAppointment());
-        }
-        if (updateAppointmentRequest.getDate() != null) {
-            generalCalendar.setDate(updateAppointmentRequest.getDate());
-        }
-        if (updateAppointmentRequest.getTime() != null) {
-            generalCalendar.setTime(updateAppointmentRequest.getTime());
-        }
-        if (updateAppointmentRequest.getPeriod() != null) {
-            generalCalendar.setPeriod(updateAppointmentRequest.getPeriod());
-        }
+        utilService.updateFieldIfPresent(updateAppointmentRequest.getAppointment(), generalCalendar::setAppointment);
+        utilService.updateFieldIfPresent(updateAppointmentRequest.getDate(), generalCalendar::setDate);
+        utilService.updateFieldIfPresent(updateAppointmentRequest.getTime(), generalCalendar::setTime);
+        utilService.updateFieldIfPresent(updateAppointmentRequest.getPeriod(), generalCalendar::setPeriod);
         generalCalendarRepository.save(generalCalendar);
 
         return NewAppointmentResponse.builder()
@@ -178,8 +174,9 @@ public class GeneralCalendarService {
     }
 
     public List<ReadRooms> read() {
-        return Arrays.stream(Room.values())
-                .map(role -> new ReadRooms(role.name()))
-                .collect(Collectors.toList());
-    }
+        List<Cabinet> cabinets = cabinetService.findAllByCabinetName();
+        return generalCalendarMapper.toCabinetDto(cabinets.stream()
+            .filter(cabinet -> cabinet.getCabinetName() != null)
+            .collect(Collectors.toList()));
+}
 }
