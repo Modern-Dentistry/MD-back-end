@@ -22,7 +22,7 @@ public class WorkersWorkScheduleRequest {
     WeekDay weekDay;
 
     @NotNull
-    Room room;
+    String cabinetName;
 
     @NotBlank
     String userId;
