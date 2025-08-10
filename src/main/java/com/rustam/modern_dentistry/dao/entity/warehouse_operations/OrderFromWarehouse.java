@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.dao.entity.warehouse_operations;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
+import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -29,8 +30,9 @@ public class OrderFromWarehouse {
 
     LocalTime time;
 
-    @Enumerated(EnumType.STRING)
-    Room room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cabinet_id")
+    Cabinet cabinet;
 
     @OneToMany(mappedBy = "orderFromWarehouse", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
