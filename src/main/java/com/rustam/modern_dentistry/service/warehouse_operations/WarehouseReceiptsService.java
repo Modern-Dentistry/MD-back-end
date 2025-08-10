@@ -85,7 +85,8 @@ public class WarehouseReceiptsService {
                 .id(warehouseReceipts.getId())
                 .orderQuantity(warehouseReceipts.getOrderQuantity())
                 .date(warehouseReceipts.getDate())
-                .room(warehouseReceipts.getRoom())
+                .cabinetName(warehouseReceipts.getCabinet() != null ?
+                        warehouseReceipts.getCabinet().getCabinetName() : null)
                 .time(warehouseReceipts.getTime())
                 .personWhoPlacedOrder(warehouseReceipts.getPersonWhoPlacedOrder())
                 .incomingQuantity(warehouseReceipts.getSendQuantity())
