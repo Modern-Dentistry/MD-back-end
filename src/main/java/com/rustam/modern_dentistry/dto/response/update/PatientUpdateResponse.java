@@ -20,8 +20,8 @@ public class PatientUpdateResponse {
     String finCode;
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
-    String priceCategoryStatus;
-    SpecializationStatus specializationStatus;
+    String priceCategoryName;
+    String specializationCategoryName;
     String phone;
     String workPhone;
     String homePhone;
