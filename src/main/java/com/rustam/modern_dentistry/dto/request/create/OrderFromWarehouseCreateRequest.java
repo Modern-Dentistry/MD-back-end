@@ -24,7 +24,7 @@ public class OrderFromWarehouseCreateRequest {
     LocalTime time;
 
     @NotNull
-    Room room;
+    String cabinetName;
 
     List<OrderFromWarehouseProductRequest> orderFromWarehouseProductRequests;
 
