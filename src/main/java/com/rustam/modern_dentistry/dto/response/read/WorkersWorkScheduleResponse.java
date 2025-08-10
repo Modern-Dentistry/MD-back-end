@@ -22,7 +22,7 @@ public class WorkersWorkScheduleResponse {
 
     WeekDay weekDay;
 
-    Room room;
+    String cabinetName;
 
     UUID userId;
 
