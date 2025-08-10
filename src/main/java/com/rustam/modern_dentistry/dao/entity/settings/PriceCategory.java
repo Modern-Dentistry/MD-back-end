@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.dao.entity.settings;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemPrice;
+import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
@@ -30,6 +31,9 @@ public class PriceCategory {
 
     @Enumerated(STRING)
     Status status;
+
+    @OneToMany(mappedBy = "priceCategory",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Patient> patients;
 
     @OneToMany(mappedBy = "priceCategory")
     private List<OpTypeItemPrice> opTypeItemPrices;
