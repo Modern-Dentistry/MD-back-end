@@ -18,7 +18,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewAppointmentRequest {
     @NotNull
-    Cabinet cabinet;
+    String cabinetName;
     @NotNull(message = "patient bos ola bilmez")
     Long patientId;
 
