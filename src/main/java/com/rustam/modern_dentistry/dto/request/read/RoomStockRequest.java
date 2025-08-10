@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoomStockRequest {
 
-    Room roomName;
+    String cabinetName;
     String categoryName;
     String productName;
     Long productNo;
