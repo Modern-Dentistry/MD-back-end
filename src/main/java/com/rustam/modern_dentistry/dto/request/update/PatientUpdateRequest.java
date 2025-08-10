@@ -21,8 +21,8 @@ public class PatientUpdateRequest {
     String finCode;
     GenderStatus genderStatus;
     LocalDate dateOfBirth;
-    String priceCategoryStatus;
-    SpecializationStatus specializationStatus;
+    String priceCategoryName;
+    String specializationName;
     UUID doctor_id;
     String phone;
     String workPhone;
