@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dto.response.read;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
+import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -21,7 +22,7 @@ public class OrderFromWarehouseReadResponse {
 
     LocalTime time;
 
-    Room room;
+    String cabinetName;
 
     String description;
 
