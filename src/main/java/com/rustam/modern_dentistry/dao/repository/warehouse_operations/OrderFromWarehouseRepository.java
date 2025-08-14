@@ -15,33 +15,36 @@ public interface OrderFromWarehouseRepository extends JpaRepository<OrderFromWar
 
     // used quantity gelmelidir mehsul istifadesi ekranindan ve remainin quantity-dide ona gore formalasir
     @Query(value = """
-        SELECT 
+        SELECT
             c.category_name AS categoryName,
             p.product_name AS productName,
             p.product_no AS productCode,
             ofwp.quantity AS entryQuantity,
-            we.used_quantity AS usedQuantity, 
+            we.used_quantity AS usedQuantity,
             (we.quantity - we.used_quantity) AS remainingQuantity
-        FROM 
+        FROM
             order_from_warehouse ofw
-        JOIN 
+        JOIN
+            cabinets cb ON cb.id = ofw.cabinet_id
+        JOIN
             order_from_warehouse_product ofwp ON ofw.id = ofwp.order_from_warehouse_id
-        JOIN 
+        JOIN
             product p ON p.id = ofwp.product_id
-        JOIN 
+        JOIN
             category c ON c.id = p.category_id
-        JOIN 
+        JOIN
             warehouse_entry_product we ON we.product_id = p.id
-        WHERE 
-            (:cabinetName IS NULL OR ofw.cabinet.cabinet_name = :cabinetName)
+        WHERE
+            (:cabinetName IS NULL OR cb.cabinet_name = :cabinetName)
             AND (:categoryName IS NULL OR LOWER(c.category_name) LIKE LOWER(CONCAT('%', :categoryName, '%')))
             AND (:productName IS NULL OR LOWER(p.product_name) LIKE LOWER(CONCAT('%', :productName, '%')))
             AND (:productNo IS NULL OR p.product_no = :productNo)
     """, nativeQuery = true)
-    List<OrderProductStockProjection> searchOrderRoomStockProducts(@Param("cabinetName") String cabinetName,
-                                                                   @Param("categoryName") String categoryName,
-                                                                   @Param("productName") String productName,
-                                                                   @Param("productNo") Long productNo);
+    List<OrderProductStockProjection> searchOrderRoomStockProducts(
+            @Param("cabinetName") String cabinetName,
+            @Param("categoryName") String categoryName,
+            @Param("productName") String productName,
+            @Param("productNo") Long productNo);
 
     @Query("SELECT DISTINCT o FROM OrderFromWarehouse o LEFT JOIN FETCH o.cabinet")
     List<OrderFromWarehouse> findAllWithCabinets();}
