@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 37
+      author: rustam
+      changes:
+        - createTable:
+            tableName: op_types
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: category_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color_selection
+                  type: BOOLEAN
+              - column:
+                  name: implant_selection
+                  type: BOOLEAN
+              - column:
+                  name: status
+                  type: VARCHAR(50)

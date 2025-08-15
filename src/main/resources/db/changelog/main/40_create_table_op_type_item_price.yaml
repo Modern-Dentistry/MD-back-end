@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 40
+      author: rustam
+      changes:
+        - createTable:
+            tableName: op_type_item_prices
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_price_category
+                    references: price_categories(id)
+              - column:
+                  name: op_type_item_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_op_type_item
+                    references: op_type_items(id)

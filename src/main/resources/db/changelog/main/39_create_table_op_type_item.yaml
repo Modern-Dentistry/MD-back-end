@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-op-type-items-table
+      author: rustam
+      changes:
+        - createTable:
+            tableName: op_type_items
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: operation_name
+                  type: VARCHAR(255)
+              - column:
+                  name: operation_code
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+              - column:
+                  name: show_technic
+                  type: BOOLEAN
+              - column:
+                  name: op_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_op_type_item_op_type
+                    references: op_types(id)

@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 34
+      author: rustam
+      changes:
+        - createTable:
+            tableName: garnitures
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  defaultValue: ACTIVE

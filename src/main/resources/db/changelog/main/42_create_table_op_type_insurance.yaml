@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 42
+      author: rustam
+      changes:
+        - createTable:
+            tableName: op_type_insurances
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: deductible_percentage
+                  type: DECIMAL(19,2)
+              - column:
+                  name: op_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_op_type_insurance_op_type
+                    references: op_types(id)
+              - column:
+                  name: insurance_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_op_type_insurance_insurance_company
+                    references: insurance_companies(id)

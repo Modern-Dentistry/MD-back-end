@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 38
+      author: rustam
+      changes:
+        - createTable:
+            tableName: insurance_companies
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deductible_amount
+                  type: DECIMAL(19,2)
+              - column:
+                  name: status
+                  type: VARCHAR(50)
