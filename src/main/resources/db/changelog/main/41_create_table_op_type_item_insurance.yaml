@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 41
+      author: rustam
+      changes:
+        - createTable:
+            tableName: op_type_item_insurances
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: amount
+                  type: DECIMAL(19,2)
+              - column:
+                  name: op_type_item_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_op_type_item_insurance_op_type_item
+                    references: op_type_items(id)
+              - column:
+                  name: insurance_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_op_type_item_insurance_insurance_company
+                    references: insurance_companies(id)
