@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 43
+      author: rustam
+      changes:
+        - createTable:
+            tableName: examinations
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: type_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
