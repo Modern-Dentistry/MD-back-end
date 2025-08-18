@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 09
-      author: rustem_huseynov
+      author: rustam
       changes:
         - createTable:
             tableName: patients
@@ -24,29 +24,27 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: fin_code
-                  type: VARCHAR(255)
+                  type: VARCHAR(50)
                   constraints:
                     unique: true
               - column:
                   name: gender_status
-                  type: VARCHAR(255)
+                  type: VARCHAR(50)
               - column:
                   name: date_of_birth
                   type: DATE
               - column:
                   name: doctor_id
                   type: UUID
-                  constraints:
-                    nullable: true
               - column:
-                  name: price_category_status
-                  type: VARCHAR(255)
+                  name: price_category_id
+                  type: BIGINT
               - column:
-                  name: specialication_status
-                  type: VARCHAR(255)
+                  name: specialization_category_id
+                  type: BIGINT
               - column:
                   name: phone
-                  type: VARCHAR(255)
+                  type: VARCHAR(50)
               - column:
                   name: email
                   type: VARCHAR(255)
@@ -55,10 +53,10 @@ databaseChangeLog:
                   type: BOOLEAN
               - column:
                   name: work_phone
-                  type: VARCHAR(255)
+                  type: VARCHAR(50)
               - column:
                   name: home_phone
-                  type: VARCHAR(255)
+                  type: VARCHAR(50)
               - column:
                   name: home_address
                   type: VARCHAR(255)
@@ -68,9 +66,6 @@ databaseChangeLog:
               - column:
                   name: registration_date
                   type: DATE
-              - column:
-                  name: role
-                  type: VARCHAR(255)
 
         - addForeignKeyConstraint:
             baseTableName: patients
@@ -78,4 +73,17 @@ databaseChangeLog:
             referencedTableName: doctors
             referencedColumnNames: doctor_id
             constraintName: fk_patients_doctor
-            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            baseTableName: patients
+            baseColumnNames: price_category_id
+            referencedTableName: price_categories
+            referencedColumnNames: id
+            constraintName: fk_patients_price_category
+
+        - addForeignKeyConstraint:
+            baseTableName: patients
+            baseColumnNames: specialization_category_id
+            referencedTableName: specialization_categories
+            referencedColumnNames: id
+            constraintName: fk_patients_specialization_category
