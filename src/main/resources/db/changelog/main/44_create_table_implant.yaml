@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 44
+      author: rustam
+      changes:
+        - createTable:
+            tableName: implant
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: implant_brand_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false

@@ -13,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ImplantSizeResponse {
 
-    Long id;
     Double diameter;
 
     Double length;
