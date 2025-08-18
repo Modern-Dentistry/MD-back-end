@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+        id: 45
+        author: rustam
+        changes:
+          - createTable:
+              tableName: implant_sizes
+              columns:
+                - column:
+                    name: id
+                    type: BIGINT
+                    autoIncrement: true
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+                - column:
+                    name: implant_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+                - column:
+                    name: diameter
+                    type: DOUBLE PRECISION
+                - column:
+                    name: length
+                    type: DOUBLE PRECISION
+                - column:
+                    name: status
+                    type: VARCHAR(50)
+          - addForeignKeyConstraint:
+              constraintName: fk_implant_sizes_implant
+              baseTableName: implant_sizes
+              baseColumnNames: implant_id
+              referencedTableName: implant
+              referencedColumnNames: id
+              onDelete: CASCADE
