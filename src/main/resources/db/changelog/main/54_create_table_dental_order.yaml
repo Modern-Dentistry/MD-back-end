@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 54
+      author: rustam
+      changes:
+        - createTable:
+            tableName: dental_order
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: check_date
+                  type: DATE
+              - column:
+                  name: delivery_date
+                  type: DATE
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: DECIMAL(10,2)
+              # Embedded fields
+              - column:
+                  name: color
+                  type: VARCHAR(100)
+              - column:
+                  name: garniture
+                  type: VARCHAR(100)
+              # Enums
+              - column:
+                  name: dental_work_type
+                  type: VARCHAR(50)
+              - column:
+                  name: dental_work_status
+                  type: VARCHAR(50)
+              # FKs
+              - column:
+                  name: doctor_id
+                  type: UUID
+              - column:
+                  name: technician_id
+                  type: UUID
+              - column:
+                  name: patient_id
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: dental_order
+            baseColumnNames: doctor_id
+            referencedTableName: doctors
+            referencedColumnNames: doctor_id
+            constraintName: fk_dental_order_doctor
+
+        - addForeignKeyConstraint:
+            baseTableName: dental_order
+            baseColumnNames: technician_id
+            referencedTableName: technician
+            referencedColumnNames: technician_id
+            constraintName: fk_dental_order_technician
+
+        - addForeignKeyConstraint:
+            baseTableName: dental_order
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            constraintName: fk_dental_order_patient

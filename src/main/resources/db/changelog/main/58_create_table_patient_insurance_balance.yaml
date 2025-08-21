@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 58
+      author: rustam
+      changes:
+        - createTable:
+            tableName: patient_insurance_balance
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: date
+                  type: DATE
+              - column:
+                  name: amount
+                  type: DECIMAL(19,2)
+              - column:
+                  name: file_name
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+              - column:
+                  name: patient_insurance_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: patient_insurance_balance
+            baseColumnNames: patient_insurance_id
+            referencedTableName: patient_insurance
+            referencedColumnNames: id
+            constraintName: fk_patient_insurance_balance_patient_insurance

@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 59
+      author: rustam
+      changes:
+        - createTable:
+            tableName: dental_order_payment
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: payment_date
+                  type: DATE
+              - column:
+                  name: amount
+                  type: NUMERIC(19,2)
+              - column:
+                  name: technician_id
+                  type: UUID
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_dental_order_payment_technician
+                    references: technician(technician_id)

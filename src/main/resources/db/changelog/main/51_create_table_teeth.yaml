@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 51
+      author: rustam
+      changes:
+        - createTable:
+            tableName: teeth
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tooth_no
+                  type: BIGINT
+              - column:
+                  name: tooth_type
+                  type: VARCHAR(50)
+              - column:
+                  name: tooth_location
+                  type: VARCHAR(50)
