@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: 55
+      author: rustam
+      changes:
+        - createTable:
+            tableName: dental_order_tooth_detail
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: color_id
+                  type: BIGINT
+              - column:
+                  name: metal_id
+                  type: BIGINT
+              - column:
+                  name: ceramic_id
+                  type: BIGINT
+              - column:
+                  name: dental_order_id
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            constraintName: fk_dental_order_tooth_detail_color
+            baseTableName: dental_order_tooth_detail
+            baseColumnNames: color_id
+            referencedTableName: colors
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            constraintName: fk_dental_order_tooth_detail_metal
+            baseTableName: dental_order_tooth_detail
+            baseColumnNames: metal_id
+            referencedTableName: metals
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            constraintName: fk_dental_order_tooth_detail_ceramic
+            baseTableName: dental_order_tooth_detail
+            baseColumnNames: ceramic_id
+            referencedTableName: ceramics
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            constraintName: fk_dental_order_tooth_detail_dental_order
+            baseTableName: dental_order_tooth_detail
+            baseColumnNames: dental_order_id
+            referencedTableName: dental_order
+            referencedColumnNames: id
+            onDelete: CASCADE
