@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 53
+      author: rustam
+      changes:
+        - createTable:
+            tableName: teeth_operation
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tooth_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: op_type_item_id
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            constraintName: fk_teeth_operation_teeth
+            baseTableName: teeth_operation
+            baseColumnNames: tooth_id
+            referencedTableName: teeth
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_teeth_operation_op_type_item
+            baseTableName: teeth_operation
+            baseColumnNames: op_type_item_id
+            referencedTableName: op_type_items
+            referencedColumnNames: id
+            onDelete: SET NULL
