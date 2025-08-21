@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 52
+      author: rustam
+      changes:
+        - createTable:
+            tableName: teeth_examination
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tooth_no
+                  type: BIGINT
+              - column:
+                  name: tooth_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: examination_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_teeth_examination_teeth
+            baseTableName: teeth_examination
+            baseColumnNames: tooth_id
+            referencedTableName: teeth
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_teeth_examination_examination
+            baseTableName: teeth_examination
+            baseColumnNames: examination_id
+            referencedTableName: examinations
+            referencedColumnNames: id
+            onDelete: CASCADE
