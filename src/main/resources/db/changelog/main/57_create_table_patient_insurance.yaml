@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: 57
+      author: rustam
+      changes:
+        - createTable:
+            tableName: patient_insurance
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: policy_number
+                  type: VARCHAR(255)
+
+              - column:
+                  name: expiration_date
+                  type: DATE
+
+              - column:
+                  name: deductible_amount
+                  type: DECIMAL(19,2)
+
+              - column:
+                  name: annual_max_amount
+                  type: DECIMAL(19,2)
+
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+
+              - column:
+                  name: description
+                  type: TEXT
+
+              - column:
+                  name: insurance_company_id
+                  type: BIGINT
+
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: patient_insurance
+            baseColumnNames: insurance_company_id
+            referencedTableName: insurance_companies
+            referencedColumnNames: id
+            onDelete: SET NULL
+            constraintName: fk_patient_insurance_company
+
+        - addForeignKeyConstraint:
+            baseTableName: patient_insurance
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            onDelete: CASCADE
+            constraintName: fk_patient_insurance_patient
