@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 50
+      author: rustam
+      changes:
+        - createTable:
+            tableName: metals
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
