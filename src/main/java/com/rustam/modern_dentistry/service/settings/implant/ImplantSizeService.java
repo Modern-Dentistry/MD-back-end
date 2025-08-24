@@ -32,13 +32,12 @@ public class ImplantSizeService {
     UtilService utilService;
 
     public ImplantSizeResponse create(ImplantSizeCreateRequest implantSizeCreateRequest) {
-        ImplantSizes implantSizes = ImplantSizes.builder()
+        return implantSizeMapper.toDto(implantSizeRepository.save(ImplantSizes.builder()
                 .implant(implantService.findById(implantSizeCreateRequest.getImplantSizeId()))
                 .length(implantSizeCreateRequest.getLength())
                 .diameter(implantSizeCreateRequest.getDiameter())
                 .status(Status.ACTIVE)
-                .build();
-        return implantSizeMapper.toDto(implantSizes);
+                .build()));
     }
 
     public List<ImplantSizeResponse> read() {
