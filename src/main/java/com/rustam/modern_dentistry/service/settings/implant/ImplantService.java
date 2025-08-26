@@ -9,16 +9,17 @@ import com.rustam.modern_dentistry.dto.request.update.ImplantStatusUpdateRequest
 import com.rustam.modern_dentistry.dto.request.update.ImplantUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.read.ImplantReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.ImplantResponse;
+import com.rustam.modern_dentistry.dto.response.read.ImplantSizesRead;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.settings.implant.ImplantMapper;
 import com.rustam.modern_dentistry.util.UtilService;
 import com.rustam.modern_dentistry.util.specification.settings.implant.ImplantSpecification;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,10 +50,35 @@ public class ImplantService {
         return implantRepository.existsImplantByImplantBrandName(implantBrandName);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ImplantReadResponse> read() {
         List<Implant> implants = implantRepository.findAll();
-        return implantMapper.toDtos(implants);
+        return implantToDtos(implants);
+    }
+
+    private List<ImplantReadResponse> implantToDtos(List<Implant> implants) {
+        return implants.stream()
+                   .map(this::toDto)
+                   .toList();
+}
+
+    private ImplantReadResponse toDto(Implant implant) {
+        return ImplantReadResponse.builder()
+                .id(implant.getId())
+                .implantBrandName(implant.getImplantBrandName())
+                .status(implant.getStatus())
+                .implantSizesReads(
+                        implant.getImplantSizes() != null ?
+                                implant.getImplantSizes().stream()
+                                        .map(size -> new ImplantSizesRead(
+                                                size.getId(),
+                                                size.getLength(),
+                                                size.getDiameter(),
+                                                size.getStatus()))
+                                        .toList() :
+                                null
+                )
+                .build();
     }
 
     public List<ImplantReadResponse> search(ImplantSearchRequest implantSearchRequest) {
