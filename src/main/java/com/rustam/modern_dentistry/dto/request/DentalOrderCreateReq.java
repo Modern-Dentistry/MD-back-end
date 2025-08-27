@@ -36,4 +36,7 @@ public class DentalOrderCreateReq {
     UUID technicianId;
     @NotNull(message = VALIDATION_PATIENT_ID)
     Long patientId;
+
+    List<String> files;
+
 }
