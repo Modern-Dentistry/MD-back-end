@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
-@RequestMapping("/api/v1/colorss")
+@RequestMapping("/api/v1/color")
 @RequiredArgsConstructor
 public class ColorController {
     private final ColorService colorService;
