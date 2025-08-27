@@ -25,6 +25,7 @@ import com.rustam.modern_dentistry.service.TechnicianService;
 import com.rustam.modern_dentistry.service.settings.teeth.TeethService;
 import com.rustam.modern_dentistry.util.UtilService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,8 +51,9 @@ public class DentalOrderService {
     private final CeramicRepository ceramicRepository;
 
     @Transactional
-    public void create(DentalOrderCreateReq request, List<MultipartFile> files) {
+    public void create(DentalOrderCreateReq request) {
         List<String> imagePaths = new ArrayList<>();
+        List<MultipartFile> processedFiles = new ArrayList<>();
         try {
             var entity = dentalOrderMapper.toEntity(request);
             var teeth = teethService.findAllById(request.getTeethList());
@@ -66,17 +68,33 @@ public class DentalOrderService {
             entity.setOrderDentureInfo(request.getOrderDentureInfo()); // TODO check elemeyi yaz
             entity.setToothDetails(toothDetails);
 
-            if (files != null && !files.isEmpty() && files.stream().anyMatch(file -> !file.isEmpty())) {
-                files.forEach(file -> {
-                    var newFileName = getNewFileName(file, patient);
-                    imagePaths.add(newFileName);
-                    fileService.writeFile(file, pathDentalOrder, newFileName);
-                });
+            if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+                for (String base64File : request.getFiles()) {
+                    try {
+                        // Diaqnostika (istəyə bağlı)
+                        diagnoseBase64Encoding(base64File);
+
+                        // Base64-u MultipartFile-a çevirin
+                        MultipartFile multipartFile = convertBase64ToMultipartFile(base64File);
+                        processedFiles.add(multipartFile);
+
+                        // Fayl adını yaradın
+                        var newFileName = getNewFileName(multipartFile, patient);
+                        imagePaths.add(newFileName);
+
+                        // Faylı yazın
+                        fileService.writeFile(multipartFile, pathDentalOrder, newFileName);
+                    } catch (Exception fileConversionEx) {
+                        // Hər bir fayl üçün ayrıca xəta idarəetməsi
+                        throw new CustomError("Failed to process file: " + fileConversionEx.getMessage());
+                    }
+                }
             }
+
             entity.setImagePaths(imagePaths);
             dentalOrderRepository.save(entity);
         } catch (Exception ex) {
-            // if error happens remove files
+            // Yüklənmiş faylları silin
             imagePaths.forEach(path -> {
                 var fullPath = pathDentalOrder + "/" + path;
                 fileService.deleteFile(fullPath);
@@ -84,6 +102,78 @@ public class DentalOrderService {
             throw new CustomError(ex.getMessage());
         }
     }
+
+    private void diagnoseBase64Encoding(String base64String) {
+        try {
+            System.out.println("Original Base64 String: " + base64String);
+
+            String cleanBase64 = base64String
+                    .replace("\n", "")
+                    .replace("\r", "")
+                    .replace(" ", "")
+                    .trim();
+
+            System.out.println("Cleaned Base64 String: " + cleanBase64);
+
+            if (cleanBase64.contains("base64,")) {
+                String[] parts = cleanBase64.split("base64,");
+                System.out.println("MIME Type: " + parts[0]);
+                System.out.println("Base64 Data Length: " + parts[1].length());
+            }
+
+            Base64.getDecoder().decode(cleanBase64);
+        } catch (Exception e) {
+            System.err.println("Base64 Diagnosis Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+private MultipartFile convertBase64ToMultipartFile(String base64String) {
+    try {
+        String cleanBase64 = base64String
+            .replace("\n", "")
+            .replace("\r", "")
+            .replace(" ", "")
+            .trim();
+
+        String mimeType = "application/octet-stream";
+        String base64Data = cleanBase64;
+
+        if (cleanBase64.contains("base64,")) {
+            String[] parts = cleanBase64.split("base64,");
+            if (parts.length > 1) {
+                mimeType = parts[0].replace("data:", "").replace(";", "");
+                base64Data = parts[1];
+            }
+        }
+        base64Data = base64Data.trim();
+
+        base64Data = base64Data.replaceAll("[^A-Za-z0-9+/=]", "");
+
+        byte[] fileContent = Base64.getDecoder().decode(base64Data);
+
+        String fileName = switch (mimeType) {
+            case "application/pdf" -> "document.pdf";
+            case "image/jpeg" -> "image.jpg";
+            case "image/png" -> "image.png";
+            default -> "uploaded_file";
+        };
+
+        return new MockMultipartFile(
+            "file",
+            fileName,
+            mimeType,
+            fileContent
+        );
+    } catch (IllegalArgumentException e) {
+        throw new CustomError(
+            "Invalid Base64 encoding: " + 
+            "Ensure the file is properly encoded. " + 
+            "Original error: " + e.getMessage()
+        );
+    }
+}
 
     @Transactional(readOnly = true)
     public List<TechnicianOrderResponse> read() {
