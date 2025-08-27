@@ -52,6 +52,9 @@ dependencies {
 	// Apache POI
 	implementation 'org.apache.poi:poi-ooxml:5.4.0'
 
+	// MockMultipartFile üçün əlavə edin:
+	implementation 'org.springframework:spring-test:6.0.12'
+
 	// Mapper
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
