@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.service.labarotory;
 
+import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkType;
 import com.rustam.modern_dentistry.dao.entity.laboratory.DentalOrder;
 import com.rustam.modern_dentistry.dao.entity.laboratory.DentalOrderToothDetail;
 import com.rustam.modern_dentistry.dao.entity.settings.Ceramic;
@@ -225,16 +226,17 @@ private MultipartFile convertBase64ToMultipartFile(String base64String) {
     }
 
     @Transactional
-    public void update(Long id, UpdateTechnicianOrderReq request, List<MultipartFile> newFiles) {
-        var entity = getDentalOrder(id);
+    public void update(UpdateTechnicianOrderReq request) {
+        var entity = getDentalOrder(request.getId());
 
-        List<String> originalImagePaths = new ArrayList<>(entity.getImagePaths()); // Existing images
-        List<String> tempSavedFiles = new ArrayList<>(); // Keep images temporary
+        List<String> originalImagePaths = new ArrayList<>(entity.getImagePaths()); // Mövcud şəkillər
+        List<String> tempSavedFiles = new ArrayList<>(); // Müvəqqəti saxlanılan fayllar
         var updatedImagePaths = new ArrayList<>(originalImagePaths.stream()
                 .map(url -> url.substring(url.lastIndexOf("/") + 1))
                 .toList());
+
         try {
-            // 1. Remove the images scheduled for deletion from the list, but do not actually delete them from the system yet.
+            // 1. Silinəcək faylları siyahıdan çıxarın
             if (request.getDeleteFiles() != null) {
                 var deleteFiles = request.getDeleteFiles().stream()
                         .map(url -> url.substring(url.lastIndexOf("/") + 1))
@@ -242,28 +244,34 @@ private MultipartFile convertBase64ToMultipartFile(String base64String) {
                 updatedImagePaths.removeAll(deleteFiles);
             }
 
-            // 2. Add new images
-            if (newFiles != null && !newFiles.isEmpty() && newFiles.stream().anyMatch(file -> !file.isEmpty())) {
-                for (MultipartFile file : newFiles) {
-                    String newFileName = getNewFileName(file, entity.getPatient());
-                    fileService.writeFile(file, pathDentalOrder, newFileName); // yaz diskinə
+            // 2. Yeni faylları əlavə edin (Base64 dəstəyi ilə)
+            if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+                for (String base64File : request.getFiles()) {
+                    // Base64-u MultipartFile-a çevirin
+                    MultipartFile multipartFile = convertBase64ToMultipartFile(base64File);
+
+                    String newFileName = getNewFileName(multipartFile, entity.getPatient());
+                    fileService.writeFile(multipartFile, pathDentalOrder, newFileName);
+
                     tempSavedFiles.add(newFileName);
                     updatedImagePaths.add(newFileName);
                 }
             }
 
-            // 3. Update Entity
+            // 3. Entity-ni yeniləyin
             dentalOrderMapper.updateEntity(entity, request);
             entity.setImagePaths(updatedImagePaths);
+
+            // Diş detallarını yeniləyin
             if (request.getToothDetailIds() != null) {
-
-                entity.getToothDetails().clear(); // Köhnələri sil
+                entity.getToothDetails().clear(); // Köhnələri silin
                 var newDetails = getToothDetails(request.getToothDetailIds(), entity);
-                entity.getToothDetails().addAll(newDetails); // Yeniləri əlavə et
+                entity.getToothDetails().addAll(newDetails); // Yeniləri əlavə edin
             }
-            dentalOrderRepository.save(entity); // Transaction success
 
-            // 4. Bu nöqtəyə qədər heç bir exception yoxdursa, artıq silinəcək faylları sistemdən sil
+            dentalOrderRepository.save(entity); // Tranzaksiya uğurlu
+
+            // 4. Silinəcək faylları sistemdən silin
             if (request.getDeleteFiles() != null) {
                 var deleteFiles = request.getDeleteFiles().stream()
                         .map(url -> url.substring(url.lastIndexOf("/") + 1))
@@ -272,10 +280,12 @@ private MultipartFile convertBase64ToMultipartFile(String base64String) {
             }
 
         } catch (Exception ex) {
+            // Müvəqqəti saxlanılan faylları silin
             tempSavedFiles.forEach(fileName -> fileService.deleteFile(pathDentalOrder + "/" + fileName));
             throw new CustomError(ex.getMessage());
         }
     }
+
 
     public void delete(Long id) {
         var dentalOrder = dentalOrderRepository.findByIdWithBasicRelations(id).orElseThrow(
@@ -359,5 +369,9 @@ private MultipartFile convertBase64ToMultipartFile(String base64String) {
         }
 
         return toothDetails;
+    }
+
+    public List<DentalWorkType> readByDentalWorkType() {
+        return Arrays.asList(DentalWorkType.values());
     }
 }
