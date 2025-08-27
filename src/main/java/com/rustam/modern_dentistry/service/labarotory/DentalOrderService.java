@@ -183,10 +183,15 @@ private MultipartFile convertBase64ToMultipartFile(String base64String) {
 
         // 2. Then, load toothDetails (this will enrich the same objects) and teethDetails
         // To avoid the "cannot simultaneously fetch multiple bags" error
-        if (!orders.isEmpty()) {
-            dentalOrderRepository.fetchToothDetails(orders);
-            dentalOrderRepository.fetchTeethList(orders);
-        }
+        orders.forEach(order -> {
+            if (order.getToothDetails() != null) {
+                order.getToothDetails().size(); // Lazy yükləmə üçün
+            }
+            if (order.getTeethList() != null) {
+                order.getTeethList().size(); // Lazy yükləmə üçün
+            }
+        });
+
 
         return orders.stream().map(dentalOrderMapper::toResponse).toList();
     }

@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 62
+      author: system
+      changes:
+        - createTable:
+            tableName: dental_order_teeth
+            columns:
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    references: dental_order(id)
+                    foreignKeyName: fk_dental_order_teeth_order
+              - column:
+                  name: tooth_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    references: teeth(id)
+                    foreignKeyName: fk_dental_order_teeth_tooth
+        - addPrimaryKey:
+            tableName: dental_order_teeth
+            columnNames: order_id, tooth_id
+            constraintName: pk_dental_order_teeth
