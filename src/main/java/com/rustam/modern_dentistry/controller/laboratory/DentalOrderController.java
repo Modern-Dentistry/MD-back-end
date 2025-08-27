@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.controller.laboratory;
 
+import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkType;
 import com.rustam.modern_dentistry.dto.request.DentalOrderCreateReq;
 import com.rustam.modern_dentistry.dto.request.update.UpdateLabOrderStatus;
 import com.rustam.modern_dentistry.dto.request.update.UpdateOrderPrice;
@@ -31,10 +32,14 @@ public class DentalOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     @GetMapping("/order/read")
     public ResponseEntity<List<TechnicianOrderResponse>> read() {
         return ResponseEntity.ok(dentalOrderService.read());
+    }
+
+    @GetMapping(path = "/order/read/dental-work-type")
+    public ResponseEntity<List<DentalWorkType>> readByDentalWorkType() {
+        return new ResponseEntity<>(dentalOrderService.readByDentalWorkType(),HttpStatus.OK);
     }
 
     @GetMapping("/order/read-by-id/{id}")
@@ -42,11 +47,9 @@ public class DentalOrderController {
         return ResponseEntity.ok(dentalOrderService.readById(id));
     }
 
-    @PutMapping(path = "/order/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> update(@PathVariable Long id,
-                                       @RequestPart("data") @Valid UpdateTechnicianOrderReq request,
-                                       @RequestPart(value = "newFiles", required = false) List<MultipartFile> newFiles) {
-        dentalOrderService.update(id, request, newFiles);
+    @PutMapping(path = "/order/update")
+    public ResponseEntity<Void> update(@RequestBody @Valid UpdateTechnicianOrderReq request) {
+        dentalOrderService.update(request);
         return ResponseEntity.ok().build();
     }
 
