@@ -18,6 +18,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @FieldDefaults(level = PRIVATE)
 public class UpdateTechnicianOrderReq {
+    Long id;
     LocalDate checkDate;
     LocalDate deliveryDate;
     String description;
@@ -33,6 +34,8 @@ public class UpdateTechnicianOrderReq {
     UUID doctorId;
     UUID technicianId;
     Long patientId;
+
+    List<String> files;
 
     List<String> deleteFiles;
 }
