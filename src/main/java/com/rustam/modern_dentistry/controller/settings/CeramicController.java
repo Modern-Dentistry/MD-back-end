@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
-@RequestMapping("/api/v1/metal")
+@RequestMapping("/api/v1/ceramic")
 @RequiredArgsConstructor
 public class CeramicController {
     private final CeramicService ceramicService;
