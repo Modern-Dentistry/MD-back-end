@@ -73,6 +73,8 @@ databaseChangeLog:
             referencedTableName: doctors
             referencedColumnNames: doctor_id
             constraintName: fk_patients_doctor
+            onDelete: SET NULL
+
 
         - addForeignKeyConstraint:
             baseTableName: patients
