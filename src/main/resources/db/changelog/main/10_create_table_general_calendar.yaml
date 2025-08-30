@@ -62,7 +62,7 @@ databaseChangeLog:
             referencedTableName: cabinets
             referencedColumnNames: id
             constraintName: fk_generalcalendar_cabinet
-            onDelete: CASCADE
+            onDelete: SET NULL
 
         - addForeignKeyConstraint:
             baseTableName: general_calendar
