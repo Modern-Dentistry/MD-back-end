@@ -17,6 +17,11 @@ databaseChangeLog:
                   name: tooth_no
                   type: BIGINT
               - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
                   name: tooth_id
                   type: BIGINT
                   constraints:
