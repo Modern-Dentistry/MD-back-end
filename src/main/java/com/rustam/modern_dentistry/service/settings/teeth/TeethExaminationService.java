@@ -42,6 +42,7 @@ public class TeethExaminationService {
                 .teeth(teeth)
                 .examination(examination)
                 .toothNo(teeth.getToothNo())
+                .status(teethExaminationRequest.getStatus())
                 .build();
         teethExaminationRepository.save(teethExamination);
         return teethExaminationMapper.toTeethExaminationResponse(teethExamination);
