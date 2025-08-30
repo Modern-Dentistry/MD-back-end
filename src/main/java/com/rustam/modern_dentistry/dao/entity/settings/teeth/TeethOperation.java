@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.entity.settings.teeth;
 
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +24,9 @@ public class TeethOperation {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "tooth_id", nullable = false)
     Teeth teeth;
+
+    @Enumerated(EnumType.STRING)
+    Status status;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "op_type_item_id")

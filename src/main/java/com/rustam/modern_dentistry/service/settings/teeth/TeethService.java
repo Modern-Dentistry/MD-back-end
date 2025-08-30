@@ -7,6 +7,7 @@ import com.rustam.modern_dentistry.dto.request.create.CreateTeethRequest;
 import com.rustam.modern_dentistry.dto.request.read.TeethRequest;
 import com.rustam.modern_dentistry.dto.request.update.UpdateTeethRequest;
 import com.rustam.modern_dentistry.dto.response.read.ExaminationResponse;
+import com.rustam.modern_dentistry.dto.response.read.TeethOperationResponse;
 import com.rustam.modern_dentistry.dto.response.read.TeethResponse;
 import com.rustam.modern_dentistry.dto.response.update.TeethUpdateResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
@@ -18,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -44,6 +46,7 @@ public class TeethService {
         teethRepository.save(teeth);
     }
 
+    @Transactional(readOnly = true)
     public List<TeethResponse> read() {
         List<Teeth> teeth = teethRepository.findAllWithExaminations();
         return teeth.stream()
@@ -58,6 +61,15 @@ public class TeethService {
                                                 .id(te.getExamination().getId())
                                                 .typeName(te.getExamination().getTypeName())
                                                 .status(te.getExamination().getStatus())
+                                                .build())
+                                        .collect(Collectors.toList())
+                        )
+                        .operations(
+                                teethEntity.getToothOperations().stream()
+                                        .map(to -> TeethOperationResponse.builder()
+                                                .id(to.getId())
+                                                .operationName(to.getOpTypeItem().getOperationName())
+                                                .status(to.getStatus())
                                                 .build())
                                         .collect(Collectors.toList())
                         )

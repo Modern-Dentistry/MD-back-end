@@ -36,6 +36,10 @@ public class Teeth {
     @JsonIgnore
     List<TeethExamination> toothExaminations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "teeth", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<TeethOperation> toothOperations = new ArrayList<>();
+
     @ManyToMany(mappedBy = "teethList")
     @JsonIgnore
     List<DentalOrder> orders;

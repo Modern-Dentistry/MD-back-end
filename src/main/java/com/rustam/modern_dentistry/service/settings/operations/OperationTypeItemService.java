@@ -31,14 +31,16 @@ import static org.springframework.data.domain.PageRequest.of;
 public class OperationTypeItemService {
     private final OperationTypeItemRepository repository;
     private final OperationTypeItemHelperService helperService;
+    private final OperationTypeService operationTypeService;
 
     public void create(OpTypeItemCreateRequest request) {
         var opTypeItem = OP_TYPE_ITEM_MAPPER.toEntity(request);
         var prices = helperService.getOpTypeItemPrices(request.getPrices(), opTypeItem);
         var insurances = helperService.getOpTypeItemInsurances(request.getInsurances(), opTypeItem);
+        OpType opType = operationTypeService.getOperationTypeById(request.getOpTypeId());
         opTypeItem.setPrices(prices);
         opTypeItem.setInsurances(insurances);
-        opTypeItem.setOpType(OpType.builder().id(request.getOpTypeId()).build());
+        opTypeItem.setOpType(opType);
         repository.save(opTypeItem);
     }
 

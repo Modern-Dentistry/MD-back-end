@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.settings.teeth;
 
 import com.rustam.modern_dentistry.dao.entity.Examination;
+import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,11 +21,15 @@ public class TeethExamination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "tooth_no")
     Long toothNo;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "tooth_id", nullable = false)
     Teeth teeth;
+
+    @Enumerated(EnumType.STRING)
+    Status status;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "examination_id", nullable = false)

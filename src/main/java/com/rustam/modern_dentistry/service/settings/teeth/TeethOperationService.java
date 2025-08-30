@@ -50,6 +50,7 @@ public class TeethOperationService {
             TeethOperation teethOperation = TeethOperation.builder()
                     .teeth(teeth)
                     .opTypeItem(opTypeItem)
+                    .status(createTeethOperationRequest.getStatus())
                     .build();
 
             teethOperationRepository.save(teethOperation);
@@ -101,7 +102,7 @@ public class TeethOperationService {
 
         teethOperationRepository.save(teethOperation);
         return TeethOperationResponse.builder()
-                .Id(teethOperation.getId())
+                .id(teethOperation.getId())
                 .operationName(teethOperation.getOpTypeItem().getOperationName())
                 .build();
     }
@@ -115,7 +116,7 @@ public class TeethOperationService {
         List<TeethOperation> teethOperations = teethOperationRepository.findAll(TeethOperationSpecification.filterBy(searchTeethOperationRequest));
         return teethOperations.stream()
                 .map(teethOperation -> TeethOperationResponse.builder()
-                        .Id(teethOperation.getId())
+                        .id(teethOperation.getId())
                         .operationName(teethOperation.getOpTypeItem().getOperationName())
                         .build())
                 .toList();
