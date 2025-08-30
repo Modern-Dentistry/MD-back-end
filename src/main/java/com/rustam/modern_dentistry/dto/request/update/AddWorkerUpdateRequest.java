@@ -29,7 +29,7 @@ public class AddWorkerUpdateRequest {
     String surname;
     String patronymic;
     @Pattern(
-            regexp = "^[A-Z0-9]{7}$",
+            regexp = "^$|^[A-Z0-9]{7}$",
             message = "FIN kod yalnız böyük hərflər və rəqəmlərdən ibarət 7 simvol olmalıdır."
     )
     String finCode;
