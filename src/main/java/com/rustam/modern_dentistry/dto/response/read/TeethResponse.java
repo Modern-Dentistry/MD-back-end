@@ -23,4 +23,6 @@ public class TeethResponse {
     ToothLocation toothLocation;
 
     List<ExaminationResponse> examinations;
+
+    List<TeethOperationResponse> operations;
 }
