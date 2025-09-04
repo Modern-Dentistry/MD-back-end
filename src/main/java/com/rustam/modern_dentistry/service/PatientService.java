@@ -51,18 +51,28 @@ public class PatientService {
     SpecializationCategoryService specializationCategoryService;
 
     public PatientCreateResponse create(PatientCreateRequest patientCreateRequest) {
-        if (existsByEmailAndFinCode(patientCreateRequest.getEmail(), patientCreateRequest.getFinCode())) {
-            throw new ExistsException("bu email ve ya finkod movcutdur");
+        String email = (patientCreateRequest.getEmail() != null && !patientCreateRequest.getEmail().isBlank())
+                ? patientCreateRequest.getEmail()
+                : null;
+
+        String finCode = (patientCreateRequest.getFinCode() != null && !patientCreateRequest.getFinCode().isBlank())
+                ? patientCreateRequest.getFinCode()
+                : null;
+
+        if (email != null || finCode != null) {
+            if (patientRepository.existsByEmailOrFinCode(email, finCode)) {
+                throw new ExistsException("Bu email və ya FIN kod mövcuddur");
+            }
         }
         Doctor doctor = doctorService.findById(patientCreateRequest.getDoctor_id());
         Patient patient = Patient.builder()
                 .name(patientCreateRequest.getName())
                 .surname(patientCreateRequest.getSurname())
                 .patronymic(patientCreateRequest.getPatronymic())
-                .finCode(patientCreateRequest.getFinCode())
+                .finCode(finCode)
                 .dateOfBirth(patientCreateRequest.getDateOfBirth())
                 .phone(patientCreateRequest.getPhone())
-                .email(patientCreateRequest.getEmail())
+                .email(email)
                 .enabled(true)
                 .doctor(doctor)
                 .homePhone(patientCreateRequest.getHomePhone())
