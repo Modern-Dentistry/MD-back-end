@@ -19,7 +19,6 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "doctors")
 @PrimaryKeyJoinColumn(name = "doctor_id")
-@DiscriminatorValue("DOCTOR")
 @Getter
 @Setter
 @SuperBuilder

@@ -14,6 +14,7 @@ import com.rustam.modern_dentistry.dto.response.create.AddWorkerCreateResponse;
 import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.AddWorkerReadStatusResponse;
 import com.rustam.modern_dentistry.dto.response.update.AddWorkerUpdateResponse;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.exception.custom.UserNotFountException;
 import com.rustam.modern_dentistry.mapper.AddWorkerMapper;
 import com.rustam.modern_dentistry.service.settings.PermissionService;
@@ -231,7 +232,12 @@ public class AddWorkerService {
         BaseUser baseUser = baseUserRepository.findById(id)
                 .orElseThrow(() -> new UserNotFountException("No such user found."));
 
-        String role = baseUser.getUserType();
+        String role = baseUser.getPermissions()
+                .stream()
+                .findFirst()
+                .map(Permission::getPermissionName)
+                .orElseThrow(() -> new NotFoundException("No role found for user"));
+
 
         return switch (role) {
             case "ADMIN" -> convertToDto(adminService.findById(id));

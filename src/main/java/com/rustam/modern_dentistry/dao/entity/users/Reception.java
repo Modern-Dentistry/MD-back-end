@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "receptions")
 @PrimaryKeyJoinColumn(name = "reception_id")
-@DiscriminatorValue("RECEPTION")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder

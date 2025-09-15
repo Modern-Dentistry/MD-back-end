@@ -20,7 +20,6 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "base_users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -51,8 +50,6 @@ public class BaseUser {
     LocalDate dateOfBirth;
     String password;
     Boolean enabled;
-    @Column(name = "user_type", insertable = false, updatable = false)
-    String userType;
 
     @ManyToMany(fetch = LAZY)
     @JoinTable(

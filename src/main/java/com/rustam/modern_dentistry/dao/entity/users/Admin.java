@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "admins")
 @PrimaryKeyJoinColumn(name = "admin_id")
-@DiscriminatorValue("ADMIN")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder

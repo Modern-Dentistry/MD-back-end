@@ -1,7 +1,9 @@
 package com.rustam.modern_dentistry.util.factory;
 
 import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Reception;
+import com.rustam.modern_dentistry.dao.repository.BaseUserRepository;
 import com.rustam.modern_dentistry.dao.repository.ReceptionRepository;
 import com.rustam.modern_dentistry.dto.request.create.AddWorkerCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.AddWorkerUpdateRequest;
@@ -13,7 +15,9 @@ import com.rustam.modern_dentistry.util.factory.field_util.FieldSetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,18 +30,28 @@ public class ReceptionFactory implements UserRoleFactory {
     private final PasswordEncoder passwordEncoder;
     private final UtilService utilService;
     private final PermissionService permissionService;
+    private final BaseUserRepository baseUserRepository;
 
     @Override
+    @Transactional
     public void createUser(AddWorkerCreateRequest addWorkerCreateRequest) {
-        boolean existsByUsernameAndEmailAndFinCodeAndColorCode = utilService.existsByUsernameAndEmailAndFinCodeAndColorCode(addWorkerCreateRequest.getUsername(), addWorkerCreateRequest.getEmail(),
-                addWorkerCreateRequest.getFinCode(), null
+        Optional<BaseUser> existingUser = baseUserRepository.findByUsernameOrEmailOrFinCode(
+                addWorkerCreateRequest.getUsername(),
+                addWorkerCreateRequest.getEmail(),
+                addWorkerCreateRequest.getFinCode()
         );
-        if (existsByUsernameAndEmailAndFinCodeAndColorCode){
-            throw new ExistsException("bu fieldlar database-de movcuddur");
-        }
+
         Set<Permission> permissions = addWorkerCreateRequest.getPermissions().stream()
                 .map(permissionService::findByName)
                 .collect(Collectors.toSet());
+
+        if (existingUser.isPresent()) {
+            // yeni user yaratmaq əvəzinə permission əlavə et
+            BaseUser user = existingUser.get();
+            user.getPermissions().addAll(permissions);
+            baseUserRepository.save(user);
+            return;
+        }
         Reception reception = Reception.builder()
                 .username(addWorkerCreateRequest.getUsername())
                 .password(passwordEncoder.encode(addWorkerCreateRequest.getPassword()))
