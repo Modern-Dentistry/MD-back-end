@@ -25,6 +25,6 @@ public class ReservationUpdateRequest {
     LocalTime startTime;
     LocalTime endTime;
     Set<WeekDay> weekDays;
-    UUID doctorId;
+    String doctorId;
     Long patientId;
 }
