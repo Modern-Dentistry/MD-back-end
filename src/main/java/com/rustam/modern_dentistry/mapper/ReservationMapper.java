@@ -1,7 +1,7 @@
 package com.rustam.modern_dentistry.mapper;
 
 import com.rustam.modern_dentistry.dao.entity.Reservation;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.create.ReservationCreateRequest;
 import com.rustam.modern_dentistry.dto.request.update.ReservationUpdateRequest;
@@ -16,11 +16,11 @@ import static com.rustam.modern_dentistry.dao.entity.enums.status.ReservationSta
 @Component
 public class ReservationMapper {
 
-    public Reservation toEntity(ReservationCreateRequest request, Doctor doctor, Patient patient) {
+    public Reservation toEntity(ReservationCreateRequest request, BaseUser baseUser, Patient patient) {
 
         return Reservation.builder()
                 .status(ACTIVE)
-                .doctor(doctor)
+                .baseUser(baseUser)
                 .patient(patient)
                 .weekDays(request.getWeekDays())
                 .endTime(request.getEndTime())
@@ -40,7 +40,7 @@ public class ReservationMapper {
                 .startTime(reservation.getStartTime())
                 .weekDays(reservation.getWeekDays())
                 .patientId(reservation.getPatient().getId())
-                .doctorId(reservation.getDoctor().getId())
+                .doctorId(reservation.getBaseUser().getId())
                 .status(reservation.getStatus())
                 .build();
     }
@@ -54,7 +54,7 @@ public class ReservationMapper {
                 .startDate(reservation.getStartDate())
                 .endTime(reservation.getEndTime())
                 .startTime(reservation.getStartTime())
-                .doctor(reservation.getDoctor().getName() + " " + reservation.getDoctor().getSurname())
+                .doctor(reservation.getBaseUser().getName() + " " + reservation.getBaseUser().getSurname())
                 .patient(reservation.getPatient().getName() + " " + reservation.getPatient().getSurname())
                 .status(reservation.getStatus())
                 .build();
@@ -68,7 +68,7 @@ public class ReservationMapper {
                 .endTime(reservation.getEndTime())
                 .startTime(reservation.getStartTime())
                 .patientId(reservation.getPatient().getId())
-                .doctorId(reservation.getDoctor().getId())
+                .doctorId(reservation.getBaseUser().getId())
                 .build();
     }
 
@@ -80,13 +80,13 @@ public class ReservationMapper {
                 .startDate(reservation.getStartDate())
                 .endTime(reservation.getEndTime())
                 .startTime(reservation.getStartTime())
-                .doctor(reservation.getDoctor().getName() + " " + reservation.getDoctor().getSurname())
+                .doctor(reservation.getBaseUser().getName() + " " + reservation.getBaseUser().getSurname())
                 .patient(reservation.getPatient().getName() + " " + reservation.getPatient().getSurname())
                 .status(reservation.getStatus())
                 .build();
     }
 
-    public Reservation updateReservation(Reservation reservation, ReservationUpdateRequest request, Doctor doctor, Patient patient) {
+    public Reservation updateReservation(Reservation reservation, ReservationUpdateRequest request, BaseUser baseUser, Patient patient) {
 
         if (request == null) return reservation;
 
@@ -95,7 +95,7 @@ public class ReservationMapper {
         reservation.setStartTime(request.getStartTime() != null ? request.getStartTime() : reservation.getStartTime());
         reservation.setEndTime(request.getEndTime() != null ? request.getEndTime() : reservation.getEndTime());
         reservation.setWeekDays(request.getWeekDays() != null ? request.getWeekDays() : reservation.getWeekDays());
-        reservation.setDoctor(request.getDoctorId() != null ? doctor : reservation.getDoctor());
+        reservation.setBaseUser(request.getDoctorId() != null ? baseUser : reservation.getBaseUser());
         reservation.setPatient(request.getPatientId() != null ? patient : reservation.getPatient());
 
         return reservation;
