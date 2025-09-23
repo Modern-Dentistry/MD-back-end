@@ -45,8 +45,8 @@ public class Patient {
     LocalDate dateOfBirth;
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
-    Doctor doctor;
+    @JoinColumn(name = "base_user_id", referencedColumnName = "id")
+    BaseUser baseUser;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "price_category_id")
     PriceCategory priceCategory;

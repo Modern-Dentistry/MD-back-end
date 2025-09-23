@@ -15,7 +15,7 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: doctor_id
+                  name: base_user_id
                   type: UUID
                   constraints:
                     nullable: true
@@ -50,10 +50,10 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: general_calendar
-            baseColumnNames: doctor_id
-            referencedTableName: doctors
-            referencedColumnNames: doctor_id
-            constraintName: fk_generalcalendar_doctor
+            baseColumnNames: base_user_id
+            referencedTableName: base_users
+            referencedColumnNames: id
+            constraintName: fk_generalcalendar_baseuser
             onDelete: CASCADE
 
         - addForeignKeyConstraint:

@@ -24,7 +24,7 @@ public class PatientReadResponse {
     LocalDate dateOfBirth;
     String priceCategoryName;
     String specializationCategoryName;
-    String doctorId;
+    String baseUser;
     String phone;
     String workPhone;
     String homePhone;

@@ -14,7 +14,7 @@ public interface DentalOrderRepository extends JpaRepository<DentalOrder, Long> 
     @Query("""
                 SELECT DISTINCT do FROM DentalOrder do
                 LEFT JOIN FETCH do.imagePaths
-                LEFT JOIN FETCH do.doctor
+                LEFT JOIN FETCH do.baseUser
                 LEFT JOIN FETCH do.technician
                 LEFT JOIN FETCH do.patient
                 WHERE do.id = :id
@@ -39,7 +39,7 @@ public interface DentalOrderRepository extends JpaRepository<DentalOrder, Long> 
     // İlk sorğu - imagePaths və əsas əlaqələr
     @Query("""
                 SELECT do FROM DentalOrder do
-                LEFT JOIN FETCH do.doctor
+                LEFT JOIN FETCH do.baseUser
                 LEFT JOIN FETCH do.technician
                 LEFT JOIN FETCH do.patient
             """)
@@ -49,7 +49,7 @@ public interface DentalOrderRepository extends JpaRepository<DentalOrder, Long> 
     @Query("""
                 SELECT DISTINCT do FROM DentalOrder do
                 LEFT JOIN FETCH do.imagePaths
-                LEFT JOIN FETCH do.doctor
+                LEFT JOIN FETCH do.baseUser
                 LEFT JOIN FETCH do.technician
                 LEFT JOIN FETCH do.patient
                 WHERE do.technician.id = :technicianId

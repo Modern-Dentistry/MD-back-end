@@ -1,8 +1,6 @@
 package com.rustam.modern_dentistry.util.specification;
 
 import com.rustam.modern_dentistry.dao.entity.Reservation;
-import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.read.ReservationSearchRequest;
 import jakarta.persistence.criteria.*;

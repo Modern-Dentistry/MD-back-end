@@ -20,7 +20,6 @@ import com.rustam.modern_dentistry.dto.response.read.TechnicianOrderResponse;
 import com.rustam.modern_dentistry.exception.custom.CustomError;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.laboratory.DentalOrderMapper;
-import com.rustam.modern_dentistry.service.DoctorService;
 import com.rustam.modern_dentistry.service.FileService;
 import com.rustam.modern_dentistry.service.TechnicianService;
 import com.rustam.modern_dentistry.service.settings.teeth.TeethService;
@@ -43,7 +42,6 @@ public class DentalOrderService {
     private final UtilService utilService;
     private final FileService fileService;
     private final TeethService teethService;
-    private final DoctorService doctorService;
     private final TechnicianService technicianService;
     private final DentalOrderMapper dentalOrderMapper;
     private final DentalOrderRepository dentalOrderRepository;
@@ -58,12 +56,12 @@ public class DentalOrderService {
         try {
             var entity = dentalOrderMapper.toEntity(request);
             var teeth = teethService.findAllById(request.getTeethList());
-            var doctor = doctorService.findById(request.getDoctorId());
+            var doctor = utilService.findByBaseUserId(request.getDoctorId());
             var technician = technicianService.getTechnicianById(request.getTechnicianId());
             var patient = utilService.findByPatientId(request.getPatientId());
             var toothDetails = getToothDetails(request.getToothDetailIds(), entity);
             entity.setTeethList(teeth);
-            entity.setDoctor(doctor);
+            entity.setBaseUser(doctor);
             entity.setTechnician(technician);
             entity.setPatient(patient);
             entity.setOrderDentureInfo(request.getOrderDentureInfo()); // TODO check elemeyi yaz

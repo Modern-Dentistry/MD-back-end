@@ -31,7 +31,7 @@ databaseChangeLog:
                   type: TIME
 
               - column:
-                  name: doctor_id
+                  name: base_user_id
                   type: UUID
                   constraints:
                     nullable: true
@@ -62,10 +62,10 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: reservations
-            baseColumnNames: doctor_id
-            referencedTableName: doctors
-            referencedColumnNames: doctor_id
-            constraintName: fk_reservations_doctor
+            baseColumnNames: base_user_id
+            referencedTableName: base_users
+            referencedColumnNames: id
+            constraintName: fk_reservations_baseuser
             onDelete: SET NULL
 
         - addForeignKeyConstraint:

@@ -3,7 +3,7 @@ package com.rustam.modern_dentistry.dao.entity.laboratory;
 import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.DentalWorkType;
 import com.rustam.modern_dentistry.dao.entity.settings.teeth.Teeth;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.entity.users.Technician;
 import jakarta.persistence.*;
@@ -55,8 +55,8 @@ public class DentalOrder {
     List<Teeth> teethList;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
-    Doctor doctor;
+    @JoinColumn(name = "base_user_id")
+    BaseUser baseUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "technician_id")

@@ -8,7 +8,6 @@ import com.rustam.modern_dentistry.dto.request.update.UpdateTechnicianOrderReq;
 import com.rustam.modern_dentistry.dto.response.read.DentalOrderTeethListResponse;
 import com.rustam.modern_dentistry.dto.response.read.DentalOrderToothDetailResponse;
 import com.rustam.modern_dentistry.dto.response.read.TechnicianOrderResponse;
-import com.rustam.modern_dentistry.service.DoctorService;
 import com.rustam.modern_dentistry.service.TechnicianService;
 import com.rustam.modern_dentistry.service.settings.teeth.TeethService;
 import com.rustam.modern_dentistry.util.UtilService;
@@ -25,7 +24,6 @@ import static com.rustam.modern_dentistry.util.constants.Directory.pathDentalOrd
 public class DentalOrderMapper {
     private final UtilService utilService;
     private final TeethService teethService;
-    private final DoctorService doctorService;
     private final TechnicianService technicianService;
 
     public DentalOrder toEntity(DentalOrderCreateReq request) {
@@ -71,7 +69,7 @@ public class DentalOrderMapper {
                                     .build();
                         }
                 ).toList())
-                .doctor(o.getDoctor().getName() + " " + o.getDoctor().getSurname())
+                .doctor(o.getBaseUser().getName() + " " + o.getBaseUser().getSurname())
                 .patient(o.getPatient().getName() + " " + o.getPatient().getSurname())
                 .technician(o.getTechnician().getName() + " " + o.getTechnician().getSurname())
                 .urls(o.getImagePaths().stream().map(
@@ -103,8 +101,8 @@ public class DentalOrderMapper {
         }
 
         if (req.getDoctorId() != null) {
-            var doctor = doctorService.findById(req.getDoctorId());
-            entity.setDoctor(doctor);
+            var doctor = utilService.findByBaseUserId(req.getDoctorId());
+            entity.setBaseUser(doctor);
         }
 
         if (req.getTechnicianId() != null) {

@@ -47,10 +47,6 @@ databaseChangeLog:
               - column:
                   name: enabled
                   type: BOOLEAN
-              - column:
-                  name: user_type
-                  type: VARCHAR(255)
-
         - createTable:
             tableName: authorities
             columns:

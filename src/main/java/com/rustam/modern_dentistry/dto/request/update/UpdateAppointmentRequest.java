@@ -18,7 +18,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAppointmentRequest {
     Long id;
-    UUID doctorId;
+    String doctorId;
     String cabinetName;
     Long patientId;
 

@@ -31,7 +31,7 @@ public class UpdateTechnicianOrderReq {
     List<DentalOrderToothDetailIds> toothDetailIds;
     List<Long> teethList;
 
-    UUID doctorId;
+    String doctorId;
     UUID technicianId;
     Long patientId;
 

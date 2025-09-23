@@ -25,42 +25,43 @@ public class AddWorkerController {
     private final AddWorkerService addWorkerService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<AddWorkerCreateResponse> create(@Valid @RequestBody AddWorkerCreateRequest addWorkerCreateRequest){
+    public ResponseEntity<AddWorkerCreateResponse> create(@Valid @RequestBody AddWorkerCreateRequest addWorkerCreateRequest) {
         return new ResponseEntity<>(addWorkerService.create(addWorkerCreateRequest), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/read")
-    public ResponseEntity<List<AddWorkerReadResponse>> read(){
-        return new ResponseEntity<>(addWorkerService.read(),HttpStatus.OK);
+    public ResponseEntity<List<AddWorkerReadResponse>> read() {
+        return new ResponseEntity<>(addWorkerService.read(), HttpStatus.OK);
     }
 
     @PostMapping(path = "/read-permission/{permission}")
-    public ResponseEntity<List<AddWorkerReadResponse>> readPermission(@PathVariable String permission){
-        return new ResponseEntity<>(addWorkerService.readPermission(permission),HttpStatus.OK);
+    public ResponseEntity<List<AddWorkerReadResponse>> readPermission(@PathVariable String permission) {
+        return new ResponseEntity<>(addWorkerService.readPermission(permission), HttpStatus.OK);
     }
 
     @PutMapping(path = "/update")
-    public ResponseEntity<AddWorkerUpdateResponse> update(@Valid @RequestBody AddWorkerUpdateRequest addWorkerUpdateRequest){
-        return new ResponseEntity<>(addWorkerService.update(addWorkerUpdateRequest),HttpStatus.OK);
+    public ResponseEntity<AddWorkerUpdateResponse> update(@Valid @RequestBody AddWorkerUpdateRequest addWorkerUpdateRequest) {
+        return new ResponseEntity<>(addWorkerService.update(addWorkerUpdateRequest), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable UUID id){
-        return new ResponseEntity<>(addWorkerService.delete(id),HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable UUID id) {
+        addWorkerService.delete(id);
     }
 
     @GetMapping(path = "/info/{id}")
-    public ResponseEntity<AddWorkerReadResponse> info(@PathVariable UUID id){
-        return new ResponseEntity<>(addWorkerService.info(id),HttpStatus.OK);
+    public ResponseEntity<AddWorkerReadResponse> info(@PathVariable UUID id) {
+        return new ResponseEntity<>(addWorkerService.info(id), HttpStatus.OK);
     }
 
     @PostMapping(path = "/search")
-    public ResponseEntity<List<AddWorkerReadResponse>> search(@RequestBody AddWorkerSearchRequest addWorkerSearchRequest){
-        return new ResponseEntity<>(addWorkerService.search(addWorkerSearchRequest),HttpStatus.OK);
+    public ResponseEntity<List<AddWorkerReadResponse>> search(@RequestBody AddWorkerSearchRequest addWorkerSearchRequest) {
+        return new ResponseEntity<>(addWorkerService.search(addWorkerSearchRequest), HttpStatus.OK);
     }
 
     @GetMapping(path = "/read-roles")
-    public ResponseEntity<List<AddWorkerReadStatusResponse>> readStatus(){
-        return new ResponseEntity<>(addWorkerService.readStatus(),HttpStatus.OK);
+    public ResponseEntity<List<AddWorkerReadStatusResponse>> readStatus() {
+        return new ResponseEntity<>(addWorkerService.readStatus(), HttpStatus.OK);
     }
 }

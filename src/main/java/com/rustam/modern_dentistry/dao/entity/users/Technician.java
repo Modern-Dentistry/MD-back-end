@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "technician")
-@DiscriminatorValue("TECHNICIAN")
 @EqualsAndHashCode(callSuper = true)
 @PrimaryKeyJoinColumn(name = "technician_id")
 @FieldDefaults(level = AccessLevel.PRIVATE)

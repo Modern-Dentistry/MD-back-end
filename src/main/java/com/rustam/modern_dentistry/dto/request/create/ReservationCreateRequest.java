@@ -32,7 +32,7 @@ public class ReservationCreateRequest {
     @NotNull(message = "Bitmə vaxtı daxil edin")
     LocalTime endTime;
     @NotNull(message = "Pasienti seçin.")
-    UUID doctorId;
+    String doctorId;
     @NotNull(message = "Həkimi seçin.")
     Long patientId;
 

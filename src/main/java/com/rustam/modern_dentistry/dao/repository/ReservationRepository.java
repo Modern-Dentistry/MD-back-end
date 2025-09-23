@@ -12,12 +12,12 @@ import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, JpaSpecificationExecutor<Reservation> {
 
-    @EntityGraph(attributePaths = {"doctor", "patient"})
+    @EntityGraph(attributePaths = {"baseUser", "patient"})
     List<Reservation> findAll();
 
-    @EntityGraph(attributePaths = {"doctor", "patient"})
+    @EntityGraph(attributePaths = {"baseUser", "patient"})
     Page<Reservation> findAll(Pageable pageable);
 
-    @EntityGraph(attributePaths = {"doctor", "patient"})
+    @EntityGraph(attributePaths = {"baseUser", "patient"})
     Optional<Reservation> findById(Long id);
 }

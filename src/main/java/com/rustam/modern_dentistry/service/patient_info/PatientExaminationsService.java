@@ -6,7 +6,6 @@ import com.rustam.modern_dentistry.dao.entity.settings.teeth.TeethExamination;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dto.request.read.RequestToSeeTheExaminations;
 import com.rustam.modern_dentistry.dto.response.read.SelectingPatientToReadResponse;
-import com.rustam.modern_dentistry.service.DoctorService;
 import com.rustam.modern_dentistry.dao.repository.PatientExaminationsRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.PatientExaminationsUpdateRequest;
@@ -39,7 +38,6 @@ public class PatientExaminationsService {
     PatientExaminationsRepository patientExaminationsRepository;
     ExaminationService examinationService;
     TeethService teethService;
-    DoctorService doctorService;
     UtilService utilService;
     GeneralCalendarService generalCalendarService;
 

@@ -1,13 +1,10 @@
 package com.rustam.modern_dentistry;
 
-import com.rustam.modern_dentistry.dao.entity.enums.PermissionAction;
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
-import com.rustam.modern_dentistry.dao.entity.settings.permission.ModulePermissionEntity;
 import com.rustam.modern_dentistry.dao.entity.settings.permission.Permission;
-import com.rustam.modern_dentistry.dao.entity.users.Admin;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.repository.BaseUserRepository;
 import com.rustam.modern_dentistry.dao.repository.settings.PermissionRepository;
-import com.rustam.modern_dentistry.dto.ModulePermission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -34,7 +31,7 @@ public class ModernDentistryApplication implements CommandLineRunner {
 		if (!existsBaseUserByEmail) {
 			Permission superAdminPermission = createIfNotExists();
 
-			Admin admin = Admin.builder()
+			BaseUser admin = BaseUser.builder()
 					.id(UUID.randomUUID())
 					.name("Super")
 					.surname("Admin")

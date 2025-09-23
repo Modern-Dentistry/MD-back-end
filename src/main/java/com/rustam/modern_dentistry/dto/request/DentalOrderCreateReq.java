@@ -31,7 +31,7 @@ public class DentalOrderCreateReq {
     List<Long> teethList;
 
     @NotNull(message = VALIDATION_DOCTOR_ID)
-    UUID doctorId;
+    String doctorId;
     @NotNull(message = VALIDATION_TECHNICIAN_ID)
     UUID technicianId;
     @NotNull(message = VALIDATION_PATIENT_ID)
