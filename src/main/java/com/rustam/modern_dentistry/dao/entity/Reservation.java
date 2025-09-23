@@ -2,7 +2,7 @@ package com.rustam.modern_dentistry.dao.entity;
 
 import com.rustam.modern_dentistry.dao.entity.enums.WeekDay;
 import com.rustam.modern_dentistry.dao.entity.enums.status.ReservationStatus;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,8 +41,8 @@ public class Reservation {
     Set<WeekDay> weekDays;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
-    Doctor doctor;
+    @JoinColumn(name = "base_user_id", referencedColumnName = "id")
+    BaseUser baseUser;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
