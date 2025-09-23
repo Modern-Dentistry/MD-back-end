@@ -15,7 +15,7 @@ public interface PatientExaminationsRepository extends JpaRepository<PatientExam
     boolean existsPatientExaminationsByPatientAndToothNumberAndDiagnosis(Long patientId, List<Long> toothNumber,String diagnosis);
 
     @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.PatientExaminationsResponse(p.id, p.toothNumber,p.diagnosis,d.name) " +
-            "FROM PatientExaminations p JOIN Doctor d")
+            "FROM PatientExaminations p JOIN BaseUser d")
     List<PatientExaminationsResponse> findAllPatientExaminations();
 
     @Query("""
@@ -23,7 +23,7 @@ public interface PatientExaminationsRepository extends JpaRepository<PatientExam
         pe.id, pe.toothNumber, pe.diagnosis, d.name
     )
     FROM PatientExaminations pe
-    JOIN Doctor d ON pe.doctorId = d.id
+    JOIN BaseUser d ON pe.doctorId = d.id
     WHERE pe.patientAppointmentDate = :date
 """)
     List<PatientExaminationsResponse> findByAppointmentDate(LocalDate date);
