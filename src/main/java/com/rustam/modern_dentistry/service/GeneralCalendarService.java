@@ -1,11 +1,9 @@
 package com.rustam.modern_dentistry.service;
 
 import com.rustam.modern_dentistry.dao.entity.GeneralCalendar;
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
-import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dao.entity.settings.AppointmentType;
 import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.repository.GeneralCalendarRepository;
 import com.rustam.modern_dentistry.dto.request.create.AppointmentTypeRequestId;
@@ -16,7 +14,6 @@ import com.rustam.modern_dentistry.dto.response.read.*;
 import com.rustam.modern_dentistry.exception.custom.DoctorIsPatientsWereNotFound;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NoSuchPatientWasFound;
-import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.mapper.GeneralCalendarMapper;
 import com.rustam.modern_dentistry.service.settings.AppointmentTypeService;
 import com.rustam.modern_dentistry.service.settings.CabinetService;
@@ -27,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -39,15 +35,15 @@ import java.util.stream.Collectors;
 public class GeneralCalendarService {
 
     GeneralCalendarRepository generalCalendarRepository;
-    DoctorService doctorService;
     UtilService utilService;
     AppointmentTypeService appointmentTypeService;
+    AddWorkerService addWorkerService;
     CabinetService cabinetService;
     PatientService patientService;
     GeneralCalendarMapper generalCalendarMapper;
 
     public List<GeneralCalendarResponse> readDoctors() {
-        List<Doctor> doctors = doctorService.readAll();
+        List<BaseUser> doctors = addWorkerService.readAll();
         return doctors.stream()
                 .map(doctor -> new GeneralCalendarResponse(
                         doctor.getId(),
@@ -73,7 +69,7 @@ public class GeneralCalendarService {
                 .collect(Collectors.toSet());
 
         GeneralCalendar generalCalendar = GeneralCalendar.builder()
-                .doctor(patient.getDoctor())
+                .baseUser(patient.getBaseUser())
                 .patient(patient)
                 .appointment(newAppointmentRequest.getAppointment())
                 .cabinet(cabinet)
@@ -94,7 +90,7 @@ public class GeneralCalendarService {
                 .toList();
 
         return new NewAppointmentResponse(
-                patient.getDoctor().getName(),
+                patient.getBaseUser().getName(),
                 generalCalendar.getCabinet().getCabinetName(),
                 patient.getName(),
                 generalCalendar.getAppointment(),
@@ -138,7 +134,7 @@ public class GeneralCalendarService {
     public NewAppointmentResponse update(UpdateAppointmentRequest updateAppointmentRequest) {
         GeneralCalendar generalCalendar = findById(updateAppointmentRequest.getId());
         if (updateAppointmentRequest.getDoctorId() != null) {
-            generalCalendar.setDoctor(doctorService.findById(updateAppointmentRequest.getDoctorId()));
+            generalCalendar.setBaseUser(utilService.findByBaseUserId(updateAppointmentRequest.getDoctorId()));
         }
         if (updateAppointmentRequest.getPatientId() != null) {
             generalCalendar.setPatient(utilService.findByPatientId(updateAppointmentRequest.getPatientId()));
@@ -153,7 +149,7 @@ public class GeneralCalendarService {
         generalCalendarRepository.save(generalCalendar);
 
         return NewAppointmentResponse.builder()
-                .doctorName(generalCalendar.getDoctor().getName())
+                .doctorName(generalCalendar.getBaseUser().getName())
                 .patientName(generalCalendar.getPatient().getName())
                 .cabinetName(generalCalendar.getCabinet().getCabinetName())
                 .appointment(generalCalendar.getAppointment())
