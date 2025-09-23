@@ -1,9 +1,8 @@
 package com.rustam.modern_dentistry.service;
 
-import com.rustam.modern_dentistry.dao.entity.enums.Role;
 import com.rustam.modern_dentistry.dao.entity.settings.PriceCategory;
 import com.rustam.modern_dentistry.dao.entity.settings.SpecializationCategory;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import com.rustam.modern_dentistry.dao.repository.PatientRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatientCreateRequest;
@@ -29,13 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
-import java.util.AbstractMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import static java.util.Map.entry;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +39,6 @@ public class PatientService {
     UtilService utilService;
     PatientMapper patientMapper;
     ModelMapper modelMapper;
-    DoctorService doctorService;
     PriceCategoryService priceCategoryService;
     SpecializationCategoryService specializationCategoryService;
 
@@ -64,7 +56,7 @@ public class PatientService {
                 throw new ExistsException("Bu email və ya FIN kod mövcuddur");
             }
         }
-        Doctor doctor = doctorService.findById(patientCreateRequest.getDoctor_id());
+        BaseUser doctor = utilService.findByBaseUserId(patientCreateRequest.getDoctorId());
         Patient patient = Patient.builder()
                 .name(patientCreateRequest.getName())
                 .surname(patientCreateRequest.getSurname())
@@ -74,7 +66,7 @@ public class PatientService {
                 .phone(patientCreateRequest.getPhone())
                 .email(email)
                 .enabled(true)
-                .doctor(doctor)
+                .baseUser(doctor)
                 .homePhone(patientCreateRequest.getHomePhone())
                 .workPhone(patientCreateRequest.getWorkPhone())
                 .workAddress(patientCreateRequest.getWorkAddress())
@@ -109,9 +101,9 @@ public class PatientService {
         utilService.updateFieldIfPresent(priceCategory, patient::setPriceCategory);
         utilService.updateFieldIfPresent(specializationCategory, patient::setSpecializationCategory);
 
-        if (request.getDoctor_id() != null) {
-            Doctor doctor = doctorService.findById(request.getDoctor_id());
-            patient.setDoctor(doctor);
+        if (request.getDoctorId() != null) {
+            BaseUser doctor = utilService.findByBaseUserId(request.getDoctorId());
+            patient.setBaseUser(doctor);
         }
 
         utilService.updateFieldIfPresent(request.getPhone(), patient::setPhone);
