@@ -23,7 +23,7 @@ public class PatientUpdateRequest {
     LocalDate dateOfBirth;
     String priceCategoryName;
     String specializationName;
-    UUID doctor_id;
+    String doctorId;
     String phone;
     String workPhone;
     String homePhone;
