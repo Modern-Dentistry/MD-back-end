@@ -1,10 +1,9 @@
 package com.rustam.modern_dentistry.dao.entity;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Appointment;
-import com.rustam.modern_dentistry.dao.entity.enums.status.Room;
 import com.rustam.modern_dentistry.dao.entity.settings.AppointmentType;
 import com.rustam.modern_dentistry.dao.entity.settings.Cabinet;
-import com.rustam.modern_dentistry.dao.entity.users.Doctor;
+import com.rustam.modern_dentistry.dao.entity.users.BaseUser;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,8 +27,8 @@ public class GeneralCalendar {
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
-    Doctor doctor;
+    @JoinColumn(name = "base_user_id")
+    BaseUser baseUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cabinet_id")
