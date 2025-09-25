@@ -150,6 +150,6 @@ public class AddWorkerService {
     }
 
     public List<BaseUser> readAll() {
-        return baseUserRepository.findAll();
+        return baseUserRepository.findAllWithPermissionDoctor();
     }
 }
