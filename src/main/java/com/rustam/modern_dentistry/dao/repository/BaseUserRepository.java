@@ -59,6 +59,13 @@ public interface BaseUserRepository extends JpaRepository<BaseUser, UUID>, JpaSp
 
     List<BaseUser> findAllByPermissionsPermissionNameIn(Set<String> visiblePermissions);
 
+    @Query("""
+    SELECT DISTINCT b FROM BaseUser b 
+    LEFT JOIN b.permissions p 
+    WHERE p.permissionName = 'DOCTOR'
+""")
+    List<BaseUser> findAllWithPermissionDoctor();
+
 //    @Query("""
 //                SELECT u FROM BaseUser u
 //                LEFT JOIN FETCH u.permissions p
