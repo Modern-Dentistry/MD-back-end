@@ -6,6 +6,7 @@ import com.rustam.modern_dentistry.dto.request.create.PriceCategoryCreateRequest
 import com.rustam.modern_dentistry.dto.request.read.PriceCategorySearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.PriceCategoryUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.read.PriceCategoryReadResponse;
+import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.specification.settings.PriceCategorySpecification;
@@ -28,6 +29,9 @@ public class PriceCategoryService {
 
     public void create(PriceCategoryCreateRequest request) {
         var priceCategory = MAPPER.toEntity(request);
+        if (priceCategoryRepository.existsByName(request.getName())){
+            throw new ExistsException("bu data movcuddur");
+        }
         priceCategoryRepository.save(priceCategory);
     }
 

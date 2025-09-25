@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface TeethOperationRepository extends JpaRepository<TeethOperation,Long>, JpaSpecificationExecutor<TeethOperation> {
 
-    @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.TeethOperationResponse(t.id, i.operationName) " +
+    @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.TeethOperationResponse(t.id, i.operationName,t.status) " +
             "FROM TeethOperation t " +
             "JOIN t.opTypeItem i")
     List<TeethOperationResponse> findAllTeethOperations();

@@ -11,4 +11,6 @@ public interface PriceCategoryRepository extends JpaRepository<PriceCategory, Lo
     List<PriceCategory> findByIdIn(List<Long> ids);
 
     Optional<PriceCategory> findByName(String priceCategoryName);
+
+    boolean existsByName(String priceCategoryName);
 }
