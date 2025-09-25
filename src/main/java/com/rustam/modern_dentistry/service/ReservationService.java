@@ -57,6 +57,7 @@ public class ReservationService {
         return reservationMapper.toReadDto(reservation);
     }
 
+    @Transactional
     public ReservationUpdateResponse update(Long id, ReservationUpdateRequest request) {
         var reservation = getReservationById(id);
         var doctor = utilService.findByBaseUserId(request.getDoctorId());
