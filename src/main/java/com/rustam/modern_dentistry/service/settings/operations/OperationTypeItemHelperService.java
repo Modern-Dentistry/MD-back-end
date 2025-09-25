@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.rustam.modern_dentistry.mapper.settings.operations.OperationTypeItemMapper.OP_TYPE_ITEM_MAPPER;
+import java.util.*;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -57,22 +59,56 @@ public class OperationTypeItemHelperService {
     }
 
     protected List<OpTypeItemPrice> getOpTypeItemPrices(List<Prices> request, OpTypeItem opTypeItem) {
-        if (request != null) {
-            List<Long> priceCategoryIds = request.stream().map(Prices::getPriceTypeId).collect(Collectors.toList());
-            Map<Long, PriceCategory> priceCategoryMap = priceCategoryRepository.findByIdIn(priceCategoryIds)
-                    .stream()
-                    .collect(Collectors.toMap(PriceCategory::getId, priceCategory -> priceCategory));
-
-            return request.stream()
-                    .map(insuranceRequest -> {
-                        var priceCategory = priceCategoryMap.get(insuranceRequest.getPriceTypeId());
-                        var opTypeItemPrice = OP_TYPE_ITEM_MAPPER.toPriceCategoryEntity(insuranceRequest);
-                        opTypeItemPrice.setOpTypeItem(opTypeItem);
-                        opTypeItemPrice.setPriceCategory(priceCategory);
-                        return opTypeItemPrice;
-                    }).toList();
+        if (request == null || request.isEmpty()) {
+            return new ArrayList<>();
         }
-        return null;
+
+        List<Long> priceTypeIds = request.stream()
+                .map(Prices::getPriceTypeId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (priceTypeIds.isEmpty()) {
+            throw new IllegalArgumentException("At least one price type ID must be provided");
+        }
+
+        Map<Long, PriceCategory> priceCategoryMap = priceCategoryRepository.findByIdIn(priceTypeIds)
+                .stream()
+                .collect(Collectors.toMap(PriceCategory::getId, Function.identity()));
+
+        validatePriceCategories(priceTypeIds, priceCategoryMap);
+
+        return request.stream()
+                .map(priceRequest -> {
+                    if (priceRequest.getPriceTypeId() == null) {
+                        throw new IllegalArgumentException("Price type ID cannot be null");
+                    }
+
+                    var priceCategory = priceCategoryMap.get(priceRequest.getPriceTypeId());
+                    if (priceCategory == null) {
+                        throw new NotFoundException("Price category not found with id: " + priceRequest.getPriceTypeId());
+                    }
+
+                    var opTypeItemPrice = OP_TYPE_ITEM_MAPPER.toPriceCategoryEntity(priceRequest);
+
+                    opTypeItemPrice.setOpTypeItem(opTypeItem);
+                    opTypeItemPrice.setPriceCategory(priceCategory);
+
+                    if (priceRequest.getPrice() == null || priceRequest.getPrice().compareTo(BigDecimal.ZERO) < 0) {
+                        throw new IllegalArgumentException("Price must be non-null and non-negative");
+                    }
+
+                    return opTypeItemPrice;
+                })
+                .toList();
+    }
+
+    private void validatePriceCategories(List<Long> requestedIds, Map<Long, PriceCategory> foundCategories) {
+        if (requestedIds.size() != foundCategories.size()) {
+            Set<Long> notFoundIds = new HashSet<>(requestedIds);
+            notFoundIds.removeAll(foundCategories.keySet());
+            throw new NotFoundException("Price categories not found for ids: " + notFoundIds);
+        }
     }
 
     protected List<OpTypeItemReadResponse> getContent(List<OpTypeItem> operationTypes) {
