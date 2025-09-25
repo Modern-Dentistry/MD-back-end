@@ -25,6 +25,7 @@ import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
@@ -120,6 +121,7 @@ public class PatientService {
         return patientMapper.toDtos(users);
     }
 
+    @Transactional
     public PatientReadResponse readById(Long id) {
         Patient patient = utilService.findByPatientId(id);
         return patientMapper.toRead(patient);
