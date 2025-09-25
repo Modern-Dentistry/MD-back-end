@@ -16,7 +16,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, JpaSpec
     @EntityGraph(attributePaths = {"reservations", "generalCalendars", "examinations"})
     Optional<Patient> findById(Long id);
 
-    @EntityGraph(attributePaths = {"baseUsers"})
+    @EntityGraph(attributePaths = {"baseUser"})
     List<Patient> findAll();
 
     boolean existsByEmailOrFinCode(String email, String finCode);
