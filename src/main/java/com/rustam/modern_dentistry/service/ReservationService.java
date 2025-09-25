@@ -72,6 +72,7 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
+    @Transactional
     public void delete(Long id) {
         var reservation = getReservationById(id);
         reservationRepository.delete(reservation);
