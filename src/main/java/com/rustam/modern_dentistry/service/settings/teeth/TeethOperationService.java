@@ -12,13 +12,14 @@ import com.rustam.modern_dentistry.dto.request.update.UpdateTeethOperationReques
 import com.rustam.modern_dentistry.dto.response.read.TeethOperationResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import com.rustam.modern_dentistry.exception.custom.TeethOperationNotFoundException;
+import com.rustam.modern_dentistry.mapper.settings.teeth.TeethOperationMapper;
 import com.rustam.modern_dentistry.service.settings.operations.OperationTypeService;
 import com.rustam.modern_dentistry.util.specification.settings.teeth.TeethOperationSpecification;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class TeethOperationService {
     TeethOperationRepository teethOperationRepository;
     TeethService teethService;
     OperationTypeService operationTypeService;
+    TeethOperationMapper teethOperationMapper;
 
     @Transactional
     public void create(CreateTeethOperationRequest createTeethOperationRequest) {
@@ -120,5 +122,10 @@ public class TeethOperationService {
                         .operationName(teethOperation.getOpTypeItem().getOperationName())
                         .build())
                 .toList();
+    }
+
+    @Transactional
+    public TeethOperationResponse readById(Long id) {
+        return teethOperationMapper.toDto(findById(id));
     }
 }

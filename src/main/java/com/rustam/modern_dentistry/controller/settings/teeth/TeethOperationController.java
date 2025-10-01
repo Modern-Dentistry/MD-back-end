@@ -31,6 +31,12 @@ public class TeethOperationController {
         return new ResponseEntity<>(teethOperationService.read(), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/read-by-id/{id}")
+    public ResponseEntity<TeethOperationResponse> readById(@PathVariable Long id){
+        return new ResponseEntity<>(teethOperationService.readById(id),HttpStatus.OK);
+    }
+
+
     @PostMapping(path = "/search")
     public ResponseEntity<List<TeethOperationResponse>> search(@RequestBody SearchTeethOperationRequest searchTeethOperationRequest){
         return new ResponseEntity<>(teethOperationService.search(searchTeethOperationRequest),HttpStatus.OK);
