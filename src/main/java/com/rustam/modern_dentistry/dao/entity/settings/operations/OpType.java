@@ -27,6 +27,7 @@ public class OpType {
 
     @Column(nullable = false)
     String categoryName;
+    String categoryCode;
 
     boolean colorSelection;
     boolean implantSelection;
