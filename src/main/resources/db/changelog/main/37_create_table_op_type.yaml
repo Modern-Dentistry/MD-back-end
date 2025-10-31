@@ -19,6 +19,9 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: category_code
+                  type: VARCHAR(255)
+              - column:
                   name: color_selection
                   type: BOOLEAN
               - column:
