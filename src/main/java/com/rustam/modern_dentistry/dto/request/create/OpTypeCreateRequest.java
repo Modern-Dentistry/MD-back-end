@@ -17,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class OpTypeCreateRequest {
     @NotBlank(message = "Əməliyyat kateqoriyasının adını daxil edin.")
     String categoryName;
-
+    String categoryCode;
     Status status;
     boolean colorSelection;
     boolean implantSelection;
