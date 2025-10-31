@@ -20,6 +20,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class OpTypeReadResponse {
     Long id;
     String categoryName;
+    String categoryCode;
     boolean colorSelection;
     boolean implantSelection;
     Status status;

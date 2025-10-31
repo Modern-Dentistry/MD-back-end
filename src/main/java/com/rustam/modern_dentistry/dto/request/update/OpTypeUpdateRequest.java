@@ -19,6 +19,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class OpTypeUpdateRequest {
     String categoryName;
+    String categoryCode;
     boolean colorSelection;
     boolean implantSelection;
     List<OpTypeInsuranceRequest> insurances;
