@@ -27,8 +27,9 @@ import java.util.stream.Collectors;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING,
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface OperationTypeItemMapper {
     OperationTypeItemMapper OP_TYPE_ITEM_MAPPER = Mappers.getMapper(OperationTypeItemMapper.class);
@@ -70,6 +71,9 @@ public interface OperationTypeItemMapper {
                         .orElse(new OpTypeItemPricesDto(category.getName(), category.getId(), null)))
                 .collect(Collectors.toList());
     }
+
+    List<OpTypeItemReadResponse> toDtos(List<OpTypeItem> all);
+
 //
 //    default List<OpTypeItemPrice> updateOpTypePrices(List<OpTypeItemPricesUpdateRequest> request, OpTypeItem opTypeItem) {
 //        Map<Long, OpTypeItemPrice> currentPrices = opTypeItem.getPrices().stream()

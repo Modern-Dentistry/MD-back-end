@@ -38,6 +38,6 @@ public class OpType {
     @OneToMany(mappedBy = "opType", cascade = ALL, fetch = LAZY, orphanRemoval = true)
     List<OpTypeInsurance> insurances;
 
-    @OneToMany(mappedBy = "opType", cascade = ALL)
+    @OneToMany(mappedBy = "opType", cascade = ALL,fetch = LAZY)
     List<OpTypeItem> opTypeItems;
 }

@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: 63
+      author: rustam
+      changes:
+        - createTable:
+            tableName: patient_plan_main
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: plan_name
+                  type: varchar(255)
+
+              - column:
+                  name: key
+                  type: varchar(255)
+
+              - column:
+                  name: patient_id
+                  type: bigint
+
+              - column:
+                  name: created_by
+                  type: varchar(255)
+
+              - column:
+                  name: updated_by
+                  type: varchar(255)
+
+              - column:
+                  name: deleted_by
+                  type: varchar(255)
+
+              - column:
+                  name: created_date
+                  type: bigint
+
+              - column:
+                  name: updated_date
+                  type: bigint
+
+              - column:
+                  name: deleted_date
+                  type: bigint
+
+              - column:
+                  name: status
+                  type: varchar(255)
+
+              - column:
+                  name: action_status
+                  type: varchar(255)
+
+        - addForeignKeyConstraint:
+            baseTableName: patient_plan_main
+            baseColumnNames: patient_id
+            referencedTableName: patients
+            referencedColumnNames: id
+            constraintName: fk_patient_plan_main_patient

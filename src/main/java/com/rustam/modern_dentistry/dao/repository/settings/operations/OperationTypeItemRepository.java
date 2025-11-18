@@ -22,7 +22,7 @@ public interface OperationTypeItemRepository extends JpaRepository<OpTypeItem, L
     @EntityGraph(attributePaths = {"prices"})
     List<OpTypeItem> findAll(Specification<OpTypeItem> spec);
 
-    @EntityGraph(attributePaths = {"prices", "insurances"})
+    @EntityGraph(attributePaths = {"prices", "insurances","opType"})
     Optional<OpTypeItem> findById(Long id);
 
     @Query("""
@@ -58,5 +58,4 @@ public interface OperationTypeItemRepository extends JpaRepository<OpTypeItem, L
            "FULL JOIN FETCH p.priceCategory " +
            "WHERE ot.id = :opTypeId")
     Page<OpTypeItem> findByOpTypeId(@Param("opTypeId") Long opTypeId, Pageable pageable);
-
 }
