@@ -11,6 +11,8 @@ import com.rustam.modern_dentistry.dto.response.excel.OpTypeItemExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadByIdResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
+import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.mapper.settings.operations.OperationTypeItemMapper;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.specification.settings.operations.OpTypeItemSearchSpec;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +68,10 @@ public class OperationTypeItemService {
         return toReadDto;
     }
 
+    public OpTypeItem findById(Long id) {
+        return helperService.getOperationTypeItemById(id);
+    }
+
     public void update(Long id, OpTypeItemUpdateRequest request) {
         var opTypeItem = helperService.getOperationTypeItemById(id);
         OP_TYPE_ITEM_MAPPER.updateOpTypeItem(opTypeItem, request);
@@ -97,5 +103,9 @@ public class OperationTypeItemService {
         var list = operations.stream().map(OP_TYPE_ITEM_MAPPER::toExcelDto).toList();
         ByteArrayInputStream excelFile = ExcelUtil.dataToExcel(list, OpTypeItemExcelResponse.class);
         return new InputStreamResource(excelFile);
+    }
+
+    public List<OpTypeItemReadResponse> readAll() {
+        return OP_TYPE_ITEM_MAPPER.toDtos(repository.findAll());
     }
 }
