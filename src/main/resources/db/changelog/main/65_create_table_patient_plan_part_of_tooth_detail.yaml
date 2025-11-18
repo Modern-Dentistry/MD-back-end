@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 65
+      author: rustam
+      changes:
+        - createTable:
+            tableName: patient_plan_part_of_tooth_detail
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: patient_plan_id
+                  type: uuid
+
+              - column:
+                  name: part_of_tooth_id
+                  type: bigint
+
+              - column:
+                  name: operation_type_item_id
+                  type: bigint
+
+        - addForeignKeyConstraint:
+            baseTableName: patient_plan_part_of_tooth_detail
+            baseColumnNames: patient_plan_id
+            referencedTableName: patient_plan
+            referencedColumnNames: id
+            constraintName: fk_detail_patient_plan
+
+        - addForeignKeyConstraint:
+            baseTableName: patient_plan_part_of_tooth_detail
+            baseColumnNames: operation_type_item_id
+            referencedTableName: op_type_items
+            referencedColumnNames: id
+            constraintName: fk_detail_op_type_item
