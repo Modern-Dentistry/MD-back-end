@@ -11,9 +11,11 @@ import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
 import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.OpTypeUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.excel.OperationTypeExcelResponse;
+import com.rustam.modern_dentistry.dto.response.read.CategoryOfOperationDto;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
+import com.rustam.modern_dentistry.mapper.settings.operations.OperationTypeMapper;
 import com.rustam.modern_dentistry.service.settings.InsuranceCompanyService;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.specification.settings.operations.OpTypeSpecification;
@@ -24,8 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.rustam.modern_dentistry.mapper.settings.operations.OperationTypeMapper.OP_TYPE_MAPPER;
@@ -34,6 +38,7 @@ import static com.rustam.modern_dentistry.mapper.settings.operations.OperationTy
 @RequiredArgsConstructor
 public class OperationTypeService {
     private final OperationTypeRepository repository;
+    private final OperationTypeMapper operationTypeMapper;
     private final InsuranceCompanyService insuranceCompanyService;
 
     @Transactional
@@ -152,5 +157,13 @@ public class OperationTypeService {
                                                OpTypeInsuranceRequest request) {
         InsuranceCompany company = InsuranceCompany.builder().id(request.getInsuranceCompanyId()).build();
         return new OpTypeInsurance(null, request.getDeductiblePercentage(), opType, company);
+    }
+
+    public List<CategoryOfOperationDto> readCategoryOfOperations() {
+        return operationTypeMapper.toReadCategoryOfOperations(new ArrayList<>(),repository.findAll());
+    }
+
+    public OpType findById(Long categoryId) {
+        return repository.findById(categoryId).orElseThrow(() -> new NotFoundException("OperationType not found with ID: " + categoryId));
     }
 }
