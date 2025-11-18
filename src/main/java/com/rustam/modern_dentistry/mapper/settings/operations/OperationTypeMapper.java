@@ -6,9 +6,13 @@ import com.rustam.modern_dentistry.dto.request.create.OpTypeCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeInsuranceRequest;
 import com.rustam.modern_dentistry.dto.request.update.OpTypeUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.excel.OperationTypeExcelResponse;
+import com.rustam.modern_dentistry.dto.response.read.CategoryOfOperationDto;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeReadResponse;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -47,4 +51,6 @@ public interface OperationTypeMapper {
     default long countOpTypeItems(OpType entity) {
         return entity.getOpTypeItems().size();
     }
+
+    List<CategoryOfOperationDto> toReadCategoryOfOperations(@MappingTarget ArrayList<CategoryOfOperationDto> categoryOfOperationDtos, List<OpType> all);
 }
