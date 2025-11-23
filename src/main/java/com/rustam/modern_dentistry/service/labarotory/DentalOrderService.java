@@ -207,6 +207,7 @@ private MultipartFile convertBase64ToMultipartFile(String base64String) {
     public void updateOrderStatus(UpdateLabOrderStatus request) {
         var dentalOrder = getDentalOrder(request.getId());
         dentalOrder.setDentalWorkStatus(request.getDentalWorkStatus());
+        dentalOrderRepository.save(dentalOrder);
     }
 
     @Transactional(readOnly = true)

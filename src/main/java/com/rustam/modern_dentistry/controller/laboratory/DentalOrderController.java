@@ -54,7 +54,7 @@ public class DentalOrderController {
     }
 
     @PatchMapping(path = "/order/status")
-    public ResponseEntity<Void> updateOrderStatus(UpdateLabOrderStatus request) {
+    public ResponseEntity<Void> updateOrderStatus(@RequestBody UpdateLabOrderStatus request) {
         dentalOrderService.updateOrderStatus(request);
         return ResponseEntity.ok().build();
     }
