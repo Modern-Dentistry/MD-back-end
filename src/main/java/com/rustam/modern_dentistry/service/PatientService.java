@@ -18,10 +18,12 @@ import com.rustam.modern_dentistry.service.settings.PriceCategoryService;
 import com.rustam.modern_dentistry.service.settings.SpecializationCategoryService;
 import com.rustam.modern_dentistry.util.ExcelUtil;
 import com.rustam.modern_dentistry.util.UtilService;
+import com.rustam.modern_dentistry.util.ValidationUtilService;
 import com.rustam.modern_dentistry.util.specification.UserSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -41,22 +43,15 @@ public class PatientService {
     PatientMapper patientMapper;
     ModelMapper modelMapper;
     PriceCategoryService priceCategoryService;
+    ValidationUtilService validationUtilService;
     SpecializationCategoryService specializationCategoryService;
 
     public PatientCreateResponse create(PatientCreateRequest patientCreateRequest) {
-        String email = (patientCreateRequest.getEmail() != null && !patientCreateRequest.getEmail().isBlank())
-                ? patientCreateRequest.getEmail()
-                : null;
+        String email = StringUtils.trimToNull(patientCreateRequest.getEmail());
+        String finCode = StringUtils.trimToNull(patientCreateRequest.getFinCode());
 
-        String finCode = (patientCreateRequest.getFinCode() != null && !patientCreateRequest.getFinCode().isBlank())
-                ? patientCreateRequest.getFinCode()
-                : null;
+        validationUtilService.validateUniqueFields(email,finCode);
 
-        if (email != null || finCode != null) {
-            if (patientRepository.existsByEmailOrFinCode(email, finCode)) {
-                throw new ExistsException("Bu email və ya FIN kod mövcuddur");
-            }
-        }
         BaseUser doctor = utilService.findByBaseUserId(patientCreateRequest.getDoctorId());
         Patient patient = Patient.builder()
                 .name(patientCreateRequest.getName())
@@ -146,7 +141,4 @@ public class PatientService {
         return new InputStreamResource(excelFile);
     }
 
-    public Boolean existsByEmailAndFinCode(String email, String finCode) {
-        return patientRepository.existsByEmailOrFinCode(email, finCode);
-    }
 }
