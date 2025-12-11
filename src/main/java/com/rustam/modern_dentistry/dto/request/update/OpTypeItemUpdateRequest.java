@@ -21,6 +21,6 @@ public class OpTypeItemUpdateRequest {
     String operationName;
     String operationCode;
     Status status;
-    List<OpTypeItemPricesUpdateRequest> prices;
+    OpTypeItemPricesUpdateRequest opTypeItemPricesUpdateRequest;
     List<OpTypeItemInsuranceUpdateRequest> insurances;
 }
