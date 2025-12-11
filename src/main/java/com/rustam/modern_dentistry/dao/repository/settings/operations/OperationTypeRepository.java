@@ -1,5 +1,6 @@
 package com.rustam.modern_dentistry.dao.repository.settings.operations;
 
+import com.rustam.modern_dentistry.dto.projection.OperationCategoryProjection;
 import com.rustam.modern_dentistry.dto.response.read.OpInsuranceReadResponse;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import org.springframework.data.domain.Page;
@@ -41,4 +42,24 @@ public interface OperationTypeRepository extends JpaRepository<OpType, Long>, Jp
     List<OpInsuranceReadResponse> findByOpTypeId(@Param("opTypeId") Long opTypeId);
 
     Optional<OpType> findByCategoryName(String operationCategoryName);
+
+    @Query(value = """
+    SELECT
+        ot.id as categoryId,
+        ot.category_name as categoryName,
+        ot.category_code as categoryCode,
+        COALESCE(opii.id, opi.id) as operationId ,
+        COALESCE(opii.name, opi.operation_name) as name,
+        COALESCE(opii.amount, opi.amount) as amount,
+        COALESCE(opii.specific_code, opi.operation_code) as operationCode,
+        opi.status as status
+    FROM op_types ot
+    INNER JOIN op_type_items opi ON ot.id = opi.op_type_id
+    LEFT JOIN op_type_item_insurances opii 
+        ON opi.id = opii.op_type_item_id 
+        AND opii.insurance_id = :insuranceId
+    WHERE
+        (:insuranceId IS NULL OR opii.id IS NOT NULL)
+    """, nativeQuery = true)
+    List<OperationCategoryProjection> findAllByInsuranceToCategoryOfOperations(Long insuranceId);
 }
