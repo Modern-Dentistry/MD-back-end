@@ -19,4 +19,5 @@ public class OpTypeItemInsuranceUpdateRequest {
     Long insuranceCompanyId;
     String name;
     BigDecimal amount;
+    String specificCode;
 }
