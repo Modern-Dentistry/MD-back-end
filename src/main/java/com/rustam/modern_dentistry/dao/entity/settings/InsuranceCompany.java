@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.settings;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlanMain;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeInsurance;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemInsurance;
 import jakarta.persistence.*;
@@ -39,4 +40,7 @@ public class InsuranceCompany {
 
     @OneToMany(mappedBy = "insuranceCompany", cascade = CascadeType.REMOVE)
     List<OpTypeItemInsurance> insuranceItem;
+
+    @OneToMany(mappedBy = "insuranceCompany")
+    List<PatientPlanMain> patientPlans;
 }
