@@ -5,8 +5,6 @@ import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeInsurance;
 import com.rustam.modern_dentistry.dao.repository.settings.operations.OperationTypeRepository;
-import com.rustam.modern_dentistry.dto.CategoryWithOperationsDTO;
-import com.rustam.modern_dentistry.dto.OperationDTO;
 import com.rustam.modern_dentistry.dto.projection.OperationCategoryProjection;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeInsuranceRequest;
