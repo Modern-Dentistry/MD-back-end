@@ -2,10 +2,7 @@ package com.rustam.modern_dentistry.dao.entity.settings.operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.PriceCategory;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
@@ -15,6 +12,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "op_type_item_prices")
@@ -25,13 +23,13 @@ public class OpTypeItemPrice {
     Long id;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    BigDecimal price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "price_type_id", nullable = false)
-    private PriceCategory priceCategory;
+    PriceCategory priceCategory;
 
-    @ManyToOne
-    @JoinColumn(name = "op_type_item_id", nullable = false)
-    private OpTypeItem opTypeItem;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "op_type_item_id", nullable = false, unique = true)
+    OpTypeItem opTypeItem;
 }
