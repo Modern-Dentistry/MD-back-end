@@ -17,6 +17,9 @@ databaseChangeLog:
                   name: name
                   type: VARCHAR(255)
               - column:
+                  name: specific_code
+                  type: VARCHAR(255)
+              - column:
                   name: amount
                   type: DECIMAL(19,2)
               - column:

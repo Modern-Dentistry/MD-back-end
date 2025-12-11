@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OperationTypeItemRepository extends JpaRepository<OpTypeItem, Long>, JpaSpecificationExecutor<OpTypeItem> {
-    @EntityGraph(attributePaths = {"prices"})
+    @EntityGraph(attributePaths = {"price"})
     List<OpTypeItem> findAll();
 
-    @EntityGraph(attributePaths = {"prices"})
+    @EntityGraph(attributePaths = {"price"})
     List<OpTypeItem> findAll(Specification<OpTypeItem> spec);
 
-    @EntityGraph(attributePaths = {"prices", "insurances","opType"})
+    @EntityGraph(attributePaths = {"price", "insurances","opType"})
     Optional<OpTypeItem> findById(Long id);
 
     @Query("""
@@ -50,11 +50,11 @@ public interface OperationTypeItemRepository extends JpaRepository<OpTypeItem, L
             ON i.priceCategory.id = d.id 
             AND (i.opTypeItem.id = :opTypeItemId OR i.opTypeItem IS NULL)
             """)
-    List<OpTypeItemPricesDto> findPricesByOpTypeItemId(@Param("opTypeItemId") Long opTypeItemId);
+    OpTypeItemPricesDto findPricesByOpTypeItemId(@Param("opTypeItemId") Long opTypeItemId);
 
     @Query("SELECT oti FROM OpTypeItem oti " +
            "JOIN FETCH oti.opType ot " +
-           "FULL JOIN FETCH oti.prices p " +
+           "FULL JOIN FETCH oti.price p " +
            "FULL JOIN FETCH p.priceCategory " +
            "WHERE ot.id = :opTypeId")
     Page<OpTypeItem> findByOpTypeId(@Param("opTypeId") Long opTypeId, Pageable pageable);

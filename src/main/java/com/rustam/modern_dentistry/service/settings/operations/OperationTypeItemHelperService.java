@@ -12,6 +12,8 @@ import com.rustam.modern_dentistry.dto.request.create.OpTypeItemInsurances;
 import com.rustam.modern_dentistry.dto.request.create.Prices;
 import com.rustam.modern_dentistry.dto.request.update.OpTypeItemInsuranceUpdateRequest;
 import com.rustam.modern_dentistry.dto.request.update.OpTypeItemPricesUpdateRequest;
+import com.rustam.modern_dentistry.dto.response.read.OpTypeItemInsuranceDto;
+import com.rustam.modern_dentistry.dto.response.read.OpTypeItemPricesDto;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -58,49 +60,19 @@ public class OperationTypeItemHelperService {
         return null;
     }
 
-    protected List<OpTypeItemPrice> getOpTypeItemPrices(List<Prices> request, OpTypeItem opTypeItem) {
-        if (request == null || request.isEmpty()) {
-            return new ArrayList<>();
+    public OpTypeItemPrice getOpTypeItemPrice(Prices priceDto, OpTypeItem opTypeItem) {
+        if (priceDto == null) {
+            throw new NullPointerException("qiymet bosdu");
         }
 
-        List<Long> priceTypeIds = request.stream()
-                .map(Prices::getPriceTypeId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        PriceCategory priceCategory = priceCategoryRepository.findById(priceDto.getPriceTypeId())
+                .orElseThrow(() -> new NotFoundException("Price category not found"));
 
-        if (priceTypeIds.isEmpty()) {
-            throw new IllegalArgumentException("At least one price type ID must be provided");
-        }
-
-        Map<Long, PriceCategory> priceCategoryMap = priceCategoryRepository.findByIdIn(priceTypeIds)
-                .stream()
-                .collect(Collectors.toMap(PriceCategory::getId, Function.identity()));
-
-        validatePriceCategories(priceTypeIds, priceCategoryMap);
-
-        return request.stream()
-                .map(priceRequest -> {
-                    if (priceRequest.getPriceTypeId() == null) {
-                        throw new IllegalArgumentException("Price type ID cannot be null");
-                    }
-
-                    var priceCategory = priceCategoryMap.get(priceRequest.getPriceTypeId());
-                    if (priceCategory == null) {
-                        throw new NotFoundException("Price category not found with id: " + priceRequest.getPriceTypeId());
-                    }
-
-                    var opTypeItemPrice = OP_TYPE_ITEM_MAPPER.toPriceCategoryEntity(priceRequest);
-
-                    opTypeItemPrice.setOpTypeItem(opTypeItem);
-                    opTypeItemPrice.setPriceCategory(priceCategory);
-
-                    if (priceRequest.getPrice() == null || priceRequest.getPrice().compareTo(BigDecimal.ZERO) < 0) {
-                        throw new IllegalArgumentException("Price must be non-null and non-negative");
-                    }
-
-                    return opTypeItemPrice;
-                })
-                .toList();
+        return OpTypeItemPrice.builder()
+                .price(priceDto.getPrice())
+                .priceCategory(priceCategory)
+                .opTypeItem(opTypeItem)
+                .build();
     }
 
     private void validatePriceCategories(List<Long> requestedIds, Map<Long, PriceCategory> foundCategories) {
@@ -116,25 +88,69 @@ public class OperationTypeItemHelperService {
         return operationTypes.stream()
                 .map(opTypeItem -> {
                     var readDto = OP_TYPE_ITEM_MAPPER.toReadDto(opTypeItem);
-                    readDto.setPrices(OP_TYPE_ITEM_MAPPER.mapPrices(opTypeItem.getPrices(), allCategories));
+                    // ✅ Artıq price tək obyektdir, List deyil
+                    readDto.setPrice(opTypeItem.getAmount());
                     return readDto;
                 })
                 .collect(Collectors.toList());
     }
 
-    protected List<OpTypeItemPrice> updateOpTypePrices(List<OpTypeItemPricesUpdateRequest> request, OpTypeItem opTypeItem) {
-        Map<Long, OpTypeItemPrice> currentPrices = opTypeItem.getPrices().stream()
-                .collect(Collectors.toMap(p -> p.getPriceCategory().getId(), p -> p));
+    protected OpTypeItemPrice updateOpTypePrice(
+            OpTypeItemPricesUpdateRequest request,
+            OpTypeItem opTypeItem) {
 
-        return request.stream()
-                .filter(p -> p.getPrice() != null) // Null olmayanları götür
-                .map(priceDto ->
-                        currentPrices.containsKey(priceDto.getPriceCategoryId())
-                                ? updateExistingPrice(currentPrices.get(priceDto.getPriceCategoryId()), priceDto.getPrice(), opTypeItem)
-                                : createNewPrice(opTypeItem, priceDto.getPriceCategoryId(), priceDto.getPrice())
-                )
-                .collect(Collectors.toList());
+        if (request == null || request.getPrice() == null) {
+            throw new NullPointerException("Price məlumatı tələb olunur");
+        }
 
+        if (opTypeItem.getPrice() != null) {
+            return updateExistingPrice(
+                    opTypeItem.getPrice(),
+                    request.getPrice(),
+                    request.getPriceCategoryId(),
+                    opTypeItem
+            );
+        }
+        else {
+            return createNewPrice(
+                    opTypeItem,
+                    request.getPriceCategoryId(),
+                    request.getPrice()
+            );
+        }
+    }
+
+    private OpTypeItemPrice updateExistingPrice(
+            OpTypeItemPrice existingPrice,
+            BigDecimal newPrice,
+            Long priceCategoryId,
+            OpTypeItem opTypeItem) {
+
+        existingPrice.setPrice(newPrice);
+
+        // Əgər price category dəyişirsə
+        if (!existingPrice.getPriceCategory().getId().equals(priceCategoryId)) {
+            PriceCategory priceCategory = priceCategoryRepository.findById(priceCategoryId)
+                    .orElseThrow(() -> new NotFoundException("Price category not found"));
+            existingPrice.setPriceCategory(priceCategory);
+        }
+
+        return existingPrice;
+    }
+
+    private OpTypeItemPrice createNewPrice(
+            OpTypeItem opTypeItem,
+            Long priceCategoryId,
+            BigDecimal price) {
+
+        PriceCategory priceCategory = priceCategoryRepository.findById(priceCategoryId)
+                .orElseThrow(() -> new NotFoundException("Price category not found"));
+
+        return OpTypeItemPrice.builder()
+                .price(price)
+                .priceCategory(priceCategory)
+                .opTypeItem(opTypeItem)
+                .build();
     }
 
     protected List<OpTypeItemInsurance> updateOpTypeInsurance(List<OpTypeItemInsuranceUpdateRequest> request, OpTypeItem opTypeItem) {
@@ -151,19 +167,6 @@ public class OperationTypeItemHelperService {
                 .collect(Collectors.toList());
     }
 
-    private OpTypeItemPrice updateExistingPrice(OpTypeItemPrice existingPrice,
-                                                BigDecimal newPrice,
-                                                OpTypeItem opTypeItem) {
-        existingPrice.setPrice(newPrice);
-        existingPrice.setOpTypeItem(opTypeItem);
-        return existingPrice;
-    }
-
-    private OpTypeItemPrice createNewPrice(OpTypeItem opTypeItem, Long categoryId, BigDecimal price) {
-        PriceCategory category = PriceCategory.builder().id(categoryId).build();
-        return new OpTypeItemPrice(null, price, category, opTypeItem);
-    }
-
     private OpTypeItemInsurance updateExistingInsurance(OpTypeItemInsurance existingInsurance,
                                                         BigDecimal newAmount,
                                                         OpTypeItem opTypeItem) {
@@ -175,6 +178,6 @@ public class OperationTypeItemHelperService {
     private OpTypeItemInsurance createNewInsurance(OpTypeItem opTypeItem,
                                                    OpTypeItemInsuranceUpdateRequest request) {
         InsuranceCompany company = InsuranceCompany.builder().id(request.getInsuranceCompanyId()).build();
-        return new OpTypeItemInsurance(null, request.getName(), request.getAmount(), opTypeItem, company);
+        return new OpTypeItemInsurance(null, request.getName(), request.getAmount(),request.getSpecificCode(), opTypeItem, company);
     }
 }

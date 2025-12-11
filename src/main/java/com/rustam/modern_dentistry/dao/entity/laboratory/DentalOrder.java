@@ -24,7 +24,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "dental_order ")
+@Table(name = "dental_order")
 public class DentalOrder {
     @Id
     @GeneratedValue(strategy = IDENTITY)

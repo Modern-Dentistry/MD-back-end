@@ -7,6 +7,7 @@ import com.rustam.modern_dentistry.dto.request.update.PatientPlansMainUpdateRequ
 import com.rustam.modern_dentistry.dto.response.read.PatientPlansMainResponse;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
 import com.rustam.modern_dentistry.mapper.patient_info.patientplan.PatientPlansMainMapper;
+import com.rustam.modern_dentistry.service.settings.InsuranceCompanyService;
 import com.rustam.modern_dentistry.util.DateTimeUtil;
 import com.rustam.modern_dentistry.util.UtilService;
 import lombok.AccessLevel;
@@ -26,6 +27,7 @@ public class PatientPlansCreateMainService {
     PatientPlanMainRepository patientPlanMainRepository;
     UtilService utilService;
     PatientPlansMainMapper patientPlansMainMapper;
+    InsuranceCompanyService insuranceCompanyService;
 
     public PatientPlansMainResponse create(PatientPlansMainCreateRequest req) {
         if (patientPlanMainRepository.existsByPlanName(req.getPlanName())){
@@ -36,6 +38,9 @@ public class PatientPlansCreateMainService {
                         PatientPlanMain.builder()
                                 .planName(req.getPlanName())
                                 .key(req.getKey())
+                                .insuranceCompany(
+                                        insuranceCompanyService.getInsuranceById(req.getInsuranceId())
+                                )
                                 .patient(utilService.findByPatientId(req.getPatientId()))
                                 .createdBy(utilService.getCurrentUserId())
                                 .status("C")

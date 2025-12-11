@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-op-type-items-table
+      id: 39
       author: rustam
       changes:
         - createTable:
@@ -13,18 +13,29 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
+
               - column:
                   name: operation_name
                   type: VARCHAR(255)
+
               - column:
                   name: operation_code
                   type: VARCHAR(255)
+
+              - column:
+                  name: amount
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
               - column:
                   name: status
                   type: VARCHAR(50)
+
               - column:
                   name: show_technic
                   type: BOOLEAN
+
               - column:
                   name: op_type_id
                   type: BIGINT

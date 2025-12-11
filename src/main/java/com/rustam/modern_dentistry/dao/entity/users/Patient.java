@@ -7,6 +7,7 @@ import com.rustam.modern_dentistry.dao.entity.PatientBlacklist;
 import com.rustam.modern_dentistry.dao.entity.Reservation;
 import com.rustam.modern_dentistry.dao.entity.enums.status.GenderStatus;
 import com.rustam.modern_dentistry.dao.entity.enums.status.SpecializationStatus;
+import com.rustam.modern_dentistry.dao.entity.laboratory.DentalOrder;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientExaminations;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientPhotos;
 import com.rustam.modern_dentistry.dao.entity.patient_info.PatientRecipe;
@@ -87,6 +88,9 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<PatientPlanMain> patientPlans;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<DentalOrder> dentalOrders;
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     PatientBlacklist patientBlacklist;

@@ -4,9 +4,9 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -23,16 +23,23 @@ public class OpTypeItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     String operationName;
     String operationCode;
+
+    @Enumerated(EnumType.STRING)
     Status status;
+
     boolean showTechnic;
 
-    @OneToMany(mappedBy = "opTypeItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<OpTypeItemPrice> prices;
+    BigDecimal amount;
+
+    @OneToOne(mappedBy = "opTypeItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    OpTypeItemPrice price;
 
     @OneToMany(mappedBy = "opTypeItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<OpTypeItemInsurance> insurances;
+    @Builder.Default
+    List<OpTypeItemInsurance> insurances = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "op_type_id", referencedColumnName = "id")

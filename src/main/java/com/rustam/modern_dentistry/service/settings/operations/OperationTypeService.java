@@ -5,6 +5,9 @@ import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeInsurance;
 import com.rustam.modern_dentistry.dao.repository.settings.operations.OperationTypeRepository;
+import com.rustam.modern_dentistry.dto.CategoryWithOperationsDTO;
+import com.rustam.modern_dentistry.dto.OperationDTO;
+import com.rustam.modern_dentistry.dto.projection.OperationCategoryProjection;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeInsuranceRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
@@ -12,6 +15,7 @@ import com.rustam.modern_dentistry.dto.request.read.OperationTypeSearchRequest;
 import com.rustam.modern_dentistry.dto.request.update.OpTypeUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.excel.OperationTypeExcelResponse;
 import com.rustam.modern_dentistry.dto.response.read.CategoryOfOperationDto;
+import com.rustam.modern_dentistry.dto.response.read.OpTypeItemReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.OpTypeReadResponse;
 import com.rustam.modern_dentistry.dto.response.read.PageResponse;
 import com.rustam.modern_dentistry.exception.custom.NotFoundException;
@@ -159,11 +163,41 @@ public class OperationTypeService {
         return new OpTypeInsurance(null, request.getDeductiblePercentage(), opType, company);
     }
 
-    public List<CategoryOfOperationDto> readCategoryOfOperations() {
-        return operationTypeMapper.toReadCategoryOfOperations(new ArrayList<>(),repository.findAll());
-    }
 
     public OpType findById(Long categoryId) {
         return repository.findById(categoryId).orElseThrow(() -> new NotFoundException("OperationType not found with ID: " + categoryId));
+    }
+
+    public List<CategoryOfOperationDto> getOperationsByInsurance(Long insuranceId) {
+        List<OperationCategoryProjection> results =
+                repository.findAllByInsuranceToCategoryOfOperations(insuranceId);
+
+        Map<String, List<OperationCategoryProjection>> grouped = results.stream()
+                .collect(Collectors.groupingBy(OperationCategoryProjection::getCategoryCode));
+
+        return grouped.entrySet().stream()
+                .map(entry -> {
+                    OperationCategoryProjection first = entry.getValue().get(0);
+
+                    CategoryOfOperationDto category = new CategoryOfOperationDto();
+                    category.setId(first.getCategoryId());
+                    category.setCategoryName(first.getCategoryName());
+                    category.setCategoryCode(first.getCategoryCode());
+                    List<OpTypeItemReadResponse> operations = entry.getValue().stream()
+                            .map(proj -> {
+                                OpTypeItemReadResponse op = new OpTypeItemReadResponse();
+                                op.setId(proj.getOperationId());
+                                op.setOperationName(proj.getName());
+                                op.setOperationCode(proj.getOperationCode());
+                                op.setStatus(proj.getStatus());
+                                op.setPrice(proj.getAmount());
+                                return op;
+                            })
+                            .collect(Collectors.toList());
+
+                    category.setOpTypeItemReadResponses(operations);
+                    return category;
+                })
+                .collect(Collectors.toList());
     }
 }

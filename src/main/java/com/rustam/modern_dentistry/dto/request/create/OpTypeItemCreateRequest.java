@@ -1,9 +1,12 @@
 package com.rustam.modern_dentistry.dto.request.create;
 
 import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
+import com.rustam.modern_dentistry.dto.response.read.OpTypeItemInsuranceDto;
+import com.rustam.modern_dentistry.dto.response.read.OpTypeItemPricesDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -19,6 +22,7 @@ public class OpTypeItemCreateRequest {
     String operationCode;
     boolean showTechnic;
     Status status;
-    List<Prices> prices;
+    BigDecimal amount;
+    Prices price;
     List<OpTypeItemInsurances> insurances;
 }

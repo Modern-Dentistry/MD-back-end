@@ -13,22 +13,26 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
+
               - column:
                   name: price
-                  type: DECIMAL(19,2)
+                  type: BIGINT
                   constraints:
                     nullable: false
+
               - column:
                   name: price_type_id
                   type: BIGINT
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_price_category
+                    foreignKeyName: fk_price_category_item_price
                     references: price_categories(id)
+
               - column:
                   name: op_type_item_id
                   type: BIGINT
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_op_type_item
+                    unique: true
+                    foreignKeyName: fk_op_type_item_price
                     references: op_type_items(id)

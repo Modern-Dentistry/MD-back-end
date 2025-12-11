@@ -1,4 +1,5 @@
-package com.rustam.modern_dentistry.dto.request.create;
+package com.rustam.modern_dentistry.dto.request.read;
+
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,10 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PatientPlansMainCreateRequest {
+public class PatientPlansReadCategoryAndOperationsRequest {
 
-    String planName;
-    Long patientId;
-    String key;
     Long insuranceId;
 }

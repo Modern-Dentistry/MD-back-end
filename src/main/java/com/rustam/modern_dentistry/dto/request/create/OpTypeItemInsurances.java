@@ -16,4 +16,5 @@ public class OpTypeItemInsurances {
     String name;
     BigDecimal amount;
     Long insuranceCompanyId;
+    String specificCode;
 }

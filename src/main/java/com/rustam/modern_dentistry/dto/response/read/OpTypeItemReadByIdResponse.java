@@ -21,6 +21,6 @@ public class OpTypeItemReadByIdResponse {
     String operationName;
     String operationCode;
     Status status;
-    List<OpTypeItemPricesDto> prices;
+    OpTypeItemPricesDto price;
     List<OpTypeItemInsuranceDto> insurances;
 }
