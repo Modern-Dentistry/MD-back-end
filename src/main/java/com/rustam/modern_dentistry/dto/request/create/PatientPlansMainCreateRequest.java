@@ -13,4 +13,5 @@ public class PatientPlansMainCreateRequest {
     String planName;
     Long patientId;
     String key;
+    Long insuranceId;
 }
