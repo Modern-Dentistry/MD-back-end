@@ -2,6 +2,8 @@ package com.rustam.modern_dentistry.service.settings.operations;
 
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpType;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
+import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemInsurance;
+import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItemPrice;
 import com.rustam.modern_dentistry.dao.repository.settings.operations.OperationTypeItemRepository;
 import com.rustam.modern_dentistry.dto.request.create.OpTypeItemCreateRequest;
 import com.rustam.modern_dentistry.dto.request.criteria.PageCriteria;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
@@ -35,14 +38,16 @@ public class OperationTypeItemService {
     private final OperationTypeItemHelperService helperService;
     private final OperationTypeService operationTypeService;
 
+    @Transactional
     public void create(OpTypeItemCreateRequest request) {
         var opTypeItem = OP_TYPE_ITEM_MAPPER.toEntity(request);
-        var prices = helperService.getOpTypeItemPrices(request.getPrices(), opTypeItem);
+        var opType = operationTypeService.getOperationTypeById(request.getOpTypeId());
         var insurances = helperService.getOpTypeItemInsurances(request.getInsurances(), opTypeItem);
-        OpType opType = operationTypeService.getOperationTypeById(request.getOpTypeId());
-        opTypeItem.setPrices(prices);
-        opTypeItem.setInsurances(insurances);
         opTypeItem.setOpType(opType);
+//        OpTypeItemPrice price = helperService.getOpTypeItemPrice(request.getPrice(), opTypeItem);
+//        opTypeItem.setPrice(price);
+        opTypeItem.setAmount(request.getAmount());
+        opTypeItem.setInsurances(insurances);
         repository.save(opTypeItem);
     }
 
@@ -64,7 +69,7 @@ public class OperationTypeItemService {
         var operationType = helperService.getOperationTypeItemById(id);
         var toReadDto = OP_TYPE_ITEM_MAPPER.toReadByIdDto(operationType);
         toReadDto.setInsurances(repository.findInsurancesByOpTypeItemId(id));
-        toReadDto.setPrices(repository.findPricesByOpTypeItemId(id));
+        toReadDto.setPrice(repository.findPricesByOpTypeItemId(id));
         return toReadDto;
     }
 
@@ -72,17 +77,29 @@ public class OperationTypeItemService {
         return helperService.getOperationTypeItemById(id);
     }
 
+    @Transactional
     public void update(Long id, OpTypeItemUpdateRequest request) {
-        var opTypeItem = helperService.getOperationTypeItemById(id);
-        OP_TYPE_ITEM_MAPPER.updateOpTypeItem(opTypeItem, request);
+        OpTypeItem opTypeItem = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Operation type item not found"));
 
-        if (request.getPrices() != null) {
-            opTypeItem.setPrices(helperService.updateOpTypePrices(request.getPrices(), opTypeItem));
+        opTypeItem.setOperationName(request.getOperationName());
+        opTypeItem.setOperationCode(request.getOperationCode());
+        opTypeItem.setStatus(request.getStatus());
+
+        if (request.getOpTypeItemPricesUpdateRequest().getPrice() != null) {
+            OpTypeItemPrice updatedPrice = helperService.updateOpTypePrice(request.getOpTypeItemPricesUpdateRequest(), opTypeItem);
+            opTypeItem.setPrice(updatedPrice);
         }
 
         if (request.getInsurances() != null) {
-            opTypeItem.setInsurances(helperService.updateOpTypeInsurance(request.getInsurances(), opTypeItem));
+            opTypeItem.getInsurances().clear();
+            List<OpTypeItemInsurance> newInsurances = helperService.updateOpTypeInsurance(
+                    request.getInsurances(),
+                    opTypeItem
+            );
+            opTypeItem.getInsurances().addAll(newInsurances);
         }
+
         repository.save(opTypeItem);
     }
 
