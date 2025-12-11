@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dao.entity.patient_info.patientplan;
 
 import com.rustam.modern_dentistry.dao.entity.CoreEntity;
+import com.rustam.modern_dentistry.dao.entity.settings.InsuranceCompany;
 import com.rustam.modern_dentistry.dao.entity.users.Patient;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,4 +32,10 @@ public class PatientPlanMain extends CoreEntity {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     Patient patient;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "insurance_company_id")
+    @ToString.Exclude
+    InsuranceCompany insuranceCompany;
+
 }
