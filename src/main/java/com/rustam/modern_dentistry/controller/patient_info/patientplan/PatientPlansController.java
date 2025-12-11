@@ -1,9 +1,10 @@
 package com.rustam.modern_dentistry.controller.patient_info.patientplan;
 
 import com.rustam.modern_dentistry.dto.request.create.PatientPlansCreateRequest;
+import com.rustam.modern_dentistry.dto.request.read.PatientPlansReadCategoryAndOperationsRequest;
 import com.rustam.modern_dentistry.dto.request.update.PatientPlanUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.PatientPlansResponse;
-import com.rustam.modern_dentistry.dto.response.read.PatientPlansCategoryAndOperationsResponse;
+import com.rustam.modern_dentistry.dto.response.read.CategoryOfOperationDto;
 import com.rustam.modern_dentistry.service.patient_info.PatientPlansReadCategoryAndOperationsService;
 import com.rustam.modern_dentistry.service.patient_info.patientplan.PatientPlansCreateService;
 import com.rustam.modern_dentistry.service.patient_info.patientplan.PatientPlansDeleteService;
@@ -36,9 +37,9 @@ public class PatientPlansController {
         return new ResponseEntity<>(patientPlansCreateService.create(req),HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/read-category-and-operations")
-    public ResponseEntity<PatientPlansCategoryAndOperationsResponse> readCategoryAndOperations(){
-        return new ResponseEntity<>(patientPlansReadCategoryAndOperationsService.readCategoryAndOperations(), HttpStatus.OK);
+    @PostMapping(path = "/read-category-and-operations")
+    public ResponseEntity<List<CategoryOfOperationDto>> readCategoryAndOperations(@RequestBody PatientPlansReadCategoryAndOperationsRequest patientPlansReadCategoryAndOperationsRequest){
+        return new ResponseEntity<>(patientPlansReadCategoryAndOperationsService.readCategoryAndOperations(patientPlansReadCategoryAndOperationsRequest), HttpStatus.OK);
     }
 
     @GetMapping(path = "/read")
