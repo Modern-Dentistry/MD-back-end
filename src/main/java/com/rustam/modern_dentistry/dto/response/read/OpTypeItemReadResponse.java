@@ -4,6 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.enums.status.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -19,5 +20,5 @@ public class OpTypeItemReadResponse {
     String operationName;
     String operationCode;
     Status status;
-    List<OpTypeItemPricesDto> prices;
+    BigDecimal price;
 }
