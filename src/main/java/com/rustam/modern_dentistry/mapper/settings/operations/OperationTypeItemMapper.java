@@ -35,7 +35,7 @@ public interface OperationTypeItemMapper {
     OperationTypeItemMapper OP_TYPE_ITEM_MAPPER = Mappers.getMapper(OperationTypeItemMapper.class);
 
     @Mapping(target = "status", defaultValue = "ACTIVE")
-    @Mapping(target = "prices", ignore = true)
+    @Mapping(target = "price", ignore = true)
     @Mapping(target = "insurances", ignore = true)
     OpTypeItem toEntity(OpTypeItemCreateRequest request);
 
@@ -50,26 +50,45 @@ public interface OperationTypeItemMapper {
     OpTypeItemPrice toPriceCategoryEntity(Prices request);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "prices", ignore = true)
+    @Mapping(target = "price", ignore = true)
     @Mapping(target = "insurances", ignore = true)
     void updateOpTypeItem(@MappingTarget OpTypeItem entity, OpTypeItemUpdateRequest request);
 
+    @Mapping(target = "price", ignore = true)
     OpTypeItemReadResponse toReadDto(OpTypeItem entity);
 
     @Mapping(target = "insurances", ignore = true)
-    @Mapping(target = "prices", ignore = true)
+    @Mapping(target = "price", ignore = true)
     OpTypeItemReadByIdResponse toReadByIdDto(OpTypeItem entity);
 
     OpTypeItemExcelResponse toExcelDto(OpTypeItem entity);
 
-    default List<OpTypeItemPricesDto> mapPrices(List<OpTypeItemPrice> prices, List<PriceCategory> allCategories) {
+    default OpTypeItemPricesDto mapPrice(OpTypeItemPrice price, List<PriceCategory> allCategories) {
+        if (price == null) {
+            return null;
+        }
+
+        return OpTypeItemPricesDto.builder()
+                .price(price.getPrice())
+                .priceCategoryId(price.getPriceCategory().getId())
+                .priceCategoryName(price.getPriceCategory().getName())
+                .build();
+    }
+
+    default List<OpTypeItemPricesDto> mapAllPriceCategories(
+            OpTypeItemPrice currentPrice,
+            List<PriceCategory> allCategories) {
+
         return allCategories.stream()
-                .map(category -> prices.stream()
-                        .filter(price -> price.getPriceCategory().getId().equals(category.getId()))
-                        .findFirst()
-                        .map(price -> new OpTypeItemPricesDto(category.getName(), category.getId(), price.getPrice()))
-                        .orElse(new OpTypeItemPricesDto(category.getName(), category.getId(), null)))
-                .collect(Collectors.toList());
+                .map(category -> OpTypeItemPricesDto.builder()
+                        .priceCategoryId(category.getId())
+                        .priceCategoryName(category.getName())
+                        .price(currentPrice != null &&
+                                currentPrice.getPriceCategory().getId().equals(category.getId())
+                                ? currentPrice.getPrice()
+                                : null)
+                        .build())
+                .toList();
     }
 
     List<OpTypeItemReadResponse> toDtos(List<OpTypeItem> all);
