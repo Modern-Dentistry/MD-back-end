@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -21,6 +22,6 @@ public class OpTypeItemUpdateRequest {
     String operationName;
     String operationCode;
     Status status;
-    OpTypeItemPricesUpdateRequest opTypeItemPricesUpdateRequest;
+    BigDecimal price;
     List<OpTypeItemInsuranceUpdateRequest> insurances;
 }
