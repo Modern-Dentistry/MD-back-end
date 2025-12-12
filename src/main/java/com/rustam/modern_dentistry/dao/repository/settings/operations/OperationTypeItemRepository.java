@@ -30,7 +30,8 @@ public interface OperationTypeItemRepository extends JpaRepository<OpTypeItem, L
                 d.id as insuranceId,
                 d.companyName, 
                 i.name, 
-                i.amount
+                i.amount,
+                i.specificCode
             ) 
             from InsuranceCompany d 
             left join OpTypeItemInsurance i 
