@@ -37,9 +37,9 @@ public class PatientPlansController {
         return new ResponseEntity<>(patientPlansCreateService.create(req),HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "/read-category-and-operations")
-    public ResponseEntity<List<CategoryOfOperationDto>> readCategoryAndOperations(@RequestBody PatientPlansReadCategoryAndOperationsRequest patientPlansReadCategoryAndOperationsRequest){
-        return new ResponseEntity<>(patientPlansReadCategoryAndOperationsService.readCategoryAndOperations(patientPlansReadCategoryAndOperationsRequest), HttpStatus.OK);
+    @PostMapping(path = "/read-category-and-operations/{insuranceId}")
+    public ResponseEntity<List<CategoryOfOperationDto>> readCategoryAndOperations(@PathVariable Long insuranceId){
+        return new ResponseEntity<>(patientPlansReadCategoryAndOperationsService.readCategoryAndOperations(insuranceId), HttpStatus.OK);
     }
 
     @GetMapping(path = "/read")
