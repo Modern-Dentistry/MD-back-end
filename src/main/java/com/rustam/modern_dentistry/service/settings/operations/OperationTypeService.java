@@ -170,8 +170,8 @@ public class OperationTypeService {
         List<OperationCategoryProjection> results =
                 repository.findAllByInsuranceToCategoryOfOperations(insuranceId);
 
-        Map<String, List<OperationCategoryProjection>> grouped = results.stream()
-                .collect(Collectors.groupingBy(OperationCategoryProjection::getCategoryCode));
+        Map<Long, List<OperationCategoryProjection>> grouped = results.stream()
+                .collect(Collectors.groupingBy(OperationCategoryProjection::getCategoryId));
 
         return grouped.entrySet().stream()
                 .map(entry -> {
