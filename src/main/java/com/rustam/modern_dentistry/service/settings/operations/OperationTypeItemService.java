@@ -44,8 +44,6 @@ public class OperationTypeItemService {
         var opType = operationTypeService.getOperationTypeById(request.getOpTypeId());
         var insurances = helperService.getOpTypeItemInsurances(request.getInsurances(), opTypeItem);
         opTypeItem.setOpType(opType);
-//        OpTypeItemPrice price = helperService.getOpTypeItemPrice(request.getPrice(), opTypeItem);
-//        opTypeItem.setPrice(price);
         opTypeItem.setAmount(request.getAmount());
         opTypeItem.setInsurances(insurances);
         repository.save(opTypeItem);
@@ -70,7 +68,6 @@ public class OperationTypeItemService {
         var toReadDto = OP_TYPE_ITEM_MAPPER.toReadByIdDto(operationType);
         toReadDto.setInsurances(repository.findInsurancesByOpTypeItemId(id));
         toReadDto.setPrice(operationType.getAmount());
-        //toReadDto.setPrice(repository.findPricesByOpTypeItemId(id));
         return toReadDto;
     }
 
@@ -86,11 +83,7 @@ public class OperationTypeItemService {
         opTypeItem.setOperationName(request.getOperationName());
         opTypeItem.setOperationCode(request.getOperationCode());
         opTypeItem.setStatus(request.getStatus());
-
-        if (request.getOpTypeItemPricesUpdateRequest().getPrice() != null) {
-            OpTypeItemPrice updatedPrice = helperService.updateOpTypePrice(request.getOpTypeItemPricesUpdateRequest(), opTypeItem);
-            opTypeItem.setPrice(updatedPrice);
-        }
+        opTypeItem.setAmount(request.getPrice());
 
         if (request.getInsurances() != null) {
             opTypeItem.getInsurances().clear();

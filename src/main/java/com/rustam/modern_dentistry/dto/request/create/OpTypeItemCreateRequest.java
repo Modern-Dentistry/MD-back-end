@@ -23,6 +23,5 @@ public class OpTypeItemCreateRequest {
     boolean showTechnic;
     Status status;
     BigDecimal amount;
-    Prices price;
     List<OpTypeItemInsurances> insurances;
 }
