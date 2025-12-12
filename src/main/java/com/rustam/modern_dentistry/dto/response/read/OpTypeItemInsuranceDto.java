@@ -17,5 +17,6 @@ public class OpTypeItemInsuranceDto {
     Long insuranceCompanyId;
     String companyName;
     String name;
-    BigDecimal deductibleAmount;
+    BigDecimal amount;
+    String specificCode;
 }
