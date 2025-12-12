@@ -69,7 +69,8 @@ public class OperationTypeItemService {
         var operationType = helperService.getOperationTypeItemById(id);
         var toReadDto = OP_TYPE_ITEM_MAPPER.toReadByIdDto(operationType);
         toReadDto.setInsurances(repository.findInsurancesByOpTypeItemId(id));
-        toReadDto.setPrice(repository.findPricesByOpTypeItemId(id));
+        toReadDto.setPrice(operationType.getAmount());
+        //toReadDto.setPrice(repository.findPricesByOpTypeItemId(id));
         return toReadDto;
     }
 
