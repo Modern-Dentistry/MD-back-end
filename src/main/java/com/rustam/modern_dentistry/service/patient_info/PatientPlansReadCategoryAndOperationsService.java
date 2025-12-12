@@ -17,8 +17,8 @@ public class PatientPlansReadCategoryAndOperationsService {
 
     OperationTypeService operationTypeService;
 
-    public List<CategoryOfOperationDto> readCategoryAndOperations(PatientPlansReadCategoryAndOperationsRequest req) {
-        return operationTypeService.getOperationsByInsurance(req.getInsuranceId());
+    public List<CategoryOfOperationDto> readCategoryAndOperations(Long insuranceId) {
+        return operationTypeService.getOperationsByInsurance(insuranceId);
     }
 
 }
