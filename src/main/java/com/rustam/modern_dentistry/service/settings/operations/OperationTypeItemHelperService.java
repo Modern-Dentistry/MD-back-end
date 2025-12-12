@@ -60,28 +60,28 @@ public class OperationTypeItemHelperService {
         return null;
     }
 
-    public OpTypeItemPrice getOpTypeItemPrice(Prices priceDto, OpTypeItem opTypeItem) {
-        if (priceDto == null) {
-            throw new NullPointerException("qiymet bosdu");
-        }
+//    public OpTypeItemPrice getOpTypeItemPrice(Prices priceDto, OpTypeItem opTypeItem) {
+//        if (priceDto == null) {
+//            throw new NullPointerException("qiymet bosdu");
+//        }
+//
+//        PriceCategory priceCategory = priceCategoryRepository.findById(priceDto.getPriceTypeId())
+//                .orElseThrow(() -> new NotFoundException("Price category not found"));
+//
+//        return OpTypeItemPrice.builder()
+//                .price(priceDto.getPrice())
+//                .priceCategory(priceCategory)
+//                .opTypeItem(opTypeItem)
+//                .build();
+//    }
 
-        PriceCategory priceCategory = priceCategoryRepository.findById(priceDto.getPriceTypeId())
-                .orElseThrow(() -> new NotFoundException("Price category not found"));
-
-        return OpTypeItemPrice.builder()
-                .price(priceDto.getPrice())
-                .priceCategory(priceCategory)
-                .opTypeItem(opTypeItem)
-                .build();
-    }
-
-    private void validatePriceCategories(List<Long> requestedIds, Map<Long, PriceCategory> foundCategories) {
-        if (requestedIds.size() != foundCategories.size()) {
-            Set<Long> notFoundIds = new HashSet<>(requestedIds);
-            notFoundIds.removeAll(foundCategories.keySet());
-            throw new NotFoundException("Price categories not found for ids: " + notFoundIds);
-        }
-    }
+//    private void validatePriceCategories(List<Long> requestedIds, Map<Long, PriceCategory> foundCategories) {
+//        if (requestedIds.size() != foundCategories.size()) {
+//            Set<Long> notFoundIds = new HashSet<>(requestedIds);
+//            notFoundIds.removeAll(foundCategories.keySet());
+//            throw new NotFoundException("Price categories not found for ids: " + notFoundIds);
+//        }
+//    }
 
     protected List<OpTypeItemReadResponse> getContent(List<OpTypeItem> operationTypes) {
         List<PriceCategory> allCategories = priceCategoryRepository.findAll();
