@@ -33,13 +33,16 @@ public class PatientPlansCreateMainService {
         if (patientPlanMainRepository.existsByPlanName(req.getPlanName())){
             throw new ExistsException("Plan name already exists");
         }
+
         return patientPlansMainMapper.toDto(
                 patientPlanMainRepository.save(
                         PatientPlanMain.builder()
                                 .planName(req.getPlanName())
                                 .key(req.getKey())
                                 .insuranceCompany(
-                                        insuranceCompanyService.getInsuranceById(req.getInsuranceId())
+                                        req.getInsuranceId() != null && req.getInsuranceId() > 0
+                                                ? insuranceCompanyService.getInsuranceById(req.getInsuranceId())
+                                                : null
                                 )
                                 .patient(utilService.findByPatientId(req.getPatientId()))
                                 .createdBy(utilService.getCurrentUserId())
