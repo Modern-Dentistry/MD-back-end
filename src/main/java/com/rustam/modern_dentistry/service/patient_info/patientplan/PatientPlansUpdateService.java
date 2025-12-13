@@ -17,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,9 +35,10 @@ public class PatientPlansUpdateService {
     OperationTypeItemService operationTypeItemService;
     OperationTypeService operationTypeService;
 
+    @Transactional
     public PatientPlansResponse update(PatientPlanUpdateRequest req) {
         patientPlanUtilService.validate(
-                req.getPatientPlanMainId(),req.getToothId(),req.getCategoryId(),req.getPartOfTeethIds(),req.getOperationId()
+                req.getPatientPlanMainId(), req.getToothId(), req.getCategoryId(), req.getPartOfTeethIds(), req.getOperationId()
         );
 
         PatientPlanMain mainPlan = patientPlansUpdateMainService
@@ -49,14 +51,20 @@ public class PatientPlansUpdateService {
 
         PatientPlan patientPlan = patientPlanUtilService.findById(req.getId());
         List<PatientPlanPartOfToothDetail> details = mapDetails(req.getPartOfTeethIds(), patientPlan, operations);
-        PatientPlan saved = patientPlansRepository.save(mapToEntity(patientPlan, mainPlan, req,details));
+        PatientPlan saved = patientPlansRepository.save(mapToEntity(patientPlan, mainPlan, req, details));
         return patientPlanUtilService.mapper(saved);
     }
 
     private PatientPlan mapToEntity(PatientPlan patientPlan, PatientPlanMain mainPlan, PatientPlanUpdateRequest req, List<PatientPlanPartOfToothDetail> details) {
-        utilService.updateFieldIfPresent(req.getToothId(),patientPlan::setToothId);
+        utilService.updateFieldIfPresent(req.getToothId(), patientPlan::setToothId);
         patientPlan.setPatientPlanMain(mainPlan);
-        patientPlan.setDetails(details);
+
+        if (patientPlan.getDetails() == null) {
+            patientPlan.setDetails(new ArrayList<>());
+        }
+        patientPlan.getDetails().clear();
+        patientPlan.getDetails().addAll(details);
+
         patientPlan.setOpType(operationTypeService.findById(req.getCategoryId()));
         patientPlan.setStatus("A");
         patientPlan.setActionStatus("U");
@@ -78,7 +86,6 @@ public class PatientPlansUpdateService {
             details.add(detail);
         }
 
-        patientPlan.setDetails(details);
         return details;
     }
 }

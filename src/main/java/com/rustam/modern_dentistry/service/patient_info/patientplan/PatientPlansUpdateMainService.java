@@ -36,7 +36,6 @@ public class PatientPlansUpdateMainService {
         utilService.updateFieldIfPresent(req.getKey(),patientPlanMain::setKey);
         patientPlanMain.setUpdatedBy(utilService.getCurrentUserId());
         patientPlanMain.setUpdatedDate(DateTimeUtil.toEpochMilli(LocalDateTime.now()));
-        patientPlanMain.setActionStatus("U");
         return patientPlanMainRepository.save(patientPlanMain);
     }
 
