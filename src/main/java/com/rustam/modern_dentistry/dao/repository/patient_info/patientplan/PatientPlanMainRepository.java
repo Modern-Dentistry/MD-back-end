@@ -21,4 +21,5 @@ public interface PatientPlanMainRepository extends JpaRepository<PatientPlanMain
             "AND ppm.actionStatus IN :actionStatuses")
     Optional<PatientPlanMain> findByIdAndStatusInAndActionStatusIn(UUID id, List<String> statuses, List<String> actionStatuses);
 
+    List<PatientPlanMain> findAllByPatientIdAndActionStatusAndStatus(Long patientId, String actionStatus, String status);
 }

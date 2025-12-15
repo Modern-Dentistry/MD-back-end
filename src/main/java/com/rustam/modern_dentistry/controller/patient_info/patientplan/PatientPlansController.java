@@ -53,7 +53,7 @@ public class PatientPlansController {
     }
 
     @PostMapping(path = "/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         patientPlansDeleteService.delete(id);
         return ResponseEntity.ok().build();
     }
