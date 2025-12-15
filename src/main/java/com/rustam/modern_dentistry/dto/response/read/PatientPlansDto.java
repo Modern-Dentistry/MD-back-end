@@ -15,6 +15,6 @@ import java.util.List;
 public class PatientPlansDto {
 
     Long toothNo;
-    CategoryOfOperationDto categoryOfOperationDto;
+    OperationOfCategoryDto operationOfCategoryDto;
     List<PatientPlanPartOfToothDetailDto> partOfTeethIds;
 }

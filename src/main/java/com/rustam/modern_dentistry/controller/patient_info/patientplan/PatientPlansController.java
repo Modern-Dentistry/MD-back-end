@@ -6,10 +6,7 @@ import com.rustam.modern_dentistry.dto.request.update.PatientPlanUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.create.PatientPlansResponse;
 import com.rustam.modern_dentistry.dto.response.read.CategoryOfOperationDto;
 import com.rustam.modern_dentistry.service.patient_info.PatientPlansReadCategoryAndOperationsService;
-import com.rustam.modern_dentistry.service.patient_info.patientplan.PatientPlansCreateService;
-import com.rustam.modern_dentistry.service.patient_info.patientplan.PatientPlansDeleteService;
-import com.rustam.modern_dentistry.service.patient_info.patientplan.PatientPlansReadService;
-import com.rustam.modern_dentistry.service.patient_info.patientplan.PatientPlansUpdateService;
+import com.rustam.modern_dentistry.service.patient_info.patientplan.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +28,7 @@ public class PatientPlansController {
     PatientPlansReadService patientPlansReadService;
     PatientPlansUpdateService patientPlansUpdateService;
     PatientPlansDeleteService patientPlansDeleteService;
+    PatientPlansReadByPatientPlanMainService patientPlansReadByPatientPlanMainService;
 
     @PostMapping(path = "/create")
     public ResponseEntity<PatientPlansResponse> create(@RequestBody PatientPlansCreateRequest req){
@@ -56,5 +54,10 @@ public class PatientPlansController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         patientPlansDeleteService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(path = "/read-by-patient-plan-main/{id}")
+    public ResponseEntity<PatientPlansResponse> readByPatientPlanMainId(@PathVariable UUID id){
+        return new ResponseEntity<>(patientPlansReadByPatientPlanMainService.readByPatientPlanMainId(id),HttpStatus.OK);
     }
 }
