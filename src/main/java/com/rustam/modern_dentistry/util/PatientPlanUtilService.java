@@ -5,6 +5,7 @@ import com.rustam.modern_dentistry.dao.repository.patient_info.patientplan.Patie
 import com.rustam.modern_dentistry.dto.request.create.PatientPlansCreateRequest;
 import com.rustam.modern_dentistry.dto.response.create.PatientPlansResponse;
 import com.rustam.modern_dentistry.dto.response.read.CategoryOfOperationDto;
+import com.rustam.modern_dentistry.dto.response.read.OperationOfCategoryDto;
 import com.rustam.modern_dentistry.dto.response.read.PatientPlanPartOfToothDetailDto;
 import com.rustam.modern_dentistry.dto.response.read.PatientPlansDto;
 import com.rustam.modern_dentistry.exception.custom.ExistsException;
@@ -30,8 +31,8 @@ public class PatientPlanUtilService {
                 .id(savedPlan.getId())
                 .patientPlansDto(PatientPlansDto.builder()
                         .toothNo(savedPlan.getToothId())
-                        .categoryOfOperationDto(
-                                CategoryOfOperationDto.builder()
+                        .operationOfCategoryDto(
+                                OperationOfCategoryDto.builder()
                                         .id(savedPlan.getOpType().getId())
                                         .categoryName(savedPlan.getOpType().getCategoryName())
                                         .categoryCode(savedPlan.getOpType().getCategoryCode())
