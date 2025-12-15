@@ -4,7 +4,6 @@ import com.rustam.modern_dentistry.dto.request.create.PatientPlansMainCreateRequ
 import com.rustam.modern_dentistry.dto.request.save.PatientPlansSaveRequest;
 import com.rustam.modern_dentistry.dto.request.update.PatientPlansMainUpdateRequest;
 import com.rustam.modern_dentistry.dto.response.read.PatientPlansMainResponse;
-import com.rustam.modern_dentistry.dto.response.read.ReadPatientsInsuranceResponse;
 import com.rustam.modern_dentistry.service.patient_info.patientplan.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
