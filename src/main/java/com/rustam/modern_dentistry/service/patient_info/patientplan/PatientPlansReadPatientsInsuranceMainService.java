@@ -1,7 +1,6 @@
 package com.rustam.modern_dentistry.service.patient_info.patientplan;
 
 import com.rustam.modern_dentistry.dto.response.read.PatientInsuranceReadResponse;
-import com.rustam.modern_dentistry.dto.response.read.ReadPatientsInsuranceResponse;
 import com.rustam.modern_dentistry.mapper.patient_info.patientplan.PatientPlansMainMapper;
 import com.rustam.modern_dentistry.service.patient_info.insurance.PatientInsuranceService;
 import lombok.AccessLevel;
