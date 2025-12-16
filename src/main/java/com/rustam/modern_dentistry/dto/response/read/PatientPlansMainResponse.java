@@ -15,4 +15,5 @@ public class PatientPlansMainResponse {
     UUID id;
     String planName;
     String key;
+    Long insuranceId;
 }

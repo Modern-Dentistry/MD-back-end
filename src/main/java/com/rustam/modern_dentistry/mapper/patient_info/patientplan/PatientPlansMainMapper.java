@@ -4,6 +4,7 @@ import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPl
 import com.rustam.modern_dentistry.dto.response.read.PatientPlansMainResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface PatientPlansMainMapper {
+    @Mapping(target = "insuranceId", source = "insuranceCompany.id")
     PatientPlansMainResponse toDto(PatientPlanMain save);
 
     List<PatientPlansMainResponse> toDtos(List<PatientPlanMain> all);

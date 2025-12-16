@@ -8,6 +8,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 import static jakarta.persistence.FetchType.LAZY;
 
 @Data
@@ -22,4 +24,6 @@ public class PatientPlanPartOfToothDetailDto {
     Long partOfToothId;
 
     String operationName;
+
+    BigDecimal price;
 }

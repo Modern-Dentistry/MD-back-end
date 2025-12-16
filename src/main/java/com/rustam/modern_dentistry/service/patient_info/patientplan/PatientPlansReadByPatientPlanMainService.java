@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,9 +26,9 @@ public class PatientPlansReadByPatientPlanMainService {
     PatientPlanUtilService patientPlanUtilService;
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public PatientPlansResponse readByPatientPlanMainId(UUID id) {
-        PatientPlan patientPlan = patientPlansRepository.findByPatientPlanMainIdAndStatusAndActionStatus(id, "A", "A")
-                .orElseThrow(() -> new NotFoundException("No such patient plan found with id: " + id));
-        return patientPlanUtilService.mapper(patientPlan);
+    public List<PatientPlansResponse> readByPatientPlanMainId(UUID id) {
+        return patientPlansRepository
+                .findAllByPatientPlanMainIdAndStatusInAndActionStatusIn(id,List.of("A","C"),List.of("A","C"))
+                .stream().map(patientPlanUtilService::mapper).toList();
     }
 }

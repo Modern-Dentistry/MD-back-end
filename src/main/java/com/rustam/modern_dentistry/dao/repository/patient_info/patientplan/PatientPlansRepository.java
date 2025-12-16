@@ -33,5 +33,5 @@ public interface PatientPlansRepository extends JpaRepository<PatientPlan, UUID>
 
     Optional<PatientPlan> findByIdAndStatusInAndActionStatusIn(UUID id, List<String> a, List<String> a1);
 
-    Optional<PatientPlan> findByPatientPlanMainIdAndStatusAndActionStatus(UUID id, String a, String a1);
+    List<PatientPlan> findAllByPatientPlanMainIdAndStatusInAndActionStatusIn(UUID id, List<String> status, List<String> actionStatus);
 }
