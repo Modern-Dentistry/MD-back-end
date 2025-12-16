@@ -42,6 +42,7 @@ public class PatientPlanUtilService {
                                 pot -> PatientPlanPartOfToothDetailDto.builder()
                                         .operationName(pot.getOpTypeItem().getOperationName())
                                         .partOfToothId(pot.getPartOfToothId())
+                                        .price(pot.getOpTypeItem().getAmount())
                                         .id(pot.getId())
                                         .build()
 
