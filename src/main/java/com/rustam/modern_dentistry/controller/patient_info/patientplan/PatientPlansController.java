@@ -57,7 +57,7 @@ public class PatientPlansController {
     }
 
     @GetMapping(path = "/read-by-patient-plan-main/{id}")
-    public ResponseEntity<PatientPlansResponse> readByPatientPlanMainId(@PathVariable UUID id){
+    public ResponseEntity<List<PatientPlansResponse>> readByPatientPlanMainId(@PathVariable UUID id){
         return new ResponseEntity<>(patientPlansReadByPatientPlanMainService.readByPatientPlanMainId(id),HttpStatus.OK);
     }
 }
