@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PatientPlanMainRepository extends JpaRepository<PatientPlanMain,UUID> {
-    boolean existsByPlanName(String planName);
+    boolean existsByPlanNameAndActionStatusAndStatus(String planName,String actionStatus,String status);
 
     List<PatientPlanMain> findAllByStatusAndActionStatus(String a, String a1);
 

@@ -30,7 +30,7 @@ public class PatientPlansCreateMainService {
     InsuranceCompanyService insuranceCompanyService;
 
     public PatientPlansMainResponse create(PatientPlansMainCreateRequest req) {
-        if (patientPlanMainRepository.existsByPlanName(req.getPlanName())){
+        if (patientPlanMainRepository.existsByPlanNameAndActionStatusAndStatus(req.getPlanName(),"A","A")){
             throw new ExistsException("Plan name already exists");
         }
 
