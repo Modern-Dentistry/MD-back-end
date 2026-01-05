@@ -14,6 +14,7 @@ public class PatientExaminationsUpdateRequest {
 
     Long id;
     Long patientId;
-    List<Long> toothNumber;
+    Long toothNumber;
+    List<Long> partOfTeethIds;
     Long examinationId;
 }
