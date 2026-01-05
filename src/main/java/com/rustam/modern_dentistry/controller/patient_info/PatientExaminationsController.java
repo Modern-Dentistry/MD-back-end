@@ -23,10 +23,10 @@ public class PatientExaminationsController {
 
     private final PatientExaminationsService patientExaminationsService;
 
-    @PostMapping(path = "/create")
-    public ResponseEntity<PatientExaminationsCreateResponse> create(@Valid @RequestBody PatientExaminationsCreateRequest patientExaminationsCreateRequest) {
-        return new ResponseEntity<>(patientExaminationsService.create(patientExaminationsCreateRequest), HttpStatus.OK);
-    }
+//    @PostMapping(path = "/create")
+//    public ResponseEntity<PatientExaminationsCreateResponse> create(@Valid @RequestBody PatientExaminationsCreateRequest patientExaminationsCreateRequest) {
+//        return new ResponseEntity<>(patientExaminationsService.create(patientExaminationsCreateRequest), HttpStatus.OK);
+//    }
 
     @PostMapping(path = "/see-historical-election-dental-examinations")
     public ResponseEntity<List<PatientExaminationsResponse>> seeHistoricalElectionDentalExaminations(@RequestBody RequestToSeeTheExaminations requestToSeeTheExaminations) {
@@ -38,20 +38,15 @@ public class PatientExaminationsController {
         return new ResponseEntity<>(patientExaminationsService.readExaminations(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/read-teeth")
-    public ResponseEntity<List<TeethResponse>> readTeeth() {
-        return new ResponseEntity<>(patientExaminationsService.readTeeth(), HttpStatus.OK);
-    }
-
     @PutMapping(path = "/update")
     public ResponseEntity<PatientExaminationsCreateResponse> update(@RequestBody PatientExaminationsUpdateRequest patientExaminationsUpdateRequest) {
         return new ResponseEntity<>(patientExaminationsService.update(patientExaminationsUpdateRequest), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/read")
-    public ResponseEntity<List<PatientExaminationsResponse>> read() {
-        return new ResponseEntity<>(patientExaminationsService.read(), HttpStatus.OK);
-    }
+//    @GetMapping(path = "/read")
+//    public ResponseEntity<List<PatientExaminationsResponse>> read() {
+//        return new ResponseEntity<>(patientExaminationsService.read(), HttpStatus.OK);
+//    }
 
     @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
