@@ -3,18 +3,18 @@ package com.rustam.modern_dentistry.dto.request.create;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PatientExaminationsCreateRequest {
+public class PatientTreatmentDetailsRequest {
 
-    Long patientId;
-    Long toothId;
-    List<Long> partOfTeethIds;
-    Long examinationId;
+    Long partOfToothId;
+
+    String operationName;
+
+    BigDecimal price;
 }

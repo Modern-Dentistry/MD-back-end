@@ -50,6 +50,10 @@ databaseChangeLog:
                   type: bigint
 
               - column:
+                  name: is_completed
+                  type: boolean
+
+              - column:
                   name: status
                   type: varchar(255)
 
