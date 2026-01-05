@@ -121,21 +121,21 @@ public class TeethService {
         return teethRepository.findExaminationsByToothNo(toothNo);
     }
 
-    public List<TeethExamination> dentalExaminationForTeethOrThrow(List<Long> toothNos) {
-        List<TeethExamination> examinations = teethRepository.dentalExaminationForTeeth(toothNos);
-        Set<Long> foundToothNos = examinations.stream()
-                .map(te -> te.getTeeth().getToothNo())
-                .collect(Collectors.toSet());
-
-        toothNos.stream()
-                .filter(toothNo -> !foundToothNos.contains(toothNo))
-                .findAny()
-                .ifPresent(missing -> {
-                    throw new NotFoundException("Tooth " + missing + " does not exist in the database!");
-                });
-
-        return examinations;
-    }
+//    public List<TeethExamination> dentalExaminationForTeethOrThrow(List<Long> toothNos) {
+//        List<TeethExamination> examinations = teethRepository.dentalExaminationForTeeth(toothNos);
+//        Set<Long> foundToothNos = examinations.stream()
+//                .map(te -> te.getTeeth().getToothNo())
+//                .collect(Collectors.toSet());
+//
+//        toothNos.stream()
+//                .filter(toothNo -> !foundToothNos.contains(toothNo))
+//                .findAny()
+//                .ifPresent(missing -> {
+//                    throw new NotFoundException("Tooth " + missing + " does not exist in the database!");
+//                });
+//
+//        return examinations;
+//    }
 
     public List<Teeth> findAllById(List<Long> teethList) {
         return teethRepository.findAllById(teethList);
