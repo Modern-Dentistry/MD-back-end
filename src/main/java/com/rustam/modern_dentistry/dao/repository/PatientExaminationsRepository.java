@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface PatientExaminationsRepository extends JpaRepository<PatientExaminations, Long> {
     @Query("SELECT CASE WHEN COUNT(pe) > 0 THEN true ELSE false END FROM PatientExaminations pe " +
-            "WHERE pe.patient.id = :patientId AND pe.toothNumber IN :toothNumber AND pe.diagnosis = :diagnosis")
-    boolean existsPatientExaminationsByPatientAndToothNumberAndDiagnosis(Long patientId, List<Long> toothNumber,String diagnosis);
+            "WHERE pe.patient.id = :patientId AND pe.toothNumber = :toothNumber AND pe.diagnosis = :diagnosis")
+    boolean existsPatientExaminationsByPatientAndToothNumberAndDiagnosis(Long patientId, Long toothNumber,String diagnosis);
 
     @Query("SELECT new com.rustam.modern_dentistry.dto.response.read.PatientExaminationsResponse(p.id, p.toothNumber,p.diagnosis,d.name) " +
             "FROM PatientExaminations p JOIN BaseUser d")
