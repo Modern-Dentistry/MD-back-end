@@ -14,6 +14,7 @@ import java.util.List;
 public class PatientExaminationsCreateRequest {
 
     Long patientId;
-    List<Long> toothNumber;
+    Long toothId;
+    List<Long> partOfTeethIds;
     Long examinationId;
 }
