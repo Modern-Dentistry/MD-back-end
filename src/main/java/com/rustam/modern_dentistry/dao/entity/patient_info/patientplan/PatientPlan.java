@@ -37,4 +37,7 @@ public class PatientPlan extends CoreEntity {
 
     @OneToMany(mappedBy = "patientPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     List<PatientPlanPartOfToothDetail> details;
+
+    @Column(name = "is_completed")
+    boolean isCompleted;
 }
