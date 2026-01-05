@@ -1,6 +1,7 @@
 package com.rustam.modern_dentistry.dao.repository.patient_info.patientplan;
 
 import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlan;
+import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlanMain;
 import com.rustam.modern_dentistry.dto.request.create.PatientPlansCreateRequest;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +35,8 @@ public interface PatientPlansRepository extends JpaRepository<PatientPlan, UUID>
     Optional<PatientPlan> findByIdAndStatusInAndActionStatusIn(UUID id, List<String> a, List<String> a1);
 
     List<PatientPlan> findAllByPatientPlanMainIdAndStatusInAndActionStatusIn(UUID id, List<String> status, List<String> actionStatus);
+
+    @Query("SELECT ppm FROM PatientPlanMain ppm " +
+            "WHERE ppm.id = :planMainId ")
+    Optional<PatientPlanMain> findByDateOfPatientPlanMain(UUID planMainId);
 }
