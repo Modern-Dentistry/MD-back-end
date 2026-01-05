@@ -1,0 +1,98 @@
+databaseChangeLog:
+  - changeSet:
+      id: 66
+      author: rustam
+      changes:
+        - createTable:
+            tableName: patient_treatments
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+
+              - column:
+                  name: updated_by
+                  type: VARCHAR(255)
+
+              - column:
+                  name: deleted_by
+                  type: VARCHAR(255)
+
+              - column:
+                  name: created_date
+                  type: BIGINT
+
+              - column:
+                  name: updated_date
+                  type: BIGINT
+
+              - column:
+                  name: deleted_date
+                  type: BIGINT
+
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+
+              - column:
+                  name: action_status
+                  type: VARCHAR(50)
+
+              - column:
+                  name: patient_plan_main_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_treatment_plan_main
+                    references: patient_plan_main(id)
+
+              - column:
+                  name: is_checked
+                  type: BOOLEAN
+
+              - column:
+                  name: actual_price
+                  type: DECIMAL(19,2)
+
+              - column:
+                  name: executed_status
+                  type: VARCHAR(50)
+
+              - column:
+                  name: notes
+                  type: TEXT
+
+  - changeSet:
+      id: create-treatment-executed-plans-table
+      author: rustam
+      changes:
+        - createTable:
+            tableName: treatment_executed_plans
+            columns:
+              - column:
+                  name: treatment_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exec_plan_treatment
+                    references: patient_treatments(id)
+
+              - column:
+                  name: patient_plan_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_exec_plan_patient_plan
+                    references: patient_plan(id)
+
+        - addPrimaryKey:
+            tableName: treatment_executed_plans
+            columnNames: treatment_id, patient_plan_id
+            constraintName: pk_treatment_executed_plans
