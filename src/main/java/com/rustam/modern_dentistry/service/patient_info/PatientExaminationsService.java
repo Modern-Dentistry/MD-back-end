@@ -45,60 +45,56 @@ public class PatientExaminationsService {
         return examinationService.read();
     }
 
-    public List<TeethResponse> readTeeth() {
-        return teethService.read();
-    }
-
-    public PatientExaminationsCreateResponse create(PatientExaminationsCreateRequest request) {
-        Examination examination = examinationService.findById(request.getExaminationId());
-
-        boolean patientHasExamination = patientExaminationsRepository
-                .existsPatientExaminationsByPatientAndToothNumberAndDiagnosis(request.getPatientId(),request.getToothNumber() ,examination.getTypeName());
-        if (patientHasExamination) {
-            throw new ExistsException("Examination " + examination.getTypeName() +
-                    " is already recorded for this patient.");
-        }
-
-        List<TeethExamination> existingExaminations = teethService.dentalExaminationForTeethOrThrow(request.getToothNumber());
-
-        Map<Long, List<String>> existingExaminationsMap = existingExaminations.stream()
-                .collect(Collectors.groupingBy(
-                        te -> te.getTeeth().getToothNo(),
-                        Collectors.mapping(te -> te.getExamination().getTypeName(), Collectors.toList())
-                ));
-
-        boolean hasMatchingExamination = request.getToothNumber().stream()
-                .anyMatch(toothNumber -> existingExaminationsMap
-                        .getOrDefault(toothNumber, List.of())
-                        .contains(examination.getTypeName()));
-
-        if (!hasMatchingExamination) {
-            throw new ExistsException("Examination " + examination.getTypeName() +
-                    " is not recorded for any of the selected teeth: " + request.getToothNumber());
-        }
-
-        SelectingPatientToReadResponse patientData = generalCalendarService.findByPatientId(request.getPatientId());
-        String currentUserId = utilService.getCurrentUserId();
-
-        List<PatientExaminations> patientExaminationsList = request.getToothNumber().stream()
-                .map(toothNumber -> PatientExaminations.builder()
-                        .patient(utilService.findByPatientId(request.getPatientId()))
-                        .toothNumber(toothNumber)
-                        .diagnosis(examination.getTypeName())
-                        .doctorId(UUID.fromString(currentUserId))
-                        .patientAppointmentDate(patientData.getDate())
-                        .build())
-                .collect(Collectors.toList());
-
-        patientExaminationsRepository.saveAll(patientExaminationsList);
-
-        return PatientExaminationsCreateResponse.builder()
-                .patientId(request.getPatientId())
-                .toothNo(request.getToothNumber())
-                .diagnosis(examination.getTypeName())
-                .doctorId(currentUserId)
-                .build();
-    }
+//    public PatientExaminationsCreateResponse create(PatientExaminationsCreateRequest request) {
+//        Examination examination = examinationService.findById(request.getExaminationId());
+//
+//        boolean patientHasExamination = patientExaminationsRepository
+//                .existsPatientExaminationsByPatientAndToothNumberAndDiagnosis(request.getPatientId(),request.getToothId() ,examination.getTypeName());
+//        if (patientHasExamination) {
+//            throw new ExistsException("Examination " + examination.getTypeName() +
+//                    " is already recorded for this patient.");
+//        }
+//
+//        List<TeethExamination> existingExaminations = teethService.dentalExaminationForTeethOrThrow(request.getToothNumber());
+//
+//        Map<Long, List<String>> existingExaminationsMap = existingExaminations.stream()
+//                .collect(Collectors.groupingBy(
+//                        te -> te.getTeeth().getToothNo(),
+//                        Collectors.mapping(te -> te.getExamination().getTypeName(), Collectors.toList())
+//                ));
+//
+//        boolean hasMatchingExamination = request.getToothNumber().stream()
+//                .anyMatch(toothNumber -> existingExaminationsMap
+//                        .getOrDefault(toothNumber, List.of())
+//                        .contains(examination.getTypeName()));
+//
+//        if (!hasMatchingExamination) {
+//            throw new ExistsException("Examination " + examination.getTypeName() +
+//                    " is not recorded for any of the selected teeth: " + request.getToothNumber());
+//        }
+//
+//        SelectingPatientToReadResponse patientData = generalCalendarService.findByPatientId(request.getPatientId());
+//        String currentUserId = utilService.getCurrentUserId();
+//
+//        List<PatientExaminations> patientExaminationsList = request.getToothNumber().stream()
+//                .map(toothNumber -> PatientExaminations.builder()
+//                        .patient(utilService.findByPatientId(request.getPatientId()))
+//                        .toothNumber(toothNumber)
+//                        .diagnosis(examination.getTypeName())
+//                        .doctorId(UUID.fromString(currentUserId))
+//                        .patientAppointmentDate(patientData.getDate())
+//                        .build())
+//                .collect(Collectors.toList());
+//
+//        patientExaminationsRepository.saveAll(patientExaminationsList);
+//
+//        return PatientExaminationsCreateResponse.builder()
+//                .patientId(request.getPatientId())
+//                .toothNo(request.getToothNumber())
+//                .diagnosis(examination.getTypeName())
+//                .doctorId(currentUserId)
+//                .build();
+//    }
 
 
     public PatientExaminations findById(Long id) {
@@ -115,13 +111,13 @@ public class PatientExaminationsService {
             throw new ExistsException("These examinations are available for this patient.");
         }
         List<Long> teethNo = new ArrayList<>();
-        patientExaminationsUpdateRequest.getToothNumber().forEach(toothNumber -> {
-            patientExaminations.setPatient(patient);
-            patientExaminations.setToothNumber(toothNumber);
-            patientExaminations.setDiagnosis(examination.getTypeName());
-            patientExaminationsRepository.save(patientExaminations);
-            teethNo.add(toothNumber);
-        });
+//        patientExaminationsUpdateRequest.getToothNumber().forEach(toothNumber -> {
+//            patientExaminations.setPatient(patient);
+//            patientExaminations.setToothNumber(toothNumber);
+//            patientExaminations.setDiagnosis(examination.getTypeName());
+//            patientExaminationsRepository.save(patientExaminations);
+//            teethNo.add(toothNumber);
+//        });
         return PatientExaminationsCreateResponse.builder()
                 .patientId(patientExaminationsUpdateRequest.getPatientId())
                 .toothNo(teethNo)
@@ -129,9 +125,9 @@ public class PatientExaminationsService {
                 .build();
     }
 
-    public List<PatientExaminationsResponse> read() {
-        return patientExaminationsRepository.findAllPatientExaminations();
-    }
+//    public List<PatientExaminationsResponse> read() {
+//        return patientExaminationsRepository.findAllPatientExaminations();
+//    }
 
     public void delete(Long id) {
         PatientExaminations patientExaminations = findById(id);
