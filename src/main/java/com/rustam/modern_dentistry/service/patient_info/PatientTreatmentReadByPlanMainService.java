@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,8 @@ public class PatientTreatmentReadByPlanMainService {
     PatientPlanUtilService patientPlanUtilService;
 
     @Transactional
-    public List<ReadByPatientPlanMainIdOfTreatment> read(PatientTreatmentRequest req) {
-        PatientPlanMain patientPlanMains = patientPlanUtilService.existsByDateOfPatientPlanMain(req.getPlanMainId());
+    public List<ReadByPatientPlanMainIdOfTreatment> read(UUID planMainId) {
+        PatientPlanMain patientPlanMains = patientPlanUtilService.existsByDateOfPatientPlanMain(planMainId);
 
         return patientPlanUtilService.mapToTreatmentDto(patientPlanMains);
     }
