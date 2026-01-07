@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/patient-treatment")
@@ -32,9 +33,9 @@ public class PatientTreatmentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping(path = "/read-by-plan-main-id-of-treatment")
-    public ResponseEntity<List<ReadByPatientPlanMainIdOfTreatment>> read(@RequestBody PatientTreatmentRequest req){
-        return new ResponseEntity<>(patientTreatmentReadByPlanMainService.read(req),HttpStatus.OK);
+    @PostMapping(path = "/read-by-plan-main-id-of-treatment/{planMainId}")
+    public ResponseEntity<List<ReadByPatientPlanMainIdOfTreatment>> read(@PathVariable UUID planMainId){
+        return new ResponseEntity<>(patientTreatmentReadByPlanMainService.read(planMainId),HttpStatus.OK);
     }
 
     @PostMapping(path = "/save")
