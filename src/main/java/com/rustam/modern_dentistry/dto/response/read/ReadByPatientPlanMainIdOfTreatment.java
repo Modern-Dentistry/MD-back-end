@@ -15,6 +15,9 @@ import java.util.UUID;
 public class ReadByPatientPlanMainIdOfTreatment {
     String key;
     UUID patientPlanId;
+    Long categoryId;
+    String categoryName;
+    String categoryCode;
     Long toothNo;
     List<PatientPlansOfTreatmentResponse> details;
 }
