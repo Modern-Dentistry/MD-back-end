@@ -42,7 +42,7 @@ public class PatientPlansUpdateMainService {
     public PatientPlanMain findByIdAndStatusAndActionStatus(UUID id) {
         return patientPlansMainMapper.toReadById(
                 patientPlanMainRepository.findByIdAndStatusInAndActionStatusIn(id, List.of("A","C"),List.of("A","C"))
-                        .orElseThrow(() -> new NotFoundException("patient plan does not found"))
+                        .orElseThrow(() -> new NotFoundException("patient plan main does not found"))
         );
     }
 
