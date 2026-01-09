@@ -39,4 +39,15 @@ public interface PatientPlansRepository extends JpaRepository<PatientPlan, UUID>
     @Query("SELECT ppm FROM PatientPlanMain ppm " +
             "WHERE ppm.id = :planMainId ")
     Optional<PatientPlanMain> findByDateOfPatientPlanMain(UUID planMainId);
+
+    @Query("""
+        SELECT CASE WHEN COUNT(pp) > 0 THEN true ELSE false END
+        FROM PatientPlan pp
+        JOIN pp.details d
+        WHERE pp.patientPlanMain.id = :#{#patientPlanMainId}
+        AND pp.toothId = :#{#toothId}
+        AND pp.opType.id = :#{#categoryId}
+        AND d.opTypeItem.id = :#{#operationId}
+    """)
+    Optional<PatientPlan> findByPatientPlanMainIdAndToothIdAndOpTypeItemAndCategoryId(UUID patientPlanMainId,Long toothId,Long operationId,Long categoryId);
 }
