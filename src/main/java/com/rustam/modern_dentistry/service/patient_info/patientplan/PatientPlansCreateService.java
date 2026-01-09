@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -41,30 +43,59 @@ public class PatientPlansCreateService {
     @Transactional
     public PatientPlansResponse create(PatientPlansCreateRequest req) {
         patientPlanUtilService.validate(
-                req.getPatientPlanMainId(),req.getToothId(),req.getCategoryId(),req.getPartOfTeethIds(),req.getOperationId()
+                req.getPatientPlanMainId(), req.getToothId(), req.getCategoryId(), req.getPartOfTeethIds(), req.getOperationId()
         );
 
-        PatientPlanMain mainPlan = patientPlansUpdateMainService
-                .findByIdAndStatusAndActionStatus(req.getPatientPlanMainId());
+        PatientPlan existingPatientPlan = patientPlanUtilService.existsByPlanMainIdAndToothIdAndCategoryIdAndOperationId(
+                req.getPatientPlanMainId(), req.getToothId(), req.getCategoryId(), req.getOperationId()
+        );
 
-        OpTypeItem operations = operationTypeItemService.findById(req.getOperationId());
-        if (!operations.getOpType().getId().equals(req.getCategoryId())) {
-            throw new NotFoundException("Bütün əməliyyatlar seçilmiş kateqoriyaya aid olmalıdır");
+        if (existingPatientPlan != null) {
+            Set<Long> existingPartOfToothIds = existingPatientPlan.getDetails().stream()
+                    .map(PatientPlanPartOfToothDetail::getPartOfToothId)
+                    .collect(Collectors.toSet());
+
+            OpTypeItem operationTypeItem = operationTypeItemService.findById(req.getOperationId());
+
+            for (Long partOfToothId : req.getPartOfTeethIds()) {
+                if (!existingPartOfToothIds.contains(partOfToothId)) {
+                    PatientPlanPartOfToothDetail detail = PatientPlanPartOfToothDetail.builder()
+                            .patientPlan(existingPatientPlan)
+                            .partOfToothId(partOfToothId)
+                            .opTypeItem(operationTypeItem)
+                            .build();
+
+                    existingPatientPlan.getDetails().add(detail);
+                }
+            }
+
+            PatientPlan updatedPlan = patientPlansRepository.save(existingPatientPlan);
+
+            return patientPlanUtilService.mapper(updatedPlan);
+
         }
 
-        PatientPlan patientPlan = PatientPlan.builder()
-                .patientPlanMain(mainPlan)
-                .toothId(req.getToothId())
-                .opType(operationTypeService.findById(req.getCategoryId()))
-                .status("C")
-                .actionStatus("C")
-                .createdBy(utilService.getCurrentUserId())
-                .createdDate(DateTimeUtil.toEpochMilli(LocalDateTime.now()))
-                .build();
+            PatientPlanMain mainPlan = patientPlansUpdateMainService
+                    .findByIdAndStatusAndActionStatus(req.getPatientPlanMainId());
 
-        List<PatientPlanPartOfToothDetail> details = new ArrayList<>();
+            OpTypeItem operations = operationTypeItemService.findById(req.getOperationId());
+            if (!operations.getOpType().getId().equals(req.getCategoryId())) {
+                throw new NotFoundException("Bütün əməliyyatlar seçilmiş kateqoriyaya aid olmalıdır");
+            }
 
-        for (Long partOfToothId : req.getPartOfTeethIds()) {
+            PatientPlan patientPlan = PatientPlan.builder()
+                    .patientPlanMain(mainPlan)
+                    .toothId(req.getToothId())
+                    .opType(operationTypeService.findById(req.getCategoryId()))
+                    .status("C")
+                    .actionStatus("C")
+                    .createdBy(utilService.getCurrentUserId())
+                    .createdDate(DateTimeUtil.toEpochMilli(LocalDateTime.now()))
+                    .build();
+
+            List<PatientPlanPartOfToothDetail> details = new ArrayList<>();
+
+            for (Long partOfToothId : req.getPartOfTeethIds()) {
                 PatientPlanPartOfToothDetail detail = PatientPlanPartOfToothDetail.builder()
                         .patientPlan(patientPlan)
                         .partOfToothId(partOfToothId)
@@ -72,13 +103,13 @@ public class PatientPlansCreateService {
                         .build();
 
                 details.add(detail);
+            }
+
+            patientPlan.setDetails(details);
+
+            PatientPlan savedPlan = patientPlansRepository.save(patientPlan);
+
+            return patientPlanUtilService.mapper(savedPlan);
         }
 
-        patientPlan.setDetails(details);
-
-        PatientPlan savedPlan = patientPlansRepository.save(patientPlan);
-
-        return patientPlanUtilService.mapper(savedPlan);
     }
-
-}

@@ -80,6 +80,9 @@ public class PatientPlanUtilService {
                 .map(plan -> ReadByPatientPlanMainIdOfTreatment.builder()
                         .key(planMain.getKey())
                         .patientPlanId(plan.getId())
+                        .categoryName(plan.getOpType().getCategoryName())
+                        .categoryCode(plan.getOpType().getCategoryCode())
+                        .categoryId(plan.getOpType().getId())
                         .toothNo(plan.getToothId())
                         .details(plan.getDetails().stream()
                                 .map(detail -> PatientPlansOfTreatmentResponse.builder()
@@ -95,5 +98,9 @@ public class PatientPlanUtilService {
 
     public List<PatientPlan> findAllById(List<UUID> list) {
         return patientPlansRepository.findAllById(list);
+    }
+
+    public PatientPlan existsByPlanMainIdAndToothIdAndCategoryIdAndOperationId(UUID patientPlanMainId, Long toothId, Long categoryId, Long operationId) {
+        return patientPlansRepository.findByPatientPlanMainIdAndToothIdAndOpTypeItemAndCategoryId(patientPlanMainId, toothId , operationId, categoryId).orElse(null);
     }
 }
