@@ -3,8 +3,10 @@ package com.rustam.modern_dentistry.controller.patient_info;
 
 import com.rustam.modern_dentistry.dto.request.create.PatientTreatmentRequest;
 import com.rustam.modern_dentistry.dto.request.save.PatientTreatmentSaveRequest;
+import com.rustam.modern_dentistry.dto.response.read.CategoryOfOperationDto;
 import com.rustam.modern_dentistry.dto.response.read.ReadByPatientPlanMainIdOfTreatment;
 import com.rustam.modern_dentistry.service.patient_info.PatientTreatmentCreateService;
+import com.rustam.modern_dentistry.service.patient_info.PatientTreatmentReadByCategoryOfPlanMainService;
 import com.rustam.modern_dentistry.service.patient_info.PatientTreatmentReadByPlanMainService;
 import com.rustam.modern_dentistry.service.patient_info.PatientTreatmentSaveService;
 import lombok.AccessLevel;
@@ -26,6 +28,7 @@ public class PatientTreatmentController {
     PatientTreatmentCreateService service;
     PatientTreatmentReadByPlanMainService patientTreatmentReadByPlanMainService;
     PatientTreatmentSaveService patientTreatmentSaveService;
+    PatientTreatmentReadByCategoryOfPlanMainService patientTreatmentReadByCategoryOfPlanMainService;
 
     @PostMapping("/create")
     public ResponseEntity<Void> create(@RequestBody PatientTreatmentRequest req){
@@ -42,5 +45,10 @@ public class PatientTreatmentController {
     public ResponseEntity<Void> save(@RequestBody PatientTreatmentSaveRequest patientTreatmentSaveRequest){
         patientTreatmentSaveService.save(patientTreatmentSaveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping(path = "/read-by-category-of-plan-main/{id}")
+    public ResponseEntity<List<CategoryOfOperationDto>> readByCategoryOfPlanMain(@PathVariable UUID id){
+        return new ResponseEntity<>(patientTreatmentReadByCategoryOfPlanMainService.read(id),HttpStatus.OK);
     }
 }

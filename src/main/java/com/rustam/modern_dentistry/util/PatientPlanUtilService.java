@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.util;
 
 import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlan;
 import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlanMain;
+import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
 import com.rustam.modern_dentistry.dao.repository.patient_info.patientplan.PatientPlansRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatientPlansCreateRequest;
 import com.rustam.modern_dentistry.dto.request.create.PatientTreatmentRequest;
@@ -109,5 +110,40 @@ public class PatientPlanUtilService {
 
     public PatientPlan existsByPlanMainIdAndToothIdAndCategoryIdAndOperationId(UUID patientPlanMainId, Long toothId, Long categoryId, Long operationId) {
         return patientPlansRepository.findByPatientPlanMainIdAndToothIdAndOpTypeItemAndCategoryId(patientPlanMainId, toothId , operationId, categoryId).orElse(null);
+    }
+
+    @Transactional
+    public List<CategoryOfOperationDto> readByCategorysOperationForTreatment(UUID planMainId) {
+        PatientPlanMain planMain = existsByDateOfPatientPlanMain(planMainId);
+
+        Map<Long, CategoryOfOperationDto> categoryMap = new HashMap<>();
+
+        planMain.getPatientPlans().stream()
+                .filter(plan -> "A".equals(plan.getStatus()) && "A".equals(plan.getActionStatus()))
+                .forEach(plan -> {
+                    Long categoryId = plan.getOpType().getId();
+
+                    categoryMap.putIfAbsent(categoryId, CategoryOfOperationDto.builder()
+                            .id(categoryId)
+                            .categoryName(plan.getOpType().getCategoryName())
+                            .categoryCode(plan.getOpType().getCategoryCode())
+                            .opTypeItemReadResponses(new ArrayList<>())
+                            .build());
+
+                    plan.getDetails().forEach(detail -> {
+                        OpTypeItem item = detail.getOpTypeItem();
+                        categoryMap.get(categoryId).getOpTypeItemReadResponses().add(
+                                OpTypeItemReadResponse.builder()
+                                        .id(item.getId())
+                                        .operationName(item.getOperationName())
+                                        .operationCode(item.getOperationCode())
+                                        .status(item.getStatus())
+                                        .price(item.getAmount())
+                                        .build()
+                        );
+                    });
+                });
+
+        return new ArrayList<>(categoryMap.values());
     }
 }
