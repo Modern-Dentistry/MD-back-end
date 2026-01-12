@@ -21,9 +21,7 @@ public class PatientTreatmentReadByPlanMainService {
     PatientPlanUtilService patientPlanUtilService;
 
     @Transactional
-    public List<ReadByPatientPlanMainIdOfTreatment> read(UUID planMainId) {
-        PatientPlanMain patientPlanMains = patientPlanUtilService.existsByDateOfPatientPlanMain(planMainId);
-
-        return patientPlanUtilService.mapToTreatmentDto(patientPlanMains);
+    public ReadByPatientPlanMainIdOfTreatment read(UUID planMainId) {
+        return patientPlanUtilService.read(planMainId);
     }
 }
