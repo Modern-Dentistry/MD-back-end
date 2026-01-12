@@ -18,11 +18,17 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 )
 public interface PatientPlansMainMapper {
     @Mapping(target = "insuranceId", source = "insuranceCompany.id")
-    PatientPlansMainResponse toDto(PatientPlanMain save);
+    @Mapping(target = "isSave", expression = "java(isActionStatusA(patientPlanMain))")
+    PatientPlansMainResponse toDto(PatientPlanMain patientPlanMain);
 
     List<PatientPlansMainResponse> toDtos(List<PatientPlanMain> all);
 
     PatientPlanMain toReadById(PatientPlanMain patientPlanMain);
 
     List<String> toStrings(List<String> companyName);
+
+    default Boolean isActionStatusA(PatientPlanMain patientPlanMain) {
+        return patientPlanMain.getActionStatus() != null &&
+                "A".equals(patientPlanMain.getActionStatus());
+    }
 }
