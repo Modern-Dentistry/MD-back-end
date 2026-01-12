@@ -14,10 +14,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReadByPatientPlanMainIdOfTreatment {
     String key;
-    UUID patientPlanId;
-    Long categoryId;
-    String categoryName;
-    String categoryCode;
-    Long toothNo;
-    List<PatientPlansOfTreatmentResponse> details;
+    UUID patientPlanMainId;
+    Boolean isSave;
+    List<PlanDetailDto> plans;
 }
