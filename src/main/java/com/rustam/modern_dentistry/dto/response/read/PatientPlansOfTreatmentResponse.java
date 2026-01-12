@@ -17,5 +17,6 @@ public class PatientPlansOfTreatmentResponse {
     Long id;
     Long partOfToothId;
     String operationName;
+    String operationCode;
     BigDecimal price;
 }
