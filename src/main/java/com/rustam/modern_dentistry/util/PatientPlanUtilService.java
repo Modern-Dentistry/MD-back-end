@@ -16,10 +16,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -70,30 +67,40 @@ public class PatientPlanUtilService {
                 .orElseThrow(() -> new NotFoundException("PatientPlanMain not found with given criteria"));
     }
 
-    @Transactional
-    public List<ReadByPatientPlanMainIdOfTreatment> mapToTreatmentDto(PatientPlanMain planMain) {
+    @Transactional(readOnly = true)
+    public ReadByPatientPlanMainIdOfTreatment read(UUID planMainId) {
+        PatientPlanMain planMain = existsByDateOfPatientPlanMain(planMainId);
+
         if (planMain == null || planMain.getPatientPlans() == null) {
-            return Collections.emptyList();
+            return null;
         }
 
-        return planMain.getPatientPlans().stream()
-                .map(plan -> ReadByPatientPlanMainIdOfTreatment.builder()
-                        .key(planMain.getKey())
+        List<PlanDetailDto> planDetails = planMain.getPatientPlans().stream()
+                .filter(plan -> "A".equals(plan.getStatus()) && "A".equals(plan.getActionStatus()))
+                .map(plan -> PlanDetailDto.builder()
                         .patientPlanId(plan.getId())
+                        .categoryId(plan.getOpType().getId())
                         .categoryName(plan.getOpType().getCategoryName())
                         .categoryCode(plan.getOpType().getCategoryCode())
-                        .categoryId(plan.getOpType().getId())
                         .toothNo(plan.getToothId())
                         .details(plan.getDetails().stream()
                                 .map(detail -> PatientPlansOfTreatmentResponse.builder()
                                         .id(detail.getId())
                                         .partOfToothId(detail.getPartOfToothId())
                                         .operationName(detail.getOpTypeItem().getOperationName())
+                                        .operationCode(detail.getOpTypeItem().getOperationCode())
                                         .price(detail.getOpTypeItem().getAmount())
                                         .build())
                                 .collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
+
+        return ReadByPatientPlanMainIdOfTreatment.builder()
+                .key(planMain.getKey())
+                .patientPlanMainId(planMain.getId())
+                .isSave("A".equals(planMain.getActionStatus()))
+                .plans(planDetails)
+                .build();
     }
 
     public List<PatientPlan> findAllById(List<UUID> list) {

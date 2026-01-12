@@ -34,7 +34,7 @@ public class PatientTreatmentController {
     }
 
     @PostMapping(path = "/read-by-plan-main-id-of-treatment/{planMainId}")
-    public ResponseEntity<List<ReadByPatientPlanMainIdOfTreatment>> read(@PathVariable UUID planMainId){
+    public ResponseEntity<ReadByPatientPlanMainIdOfTreatment> read(@PathVariable UUID planMainId){
         return new ResponseEntity<>(patientTreatmentReadByPlanMainService.read(planMainId),HttpStatus.OK);
     }
 

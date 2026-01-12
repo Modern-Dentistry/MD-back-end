@@ -16,4 +16,5 @@ public class PatientPlansMainResponse {
     String planName;
     String key;
     Long insuranceId;
+    Boolean isSave;
 }
