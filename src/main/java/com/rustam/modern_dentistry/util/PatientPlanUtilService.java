@@ -2,6 +2,7 @@ package com.rustam.modern_dentistry.util;
 
 import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlan;
 import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlanMain;
+import com.rustam.modern_dentistry.dao.entity.patient_info.patientplan.PatientPlanPartOfToothDetail;
 import com.rustam.modern_dentistry.dao.entity.settings.operations.OpTypeItem;
 import com.rustam.modern_dentistry.dao.repository.patient_info.patientplan.PatientPlansRepository;
 import com.rustam.modern_dentistry.dto.request.create.PatientPlansCreateRequest;
@@ -123,6 +124,7 @@ public class PatientPlanUtilService {
                 .filter(plan -> "A".equals(plan.getStatus()) && "A".equals(plan.getActionStatus()))
                 .forEach(plan -> {
                     Long categoryId = plan.getOpType().getId();
+                    Set<Long> addedItemIds = new HashSet<>();
 
                     categoryMap.putIfAbsent(categoryId, CategoryOfOperationDto.builder()
                             .id(categoryId)
@@ -131,18 +133,20 @@ public class PatientPlanUtilService {
                             .opTypeItemReadResponses(new ArrayList<>())
                             .build());
 
-                    plan.getDetails().forEach(detail -> {
-                        OpTypeItem item = detail.getOpTypeItem();
-                        categoryMap.get(categoryId).getOpTypeItemReadResponses().add(
-                                OpTypeItemReadResponse.builder()
-                                        .id(item.getId())
-                                        .operationName(item.getOperationName())
-                                        .operationCode(item.getOperationCode())
-                                        .status(item.getStatus())
-                                        .price(item.getAmount())
-                                        .build()
-                        );
-                    });
+                    plan.getDetails().stream()
+                            .map(PatientPlanPartOfToothDetail::getOpTypeItem)
+                            .filter(item -> addedItemIds.add(item.getId()))
+                            .forEach(item -> {
+                                categoryMap.get(categoryId).getOpTypeItemReadResponses().add(
+                                        OpTypeItemReadResponse.builder()
+                                                .id(item.getId())
+                                                .operationName(item.getOperationName())
+                                                .operationCode(item.getOperationCode())
+                                                .status(item.getStatus())
+                                                .price(item.getAmount())
+                                                .build()
+                                );
+                            });
                 });
 
         return new ArrayList<>(categoryMap.values());
