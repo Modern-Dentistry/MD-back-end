@@ -32,6 +32,7 @@ public class PatientPlanUtilService {
                 .id(savedPlan.getId())
                 .patientPlansDto(PatientPlansDto.builder()
                         .toothNo(savedPlan.getToothId())
+                        .isSave("A".equals(savedPlan.getActionStatus()))
                         .operationOfCategoryDto(
                                 OperationOfCategoryDto.builder()
                                         .id(savedPlan.getOpType().getId())
