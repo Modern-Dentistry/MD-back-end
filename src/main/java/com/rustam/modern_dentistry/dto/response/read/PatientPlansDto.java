@@ -16,5 +16,6 @@ public class PatientPlansDto {
 
     Long toothNo;
     OperationOfCategoryDto operationOfCategoryDto;
+    Boolean isSave;
     List<PatientPlanPartOfToothDetailDto> partOfTeethIds;
 }
