@@ -21,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,7 @@ public class AddWorkerService {
     AddWorkerMapper addWorkerMapper;
     PermissionService permissionService;
     PermissionVisibilityService permissionVisibilityService;
+    PasswordEncoder passwordEncoder;
 
     public AddWorkerCreateResponse create(AddWorkerCreateRequest dto) {
         Set<Permission> newPermissions = dto.getPermissions().stream()
@@ -52,6 +55,7 @@ public class AddWorkerService {
             throw new ExistsException("User with these credentials already exists in the system");
         });
         BaseUser baseUser = addWorkerMapper.dtoToEntity(new BaseUser(), dto);
+        baseUser.setPassword(passwordEncoder.encode(dto.getPassword()));
         baseUser.setPermissions(newPermissions);
         baseUser.setEnabled(true);
         baseUserRepository.save(baseUser);
@@ -107,6 +111,7 @@ public class AddWorkerService {
         });
         BaseUser entityUpdate = addWorkerMapper.dtoToEntityUpdate(baseUser, dto);
         baseUser.setPermissions(newPermissions);
+        baseUser.setPassword(passwordEncoder.encode(dto.getPassword()));
         baseUserRepository.save(entityUpdate);
         return addWorkerMapper.updateDtoToResponse(entityUpdate);
     }
