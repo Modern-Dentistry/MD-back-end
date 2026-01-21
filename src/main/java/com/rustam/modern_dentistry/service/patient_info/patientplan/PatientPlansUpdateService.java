@@ -64,10 +64,7 @@ public class PatientPlansUpdateService {
         }
         patientPlan.getDetails().clear();
         patientPlan.getDetails().addAll(details);
-
         patientPlan.setOpType(operationTypeService.findById(req.getCategoryId()));
-        patientPlan.setStatus("A");
-        patientPlan.setActionStatus("U");
         patientPlan.setUpdatedBy(utilService.getCurrentUserId());
         patientPlan.setUpdatedDate(DateTimeUtil.toEpochMilli(LocalDateTime.now()));
         return patientPlan;
