@@ -22,7 +22,7 @@ public class PatientPlansDeleteService {
     public void delete(UUID id) {
         PatientPlan patientPlan = patientPlansRepository.findByIdAndStatusInAndActionStatusIn(id, List.of("A", "C"), List.of("A", "C"))
                 .orElseThrow(() -> new NotFoundException("No such patient plan found with id: " + id + " or it is deleted."));
-        patientPlan.setStatus("A");
+        patientPlan.setStatus("D");
         patientPlan.setActionStatus("D");
         patientPlansRepository.save(patientPlan);
     }
