@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,7 +26,7 @@ public class PatientPlansSaveMainService {
 
     @Transactional
     public void save(UUID id) {
-        PatientPlanMain patientPlanMain = patientPlanMainRepository.findById(id)
+        PatientPlanMain patientPlanMain = patientPlanMainRepository.findByIdAndStatusInAndActionStatusIn(id, List.of("A","C"),List.of("A","C"))
                         .orElseThrow(() -> new NotFoundException("No such patient plan main found."));
         savedData(patientPlanMain);
     }
