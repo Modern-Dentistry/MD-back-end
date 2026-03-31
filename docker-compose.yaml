@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   postgres-db:
     image: postgres:latest
@@ -23,7 +22,9 @@ services:
       - modern-net
 
   modern-dentistry:
-    image: rustemh/modern-dentistry:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: modern-dentistry
     depends_on:
       - postgres-db

@@ -39,6 +39,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> {
                     x.requestMatchers(getPublicEndpoints()).permitAll();
+                    // ✅ Specialization READ — public endpoint (token lazım deyil)
+                    x.requestMatchers(HttpMethod.GET, "/api/v1/specialization/read").permitAll();
                     registerModulePermissions(x);
                     x.anyRequest().access(superAdminBypassAuthorizationManager);
                 })
@@ -52,12 +54,14 @@ public class SecurityConfig {
     }
 
     private void registerModulePermissions(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry x) {
-        List<String> modules = List.of("patient", "appointment", "add-worker", "general-calendar", "patient-blacklist",
-                "reservation", "technician", "workers-work-schedule");
+        List<String> modules = List.of(
+                "patient", "appointment", "add-worker", "general-calendar",
+                "patient-blacklist", "reservation", "technician",
+                "workers-work-schedule", "specialization"
+        );
 
         for (String module : modules) {
             String basePath = "/api/v1/" + module + "/**";
-
             x.requestMatchers(HttpMethod.GET, basePath).access((auth, ctx) -> decision(auth, basePath, "READ"));
             x.requestMatchers(HttpMethod.POST, basePath).access((auth, ctx) -> decision(auth, basePath, "CREATE"));
             x.requestMatchers(HttpMethod.PUT, basePath).access((auth, ctx) -> decision(auth, basePath, "UPDATE"));
@@ -72,9 +76,7 @@ public class SecurityConfig {
             boolean isSuperAdmin = auth.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("SUPER_ADMIN"));
 
-            if (isSuperAdmin) {
-                return new AuthorizationDecision(true);
-            }
+            if (isSuperAdmin) return new AuthorizationDecision(true);
 
             String requiredPermission = path + ":" + action;
             boolean hasPermission = auth.getAuthorities().stream()
@@ -86,26 +88,12 @@ public class SecurityConfig {
         return new AuthorizationDecision(false);
     }
 
-
-
     private String[] getPublicEndpoints() {
         return new String[]{
                 "/api/v1/auth/login",
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
                 "/swagger-ui.html/**"
-        };
-    }
-
-    private String[] getUserRoleEndpoints() {
-        return new String[]{
-                "/**"
-        };
-    }
-
-    private String[] getAdminRoleEndpoints() {
-        return new String[]{
-                "/api/v1/add-worker/create"
         };
     }
 
@@ -117,4 +105,3 @@ public class SecurityConfig {
         return corsConfiguration;
     }
 }
-
